@@ -84,6 +84,8 @@ public enum GameType {
     
     // Guilds
     RandomGuilds("Random Guilds"),
+    RandomAdventures("Random Adventures"),
+    RandomEmpires("Random Empires"),
     
     // Guilds + Base
     ArtsAndCrafts("Arts and Crafts (Guilds, Base)"), CleanLiving("Clean Living (Guilds, Base)"), GildingTheLily("Gilding the Lily (Guilds, Base)"),

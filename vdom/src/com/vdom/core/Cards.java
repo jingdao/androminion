@@ -17,6 +17,8 @@ public class Cards {
     public static ArrayList<Card> actionCardsHinterlands = new ArrayList<Card>();
     public static ArrayList<Card> actionCardsDarkAges = new ArrayList<Card>();
     public static ArrayList<Card> actionCardsGuilds = new ArrayList<Card>();
+    public static ArrayList<Card> actionCardsAdventures = new ArrayList<Card>();
+    public static ArrayList<Card> actionCardsEmpires = new ArrayList<Card>();
     public static ArrayList<Card> actionCardsPromo = new ArrayList<Card>();
     public static ArrayList<Card> actionCards = new ArrayList<Card>();
     public static ArrayList<Card> prizeCards = new ArrayList<Card>();
@@ -53,7 +55,9 @@ public class Cards {
         VirtualRuins, VirtualKnight,
         // Guilds Expansion
         Advisor, Baker, Butcher, CandlestickMaker, Doctor, Herald, Journeyman, Masterpiece, MerchantGuild, Plaza, StoneMason, Soothsayer, Taxman,
-       
+		// Adventures
+		CoinOfTheRealm, Page, Peasant, Ratcatcher, Raze, Amulet, CaravanGuard, Dungeon, Gear, Guide, Duplicate, Magpie, Messenger, Miser, Port, Ranger, Transmogrify,
+		Artificer, BridgeTroll, DistantLands, Giant, HauntedWoods, LostCity, Relic, RoyalCarriage, Storyteller, SwampHag, TreasureTrove, WineMerchant, Hireling, 
         // Promo Cards
         Envoy, Governor, WalledVillage,
         // Promo Cards (not yet implemented)
@@ -325,6 +329,38 @@ public class Cards {
     public static final Card stonemason;
     public static final Card taxman;
 
+	//Adventures
+	public static final Card coinOfTheRealm;
+	public static final Card page;
+	public static final Card peasant;
+	public static final Card ratcatcher;
+	public static final Card raze;
+	public static final Card amulet;
+	public static final Card caravanGuard;
+	public static final Card dungeon;
+	public static final Card gear;
+	public static final Card guide;
+	public static final Card duplicate;
+	public static final Card magpie;
+	public static final Card messenger;
+	public static final Card miser;
+	public static final Card port;
+	public static final Card ranger;
+	public static final Card transmogrify;
+	public static final Card artificer;
+	public static final Card bridgeTroll;
+	public static final Card distantLands;
+	public static final Card giant;
+	public static final Card hauntedWoods;
+	public static final Card lostCity;
+	public static final Card relic;
+	public static final Card royalCarriage;
+	public static final Card storyteller;
+	public static final Card swampHag;
+	public static final Card treasureTrove;
+	public static final Card wineMerchant;
+	public static final Card hireling;
+
 
     // Promo Cards (Incomplete)
     // TODO:Implement Rest of promo cards
@@ -573,6 +609,38 @@ public class Cards {
         actionCardsGuilds.add(doctor           = new ActionCardImpl.Builder(Cards.Type.Doctor, 3).isOverpay().description("Name a card. Reveal the top 3 cards of your deck. Trash the matches. Put the rest back on top in any order.  When you buy this, you may overpay for it. For each $1 you overpaid, look at the top card of your deck; trash it, discard it, or put it back.").expansion("Guilds").build());
         actionCardsGuilds.add(herald           = new ActionCardImpl.Builder(Cards.Type.Herald, 4).addCards(1).addActions(1).isOverpay().description("Reveal the top card of your deck. If it is an Action, play it. When you buy this, you may overpay for it. For each $1 you overpaid, look through your discard pile and put a card from it on top of your deck.").expansion("Guilds").build());
         
+		//Adventures	
+		actionCardsAdventures.add(coinOfTheRealm = new TreasureCardImpl.Builder(Cards.Type.CoinOfTheRealm,2,1).description("When you play this, put it on your Tavern Mat. Directly after resolving an Action, you may call this, for +2 Actions.").expansion("Adventures").build());
+		actionCardsAdventures.add(page = new ActionCardImpl.Builder(Cards.Type.Page,2).description("When you discard this from play, you may exchange it for a Treasure Hunter.").expansion("Adventures").build());
+		actionCardsAdventures.add(peasant = new ActionCardImpl.Builder(Cards.Type.Peasant,2).description("When you discard this from play, you may exchange it for a Soldier.").expansion("Adventures").build());
+		actionCardsAdventures.add(ratcatcher = new ActionCardImpl.Builder(Cards.Type.Ratcatcher,2).description("Put this on your Tavern mat. At the start of your turn, you may call this to trash a card from your hand.").expansion("Adventures").build());
+		actionCardsAdventures.add(raze = new ActionCardImpl.Builder(Cards.Type.Raze,2).description("Trash this or a card from your hand. Look at a number of cards from the top of your deck equal to the cost in Coin of the trashed card. Put one into your hand and discard the rest.").expansion("Adventures").build());
+		actionCardsAdventures.add(amulet = new ActionCardImpl.Builder(Cards.Type.Amulet,3).description("Now and at the start of your next turn, choose one: +1 Coin; or trash a card from your hand; or gain a Silver.").expansion("Adventures").build());
+		actionCardsAdventures.add(caravanGuard = new ActionCardImpl.Builder(Cards.Type.CaravanGuard,3).description("At the start of your next turn, +1 Coin. When another player plays an Attack card, you may play this from your hand. (+1 Action has no effect if it's not your turn.)").expansion("Adventures").build());
+		actionCardsAdventures.add(dungeon = new ActionCardImpl.Builder(Cards.Type.Dungeon,3).description("Now and at the start of your next turn: +2 Cards, then discard 2 cards.").expansion("Adventures").build());
+		actionCardsAdventures.add(gear = new ActionCardImpl.Builder(Cards.Type.Gear,3).description("Set aside up to 2 cards from your hand face down. At the start of your next turn, put them into your hand.").expansion("Adventures").build());
+		actionCardsAdventures.add(guide = new ActionCardImpl.Builder(Cards.Type.Guide,3).description("Put this on your Tavern mat. At the start of your turn, you may call this, to discard your hand and draw 5 cards.").expansion("Adventures").build());
+		actionCardsAdventures.add(duplicate = new ActionCardImpl.Builder(Cards.Type.Duplicate,4).description("Put this on your Tavern mat. When you gain a card costing up to 6 Coin, you may call this, to gain a copy of that card.").expansion("Adventures").build());
+		actionCardsAdventures.add(magpie = new ActionCardImpl.Builder(Cards.Type.Magpie,4).description("Reveal the top card of your deck.  If it's a Treasure, put it into your hand.  If it's an Action or Victory card, gain a Magpie.").expansion("Adventures").build());
+		actionCardsAdventures.add(messenger = new ActionCardImpl.Builder(Cards.Type.Messenger,4).description("You may put your deck into your discard pile. When this is your first buy in a turn, gain a card costing up to 4 Coin, and each other player gains a copy of it.").expansion("Adventures").build());
+		actionCardsAdventures.add(miser = new ActionCardImpl.Builder(Cards.Type.Miser,4).description("Choose one: Put a Copper from your hand onto your Tavern mat; or +1 Coin per Copper on your Tavern mat.").expansion("Adventures").build());
+		actionCardsAdventures.add(port = new ActionCardImpl.Builder(Cards.Type.Port,4).description("When you buy this, gain another Port.").expansion("Adventures").build());
+		actionCardsAdventures.add(ranger = new ActionCardImpl.Builder(Cards.Type.Ranger,4).description("Turn your Journey token over (it starts face up). If it's face up, +5 Cards.").expansion("Adventures").build());
+		actionCardsAdventures.add(transmogrify = new ActionCardImpl.Builder(Cards.Type.Transmogrify,4).description("At the start of your turn, you may call this, to trash a card from your hand, gain a card costing up to 1 Coin more than it, and put that card into your hand.").expansion("Adventures").build());
+		actionCardsAdventures.add(artificer = new ActionCardImpl.Builder(Cards.Type.Artificer,5).description("Discard any number of cards. You may gain a card costing exactly 1 Coin per card discarded, putting it on top of your deck.").expansion("Adventures").build());
+		actionCardsAdventures.add(bridgeTroll = new ActionCardImpl.Builder(Cards.Type.BridgeTroll,5).description("Each other player takes his -1 Coin token. Now and at the start of your next turn: +1 Buy. While this is in play, cards cost 1 Coin less on your turns, but not less than 0 Coin.").expansion("Adventures").build());
+		actionCardsAdventures.add(distantLands = new ActionCardImpl.Builder(Cards.Type.DistantLands,5).description("Put this on your Tavern mat. Worth 4 VP if on your Tavern mat at the end of the game (otherwise worth 0 VP).").expansion("Adventures").build());
+		actionCardsAdventures.add(giant = new ActionCardImpl.Builder(Cards.Type.Giant,5).description("Turn your Journey token over (it starts face up). If it's face down, +1 Coin. If it's face up, +5 Coin, and each other player reveals the top card of his deck, trashes it if it costs from 3 Coin to 6 Coin, and otherwise discards it and gains a Curse.").expansion("Adventures").build());
+		actionCardsAdventures.add(hauntedWoods = new ActionCardImpl.Builder(Cards.Type.HauntedWoods,5).description("Until your next turn, when any other player buys a card, he puts his hand on top of his deck in any order. At the start of your next turn: +3 Cards").expansion("Adventures").build());
+		actionCardsAdventures.add(lostCity = new ActionCardImpl.Builder(Cards.Type.LostCity,5).description("When you gain this, each other player draws a card.").expansion("Adventures").build());
+		actionCardsAdventures.add(relic = new TreasureCardImpl.Builder(Cards.Type.Relic,5,2).description("When you play this, each other player puts his -1 Card token on his deck.").expansion("Adventures").build());
+		actionCardsAdventures.add(royalCarriage = new ActionCardImpl.Builder(Cards.Type.RoyalCarriage,5).description("Put this on your Tavern mat. Directly after resolving an Action, if it's still in play, you may call this, to replay that Action.").expansion("Adventures").build());
+		actionCardsAdventures.add(storyteller = new ActionCardImpl.Builder(Cards.Type.Storyteller,5).description("Play up to 3 Treasures from your hand. Pay all of your Coin; +1 Card per Coin paid.").expansion("Adventures").build());
+		actionCardsAdventures.add(swampHag = new ActionCardImpl.Builder(Cards.Type.SwampHag,5).description("Until your next turn, when any other player buys a card, he gains a Curse. At the start of your next turn: +3 Coin").expansion("Adventures").build());
+		actionCardsAdventures.add(treasureTrove = new TreasureCardImpl.Builder(Cards.Type.TreasureTrove,5,2).description("When you play this, gain a Gold and a Copper.").expansion("Adventures").build());
+		actionCardsAdventures.add(wineMerchant = new ActionCardImpl.Builder(Cards.Type.WineMerchant,5).description("Put this on your Tavern mat. At the end of your Buy phase, if you have at least 2 Coin unspent, you may discard this from your Tavern mat.").expansion("Adventures").build());
+		actionCardsAdventures.add(hireling = new ActionCardImpl.Builder(Cards.Type.Hireling,6).description("At the start of each of your turns for the rest of the game: +1 Card (This stays in play)").expansion("Adventures").build());
+
         // Non-Supply Cards
         nonSupplyCards.add(madman    = new ActionCardImpl.Builder(Cards.Type.Madman, 0).addActions(2).description("Return this to the Madman pile. If you do, +1 Card per card in your hand. (This is not in the supply)").expansion("DarkAges").build());
         nonSupplyCards.add(mercenary = new ActionCardImpl.Builder(Cards.Type.Mercenary, 0).attack().description("You may trash 2 cards from your hand. If you do, +2 cards, +2 coins, and each other player discards down to 3 cards in hand. (This is not in the supply)").expansion("DarkAges").build());
