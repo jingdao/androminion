@@ -131,7 +131,12 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 	            AbstractCardPile pile = game.getPile(this);
 	            pile.addCard(player.playedCards.remove(player.playedCards.indexOf(this.getId())));
 			}
-        }
+        } else if (equals(Cards.coinOfTheRealm)) {
+			if (!isClone) {
+				player.playedCards.remove(player.playedCards.indexOf(this.getId()));
+				player.tavern.add(this);
+			}
+		}
 
         return reevaluateTreasures;
     }
@@ -254,7 +259,7 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
             // A counterfeited card will not count in the calculations of future cards that care about the number of treasures played (such as Bank)
             context.treasuresPlayedSoFar--; 
             
-            if (!treasure.equals(Cards.spoils)) {
+            if (!treasure.equals(Cards.spoils) && !treasure.equals(Cards.coinOfTheRealm)) {
                 if (currentPlayer.playedCards.getLastCard().getId() == cardToPlay.getId()) {
                 	currentPlayer.trash(currentPlayer.playedCards.removeLastCard(), this, context);
 	    		}

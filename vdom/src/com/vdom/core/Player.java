@@ -47,6 +47,7 @@ public abstract class Player {
     protected CardList island;
     protected CardList haven;
     protected CardList horseTraders;
+	protected CardList tavern;
     public Game game;
     public Player controlPlayer = this;
 
@@ -212,6 +213,7 @@ public abstract class Player {
         island = new CardList(this, "Island");
         haven = new CardList(this, "Haven");
         horseTraders = new CardList(this, "Horse Traders");
+		tavern = new CardList(this,"Tavern");
     }
 
     private List<PutBackOption> getPutBackOptions(MoveContext context) {
@@ -407,6 +409,10 @@ public abstract class Player {
         return island;
     }
 
+    public CardList getTavern() {
+        return tavern;
+    }
+
     public int getPirateShipTreasure() {
         return pirateShipTreasure;
     }
@@ -470,6 +476,9 @@ public abstract class Player {
         for (Card card : horseTraders) {
             allCards.add(card);
         }
+		for (Card card: tavern) {
+			allCards.add(card);
+		}
         if (checkLeadCard != null) {
         	allCards.add(checkLeadCard);
         }

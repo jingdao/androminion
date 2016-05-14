@@ -11,4 +11,5 @@
     <string name="type_prize">Prize</string>
     <string name="type_knight">Knight</string>
     <string name="type_shelter">Shelter</string>
+    <string name="type_reserve">Reserve</string>
 </resources>

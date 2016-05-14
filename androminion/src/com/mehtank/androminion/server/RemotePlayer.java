@@ -168,6 +168,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     	card.isShelter = c.isShelter();
     	card.isLooter = c.isLooter();
     	card.isOverpay = c.isOverpay();
+		card.isReserve = c.isReserve();
     	if (c.equals(Cards.virtualRuins))
     		card.isRuins = true;
     	else
@@ -494,6 +495,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     	  .setPotions(context.getPotionsForStatus(player))
     	  .setIsland(cardArrToIntArr(player.getIsland().toArray()))
     	  .setVillage(cardArrToIntArr(player.getNativeVillage().toArray()))
+    	  .setTavern(cardArrToIntArr(player.getTavern().toArray()))
     	  .setTrash(arrayListToIntArr(player.game.GetTrashPile()));
     	
     	if (game.getTopRuinsCard() != null)

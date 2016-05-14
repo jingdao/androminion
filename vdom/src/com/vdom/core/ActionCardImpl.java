@@ -133,6 +133,11 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			return this;
 		}
 
+		public Builder isReserve() {
+			this.isReserve = true;
+			return this;
+		}
+
     }
 
     public int getAddActions() {
@@ -728,6 +733,14 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         case Herald:
             herald(game, context, currentPlayer);
             break;
+		case Ratcatcher:
+		case Guide:
+		case Duplicate:
+		case Transmogrify:
+		case DistantLands:
+		case RoyalCarriage:
+		case WineMerchant:
+			tavern(game,context,currentPlayer);
         default:
             break;
         }
@@ -5746,4 +5759,14 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
             }
         }
     }
+
+    private void tavern(Game game, MoveContext context, Player currentPlayer) {
+        // Move to tavern mat if not already played
+        if (this.controlCard.numberTimesAlreadyPlayed == 0) {
+        	currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf((Card) this.controlCard));
+            currentPlayer.tavern.add(this.controlCard);
+            this.controlCard.stopImpersonatingCard();
+        }
+    }
+
 }

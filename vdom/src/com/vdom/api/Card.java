@@ -35,6 +35,8 @@ public interface Card {
     public boolean isKnight();
     
     public boolean isOverpay();
+
+	public boolean isReserve();
     
     public Integer getId();
     

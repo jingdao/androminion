@@ -46,9 +46,9 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 		return players;
 	}
 
-	GridView handGV, playedGV, islandGV, villageGV, trashGV;
-	CardGroup hand, played, island, village, trash;
-	View islandColumn, villageColumn, trashColumn;
+	GridView handGV, playedGV, islandGV, villageGV, tavernGV, trashGV;
+	CardGroup hand, played, island, village, tavern, trash;
+	View islandColumn, villageColumn, tavernColumn, trashColumn;
 	TextView playedHeader;
 	LinearLayout myCards;
 
@@ -171,6 +171,12 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
     	villageGV.setOnItemLongClickListener(this);
     	villageColumn = findViewById(R.id.villageColumn);
 
+		tavern = new CardGroup(top, false);
+    	tavernGV = (GridView) findViewById(R.id.tavernGV);
+    	tavernGV.setAdapter(tavern);
+    	tavernGV.setOnItemLongClickListener(this);
+    	tavernColumn = findViewById(R.id.tavernColumn);
+
     	trash = new CardGroup(top, false);
         trashGV = (GridView) findViewById(R.id.trashGV);
         trashGV.setAdapter(trash);
@@ -291,6 +297,7 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 		played.clear();
 		island.clear();
 		village.clear();
+		tavern.clear();
 		trash.clear();
 		this.players.clear();
 
@@ -880,6 +887,12 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 			villageColumn.setVisibility(VISIBLE);
 		} else {
 			villageColumn.setVisibility(GONE);
+		}
+		GameTableViews.newCardGroup(tavern, gs.myTavern);
+		if (gs.myTavern.length > 0) {
+			tavernColumn.setVisibility(VISIBLE);
+		} else {
+			tavernColumn.setVisibility(GONE);
 		}
 
 		GameTableViews.newCardGroup(trash, gs.trashPile);
