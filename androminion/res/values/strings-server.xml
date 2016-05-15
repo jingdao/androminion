@@ -327,6 +327,11 @@
   <string name="doctor_overpay_option_two">Discard</string>
   <string name="doctor_overpay_option_three">Put Back</string>
   <string name="herald_overpay_query">Select card to put back on deck</string>
+
+  <string name="raze_query">Select card to put in hand</string>
+  <string name="amulet_option_one">+(1) Coin</string>
+  <string name="amulet_option_two">Trash a card from your hand</string>
+  <string name="amulet_option_three">Gain a silver</string>
   
   
 </resources>

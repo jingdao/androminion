@@ -2793,4 +2793,60 @@ public abstract class BasePlayer extends Player implements GameEventListener {
         
         return cardToReturn;
     }
+
+	public Card raze_cardToTrash(MoveContext context) {
+		return null;
+	}
+
+	public Card raze_cardToDraw(MoveContext context, Card[] cardList) {
+		return null;
+	}
+
+	public Card amulet_cardToTrash(MoveContext context) {
+        Card card = pickOutCard(context.getPlayer().getHand(), getTrashCards());
+    	if (card != null) 
+    		return card;
+       	else 
+        	return context.getPlayer().getHand().get(0);
+	}
+
+    public AmuletOption amulet_chooseOption(MoveContext context) {
+        return AmuletOption.GainSilver;
+    }
+
+    public Card[] dungeon_cardsToDiscard(MoveContext context) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+        for (Card card : context.getPlayer().getHand()) {
+            if (shouldDiscard(card)) {
+                cardsToDiscard.add(card);
+            }
+
+            if (cardsToDiscard.size() == 2) {
+                break;
+            }
+        }
+        if (cardsToDiscard.size() < 2) {
+            ArrayList<Card> handCopy = new ArrayList<Card>();
+            for (Card card : context.getPlayer().getHand()) {
+                handCopy.add(card);
+            }
+            for (Card card : cardsToDiscard) {
+                handCopy.remove(card);
+            }
+            while (cardsToDiscard.size() < 2) {
+                cardsToDiscard.add(handCopy.remove(0));
+            }
+        }
+        return cardsToDiscard.toArray(new Card[0]);
+    }
+
+    public Card[] gear_cardsToSetAside(MoveContext context) {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		for (int i=0;i<2;i++) {
+			if (context.getPlayer().getHand().size() > i)
+				cards.add(context.getPlayer().getHand().get(i));
+		}
+		return cards.toArray(new Card[0]);
+    }
+
 }

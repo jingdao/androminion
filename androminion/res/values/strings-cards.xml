@@ -490,7 +490,7 @@
 	<string name="Amulet_name">Amulet</string>
 	<string name="Amulet_desc">Now and at the start of your next turn, choose one: +1 Coin; or trash a card from your hand; or gain a Silver.</string>
 	<string name="CaravanGuard_name">Caravan Guard</string>
-	<string name="CaravanGuard_desc">At the start of your next turn, +1 Coin. When another player plays an Attack card, you may play this from your hand. (+1 Action has no effect if it\'s not your turn.)</string>
+	<string name="CaravanGuard_desc">When another player plays an Attack card, you may play this from your hand. (+1 Action has no effect if it\'s not your turn.)</string>
 	<string name="Dungeon_name">Dungeon</string>
 	<string name="Dungeon_desc">Now and at the start of your next turn: +2 Cards, then discard 2 cards.</string>
 	<string name="Gear_name">Gear</string>
@@ -514,13 +514,13 @@
 	<string name="Artificer_name">Artificer</string>
 	<string name="Artificer_desc">Discard any number of cards. You may gain a card costing exactly 1 Coin per card discarded, putting it on top of your deck.</string>
 	<string name="BridgeTroll_name">BridgeTroll</string>
-	<string name="BridgeTroll_desc">Each other player takes his -1 Coin token. Now and at the start of your next turn: +1 Buy. While this is in play, cards cost 1 Coin less on your turns, but not less than 0 Coin.</string>
+	<string name="BridgeTroll_desc">Each other player takes his -1 Coin token. While this is in play, cards cost 1 Coin less on your turns, but not less than 0 Coin.</string>
 	<string name="DistantLands_name">DistantLands</string>
 	<string name="DistantLands_desc">Put this on your Tavern mat. Worth 4 VP if on your Tavern mat at the end of the game (otherwise worth 0 VP).</string>
 	<string name="Giant_name">Giant</string>
 	<string name="Giant_desc">Turn your Journey token over (it starts face up). If it\'s face down, +1 Coin. If it\'s face up, +5 Coin, and each other player reveals the top card of his deck, trashes it if it costs from 3 Coin to 6 Coin, and otherwise discards it and gains a Curse.</string>
 	<string name="HauntedWoods_name">Haunted Woods</string>
-	<string name="HauntedWoods_desc">Until your next turn, when any other player buys a card, he puts his hand on top of his deck in any order. At the start of your next turn: +3 Cards</string>
+	<string name="HauntedWoods_desc">Until your next turn, when any other player buys a card, he puts his hand on top of his deck in any order.</string>
 	<string name="LostCity_name">Lost City</string>
 	<string name="LostCity_desc">When you gain this, each other player draws a card.</string>
 	<string name="Relic_name">Relic</string>
@@ -530,7 +530,7 @@
 	<string name="Storyteller_name">Storyteller</string>
 	<string name="Storyteller_desc">Play up to 3 Treasures from your hand. Pay all of your Coin; +1 Card per Coin paid.</string>
 	<string name="SwampHag_name">Swamp Hag</string>
-	<string name="SwampHag_desc">Until your next turn, when any other player buys a card, he gains a Curse. At the start of your next turn: +3 Coin</string>
+	<string name="SwampHag_desc">Until your next turn, when any other player buys a card, he gains a Curse.</string>
 	<string name="TreasureTrove_name">Treasure Trove</string>
 	<string name="TreasureTrove_desc">When you play this, gain a Gold and a Copper.</string>
 	<string name="WineMerchant_name">Wine Merchant</string>

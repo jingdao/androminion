@@ -741,6 +741,19 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		case RoyalCarriage:
 		case WineMerchant:
 			tavern(game,context,currentPlayer);
+			break;
+		case Raze:
+			raze(game,context,currentPlayer);
+			break;
+		case Amulet:
+			amulet(game,context,currentPlayer);
+			break;
+		case Dungeon:
+			dungeon(game,context,currentPlayer);
+			break;
+		case Gear:
+			gear(game,context,currentPlayer);
+			break;
         default:
             break;
         }
@@ -5766,6 +5779,114 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         	currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf((Card) this.controlCard));
             currentPlayer.tavern.add(this.controlCard);
             this.controlCard.stopImpersonatingCard();
+        }
+    }
+
+	public void raze(Game game, MoveContext context, Player currentPlayer) {
+		Card cardToTrash = null;
+        if(currentPlayer.getHand().size() > 0)
+            cardToTrash = currentPlayer.controlPlayer.raze_cardToTrash(context);
+
+		int cost = 0;
+		if (cardToTrash != null) {
+			for (int i=0;i<currentPlayer.hand.size();i++) {
+				Card playersCard = currentPlayer.hand.get(i);
+				if (playersCard.equals(cardToTrash)) {
+					cost = playersCard.getCost(context);
+					playersCard = currentPlayer.hand.remove(i);
+					currentPlayer.trash(playersCard,this.controlCard,context);
+					break;
+				}
+			}
+		} else {
+			if (!this.controlCard.movedToNextTurnPile) {
+				this.controlCard.movedToNextTurnPile = true;
+				cost = 2;
+				currentPlayer.trash(this.controlCard, null, context);
+				currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(this.controlCard));
+			}
+		}
+
+		if (cost == 0)
+			return;
+
+        ArrayList<Card> cards = new ArrayList<Card>();
+        for (int i = 0; i < cost; i++) {
+            Card card = game.draw(currentPlayer);
+            if (card == null) {
+                break;
+            }
+			cards.add(card);
+        }
+
+        if (cards.size() == 0) {
+            return;
+        }
+
+        Card toDraw = null;
+        if (cards.size() > 1) 
+            toDraw = currentPlayer.controlPlayer.raze_cardToDraw(context, cards.toArray(new Card[cards.size()]));
+        if (toDraw == null)
+            toDraw = cards.get(0);
+
+		currentPlayer.hand.add(toDraw);
+		cards.remove(toDraw);
+		for (Card card: cards)
+			currentPlayer.discard(card,this.controlCard,context);
+
+	}
+
+    public void amulet(Game game, MoveContext context, Player currentPlayer) {
+        Player.AmuletOption option = currentPlayer.controlPlayer.amulet_chooseOption(context);
+		if (option == Player.AmuletOption.AddGold) {
+			context.addGold += 1;
+		} else if (option == Player.AmuletOption.GainSilver) {
+			currentPlayer.gainNewCard(Cards.silver, this.controlCard, context);
+		} else if (option == Player.AmuletOption.TrashCard) {
+			Card cardToTrash = null;
+			if(currentPlayer.getHand().size() > 0) {
+				cardToTrash = currentPlayer.controlPlayer.amulet_cardToTrash(context);
+			}
+			if (cardToTrash != null) {
+				for (int i=0;i<currentPlayer.hand.size();i++) {
+					Card playersCard = currentPlayer.hand.get(i);
+					if (playersCard.equals(cardToTrash)) {
+						playersCard = currentPlayer.hand.remove(i);
+						currentPlayer.trash(playersCard,this.controlCard,context);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	public void dungeon(Game game, MoveContext context, Player currentPlayer) {
+        for (int i = 0; i < 2; i++) {
+            Card card = game.draw(currentPlayer);
+            if (card == null) {
+                break;
+            }
+			currentPlayer.hand.add(card);
+        }
+
+        Card[] cards;
+        if (currentPlayer.hand.size() > 2) {
+            cards = currentPlayer.controlPlayer.dungeon_cardsToDiscard(context);
+        } else {
+            cards = currentPlayer.getHand().toArray();
+        }
+        for (int i = 0; i < cards.length; i++) {
+            currentPlayer.hand.remove(cards[i]);
+            currentPlayer.reveal(cards[i], this.controlCard, context);
+            currentPlayer.discard(cards[i], this.controlCard, null);
+        }
+    }
+
+    public void gear(Game game,MoveContext context, Player currentPlayer) {
+        Card[] cards = currentPlayer.controlPlayer.gear_cardsToSetAside(context);
+		for (Card card: cards) {
+            currentPlayer.hand.remove(card);
+            currentPlayer.gear.add(card);
         }
     }
 

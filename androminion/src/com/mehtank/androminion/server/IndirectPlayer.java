@@ -2642,4 +2642,53 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
             return null;
         }
     }
+
+    public Card raze_cardToTrash(MoveContext context) 
+    {
+        SelectCardOptions sco = new SelectCardOptions().setPickType(PickType.TRASH).setPassable(getString(R.string.none));
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.raze), sco);
+    }
+    
+    public Card raze_cardToDraw(MoveContext context, Card[] cardList) 
+    {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cardList)
+            options.add(Strings.getCardName(c));
+        String o = selectString(context, R.string.raze_query, Cards.raze, options.toArray(new String[0]));
+        return (Card) localNameToCard(o, cardList);
+    }
+    
+	public Card amulet_cardToTrash(MoveContext context)
+	{
+        if(context.isQuickPlay() && shouldAutoPlay_trader_cardToTrash(context)) {
+            return super.amulet_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.amulet), sco);
+	}
+
+    public AmuletOption amulet_chooseOption(MoveContext context) {
+        LinkedHashMap<String, AmuletOption> h = new LinkedHashMap<String, AmuletOption>();
+        h.put(getString(R.string.amulet_option_one), AmuletOption.AddGold);
+        h.put(getString(R.string.amulet_option_two), AmuletOption.TrashCard);
+        h.put(getString(R.string.amulet_option_three), AmuletOption.GainSilver);
+        return h.get(selectString(context, Cards.amulet, h.keySet().toArray(new String[0])));
+    }
+
+    public Card[] dungeon_cardsToDiscard(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_warehouse_cardsToDiscard(context)) {
+            return super.dungeon_cardsToDiscard(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setCount(2).exactCount().setPickType(PickType.DISCARD);
+        return getFromHand(context, getActionString(ActionType.DISCARD, Cards.dungeon), sco);
+    }
+
+    public Card[] gear_cardsToSetAside(MoveContext context) {
+        if(context.isQuickPlay()) {
+            return super.gear_cardsToSetAside(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setCount(2).exactCount().setPickType(PickType.SELECT);
+        return getFromHand(context, getCardName(Cards.gear), sco);
+    }
+
 }

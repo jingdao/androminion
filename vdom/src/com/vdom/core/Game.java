@@ -731,6 +731,9 @@ public class Game {
             drawToHand(player, horseTrader);
         }
 
+		while (!player.gear.isEmpty()) {
+			player.hand.add(player.gear.remove(0));
+		}
     }
 
     private static void printStats(HashMap<String, Double> wins, int gameCount, String gameType) {
