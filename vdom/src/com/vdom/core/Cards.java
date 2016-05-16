@@ -58,6 +58,7 @@ public class Cards {
 		// Adventures
 		CoinOfTheRealm, Page, Peasant, Ratcatcher, Raze, Amulet, CaravanGuard, Dungeon, Gear, Guide, Duplicate, Magpie, Messenger, Miser, Port, Ranger, Transmogrify,
 		Artificer, BridgeTroll, DistantLands, Giant, HauntedWoods, LostCity, Relic, RoyalCarriage, Storyteller, SwampHag, TreasureTrove, WineMerchant, Hireling, 
+		Soldier, TreasureHunter, Fugitive, Warrior, Disciple, Hero, Teacher, Champion,
         // Promo Cards
         Envoy, Governor, WalledVillage,
         // Promo Cards (not yet implemented)
@@ -361,6 +362,15 @@ public class Cards {
 	public static final Card wineMerchant;
 	public static final Card hireling;
 
+	public static final Card soldier;
+	public static final Card treasureHunter;
+	public static final Card fugitive;
+	public static final Card warrior;
+	public static final Card disciple;
+	public static final Card hero;
+	public static final Card teacher;
+	public static final Card champion;
+
 
     // Promo Cards (Incomplete)
     // TODO:Implement Rest of promo cards
@@ -611,8 +621,8 @@ public class Cards {
         
 		//Adventures	
 		actionCardsAdventures.add(coinOfTheRealm = new TreasureCardImpl.Builder(Cards.Type.CoinOfTheRealm,2,1).isReserve().description("When you play this, put it on your Tavern Mat. Directly after resolving an Action, you may call this, for +2 Actions.").expansion("Adventures").build());
-		actionCardsAdventures.add(page = new ActionCardImpl.Builder(Cards.Type.Page,2).addActions(1).addCards(1).description("When you discard this from play, you may exchange it for a Treasure Hunter.").expansion("Adventures").build());
-		actionCardsAdventures.add(peasant = new ActionCardImpl.Builder(Cards.Type.Peasant,2).addBuys(1).addGold(1).description("When you discard this from play, you may exchange it for a Soldier.").expansion("Adventures").build());
+		actionCardsAdventures.add(page = new ActionCardImpl.Builder(Cards.Type.Page,2).isTraveller().addActions(1).addCards(1).description("When you discard this from play, you may exchange it for a Treasure Hunter.").expansion("Adventures").build());
+		actionCardsAdventures.add(peasant = new ActionCardImpl.Builder(Cards.Type.Peasant,2).isTraveller().addBuys(1).addGold(1).description("When you discard this from play, you may exchange it for a Soldier.").expansion("Adventures").build());
 		actionCardsAdventures.add(ratcatcher = new ActionCardImpl.Builder(Cards.Type.Ratcatcher,2).addActions(1).addCards(1).isReserve().description("Put this on your Tavern mat. At the start of your turn, you may call this to trash a card from your hand.").expansion("Adventures").build());
 		actionCardsAdventures.add(raze = new ActionCardImpl.Builder(Cards.Type.Raze,2).addActions(1).description("Trash this or a card from your hand. Look at a number of cards from the top of your deck equal to the cost in Coin of the trashed card. Put one into your hand and discard the rest.").expansion("Adventures").build());
 		actionCardsAdventures.add(amulet = new ActionDurationCardImpl.Builder(Cards.Type.Amulet,3).description("Now and at the start of your next turn, choose one: +1 Coin; or trash a card from your hand; or gain a Silver.").expansion("Adventures").build());
@@ -640,6 +650,15 @@ public class Cards {
 		actionCardsAdventures.add(treasureTrove = new TreasureCardImpl.Builder(Cards.Type.TreasureTrove,5,2).description("When you play this, gain a Gold and a Copper.").expansion("Adventures").build());
 		actionCardsAdventures.add(wineMerchant = new ActionCardImpl.Builder(Cards.Type.WineMerchant,5).addBuys(1).addGold(4).isReserve().description("Put this on your Tavern mat. At the end of your Buy phase, if you have at least 2 Coin unspent, you may discard this from your Tavern mat.").expansion("Adventures").build());
 		actionCardsAdventures.add(hireling = new ActionDurationCardImpl.Builder(Cards.Type.Hireling,6).description("At the start of each of your turns for the rest of the game: +1 Card (This stays in play)").expansion("Adventures").build());
+
+		nonSupplyCards.add(soldier = new ActionCardImpl.Builder(Cards.Type.Soldier,3).isTraveller().addGold(2).description("+1 Coin per other Attack you have in play. Each other player with 4 or more cards in hand discards a card. When you discard this from play, you may exchange it for a Fugitive.").expansion("Adventures").build());
+		nonSupplyCards.add(treasureHunter = new ActionCardImpl.Builder(Cards.Type.TreasureHunter,3).isTraveller().addActions(1).addGold(1).description("Gain a silver card per card the player to your right gained in his last turn. When you discard this from play, you may exchange it for a Warrior.").expansion("Adventures").build());
+		nonSupplyCards.add(fugitive = new ActionCardImpl.Builder(Cards.Type.Fugitive,4).isTraveller().addCards(2).addActions(1).description("Discard a card. When you discard this from play, you may exchange it for a Disciple.").expansion("Adventures").build());
+		nonSupplyCards.add(warrior = new ActionCardImpl.Builder(Cards.Type.Warrior,4).isTraveller().addCards(2).description("For each Traveller you have in play (including this), each other player discards the top card of his deck and trashes it if it costs 3 Coin or 4 Coin. When you discard this from play, you may exchange it for a Hero.").expansion("Adventures").build());
+		nonSupplyCards.add(disciple = new ActionCardImpl.Builder(Cards.Type.Disciple,5).isTraveller().description("You may play an Action card from your hand twice. Gain a copy of it. When you discard this from play, you may exchange it for a Teacher.").expansion("Adventures").build());
+		nonSupplyCards.add(hero = new ActionCardImpl.Builder(Cards.Type.Hero,5).isTraveller().addGold(2).description("Gain a Treasure. When you discard this from play, you may exchange it for a Champion.").expansion("Adventures").build());
+		nonSupplyCards.add(teacher = new ActionCardImpl.Builder(Cards.Type.Teacher,6).isReserve().description("Put this on your tavern mat. At the start of your turn, you may call this, to move your +1 Card, +1 Action, +1 Buy, or +1 Coin token to an Action supply pile you have no tokens on.").expansion("Adventures").build());
+		nonSupplyCards.add(champion = new ActionDurationCardImpl.Builder(Cards.Type.Champion,6).addActions(1).description("For the rest of the game, when another player plays an Attack, it doesn\'t affect you, and when you play an Action, +1 Action.").expansion("Adventures").build());
 
         // Non-Supply Cards
         nonSupplyCards.add(madman    = new ActionCardImpl.Builder(Cards.Type.Madman, 0).addActions(2).description("Return this to the Madman pile. If you do, +1 Card per card in your hand. (This is not in the supply)").expansion("DarkAges").build());

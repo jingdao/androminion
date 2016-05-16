@@ -38,6 +38,7 @@ public class MyCard implements Serializable {
 	public boolean isRuins    = false;
 	public boolean isLooter   = false;
 	public boolean isReserve  = false;
+	public boolean isTraveller = false;
 	public boolean isKnight   = false;
 	public boolean isOverpay  = false;
 	

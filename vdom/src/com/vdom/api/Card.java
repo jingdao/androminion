@@ -37,6 +37,8 @@ public interface Card {
     public boolean isOverpay();
 
 	public boolean isReserve();
+
+	public boolean isTraveller();
     
     public Integer getId();
     

@@ -169,6 +169,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     	card.isLooter = c.isLooter();
     	card.isOverpay = c.isOverpay();
 		card.isReserve = c.isReserve();
+		card.isTraveller = c.isTraveller();
     	if (c.equals(Cards.virtualRuins))
     		card.isRuins = true;
     	else
@@ -189,7 +190,15 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 		
 		if (c.equals(Cards.spoils) ||
 			c.equals(Cards.mercenary) ||
-			c.equals(Cards.madman))
+			c.equals(Cards.madman) ||
+			c.equals(Cards.soldier) ||
+			c.equals(Cards.treasureHunter) ||
+			c.equals(Cards.fugitive) ||
+			c.equals(Cards.warrior) ||
+			c.equals(Cards.disciple) ||
+			c.equals(Cards.hero) ||
+			c.equals(Cards.teacher) ||
+			c.equals(Cards.champion))
         {
             card.pile = MyCard.NON_SUPPLY_PILE;
         }

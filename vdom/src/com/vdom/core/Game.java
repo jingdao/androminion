@@ -1875,6 +1875,20 @@ public class Game {
 			addPile(Cards.madman, 10, false);
 		}
 
+        if (piles.containsKey(Cards.page.getName())) {
+            addPile(Cards.treasureHunter, 5, false);
+            addPile(Cards.warrior, 5, false);
+            addPile(Cards.hero, 5, false);
+            addPile(Cards.champion, 5, false);
+        }
+
+        if (piles.containsKey(Cards.peasant.getName())) {
+            addPile(Cards.soldier, 5, false);
+            addPile(Cards.fugitive, 5, false);
+            addPile(Cards.disciple, 5, false);
+            addPile(Cards.teacher, 5, false);
+        }
+
 		// If Baker is in play, each player starts with one coin token
 		if (piles.containsKey(Cards.baker.getName()))
 		{
@@ -2427,7 +2441,7 @@ public class Game {
 
     protected AbstractCardPile addPile(Card card) {
     	// the Rats hack is dirty and should be cleaned up, but it works
-        return addPile(card, ((card instanceof VictoryCard) ? victoryCardPileSize : (card.equals(Cards.rats) ? 20 : kingdomCardPileSize)));
+        return addPile(card, ((card instanceof VictoryCard) ? victoryCardPileSize : (card.equals(Cards.rats) ? 20 : (card.equals(Cards.port) ? 12 : kingdomCardPileSize))));
     }
 
     protected AbstractCardPile addPile(Card card, int count) {

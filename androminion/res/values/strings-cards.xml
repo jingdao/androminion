@@ -538,6 +538,23 @@
 	<string name="Hireling_name">Hireling</string>
 	<string name="Hireling_desc">At the start of each of your turns for the rest of the game: +1 Card (This stays in play)</string>
 
+	<string name="Soldier_name">Soldier</string>
+	<string name="Soldier_desc">+1 Coin per other Attack you have in play. Each other player with 4 or more cards in hand discards a card. When you discard this from play, you may exchange it for a Fugitive.</string>
+	<string name="TreasureHunter_name">Treasure Hunter</string>
+	<string name="TreasureHunter_desc">Gain a silver card per card the player to your right gained in his last turn. When you discard this from play, you may exchange it for a Warrior.</string>
+	<string name="Fugitive_name">Fugitive</string>
+	<string name="Fugitive_desc">Discard a card. When you discard this from play, you may exchange it for a Disciple.</string>
+	<string name="Warrior_name">Warrior</string>
+	<string name="Warrior_desc">For each Traveller you have in play (including this), each other player discards the top card of his deck and trashes it if it costs 3 Coin or 4 Coin. When you discard this from play, you may exchange it for a Hero.</string>
+	<string name="Disciple_name">Disciple</string>
+	<string name="Disciple_desc">You may play an Action card from your hand twice. Gain a copy of it. When you discard this from play, you may exchange it for a Teacher.</string>
+	<string name="Hero_name">Hero</string>
+	<string name="Hero_desc">Gain a Treasure. When you discard this from play, you may exchange it for a Champion.</string>
+	<string name="Teacher_name">Teacher</string>
+	<string name="Teacher_desc">Put this on your tavern mat. At the start of your turn, you may call this, to move your +1 Card, +1 Action, +1 Buy, or +1 Coin token to an Action supply pile you have no tokens on.</string>
+	<string name="Champion_name">Champion</string>
+	<string name="Champion_desc">For the rest of the game, when another player plays an Attack, it doesn\'t affect you, and when you play an Action, +1 Action.</string>
+
     <string name="Envoy_name">Envoy</string>
     <string name="Envoy_desc">Reveal the top 5 cards of your deck. The player to your left chooses one for you to discard. Draw the rest.</string>
     <string name="Governor_name">Governor</string>

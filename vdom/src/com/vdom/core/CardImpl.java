@@ -21,6 +21,7 @@ public class CardImpl implements Card {
     boolean isLooter  = false;
     boolean isOverpay = false;  // can this card be overpaid for?
 	boolean isReserve = false;
+	boolean isTraveller = false;
 
     static int maxNameLen;	// across all cards
 
@@ -55,6 +56,7 @@ public class CardImpl implements Card {
         isLooter    = builder.isLooter;
         isOverpay   = builder.isOverpay;
 		isReserve   = builder.isReserve;
+		isTraveller = builder.isTraveller;
     }
 
     public static class Builder {
@@ -74,6 +76,7 @@ public class CardImpl implements Card {
 	    protected boolean isLooter  = false;
 	    protected boolean isOverpay = false;
 		protected boolean isReserve = false;
+		protected boolean isTraveller = false;
 
 
         public Builder(Cards.Type type, int cost) {
@@ -131,6 +134,12 @@ public class CardImpl implements Card {
 		public Builder isReserve()
 		{
 			isReserve = true;
+			return this;
+		}
+
+		public Builder isTraveller()
+		{
+			isTraveller = true;
 			return this;
 		}
 
@@ -292,6 +301,10 @@ public class CardImpl implements Card {
     public boolean isReserve() {
         return isReserve;
     }
+
+	public boolean isTraveller() {
+		return isTraveller;
+	}
     
     @Override
     public void isBought(MoveContext context) {

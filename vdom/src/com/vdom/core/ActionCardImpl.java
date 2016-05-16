@@ -138,6 +138,11 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			return this;
 		}
 
+		public Builder isTraveller() {
+			this.isTraveller = true;
+			return this;
+		}
+
     }
 
     public int getAddActions() {
