@@ -193,6 +193,8 @@ public class CardImpl implements Card {
         c.isKnight = isKnight;
         c.isLooter = isLooter;
         c.isOverpay = isOverpay;
+		c.isReserve = isReserve;
+		c.isTraveller = isTraveller;
         c.vp = vp;
     }
 

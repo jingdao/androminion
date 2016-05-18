@@ -259,7 +259,12 @@ public class Util {
             GameEvent event = new GameEvent(GameEvent.Type.PlayerDefended, context);
             event.card = Cards.lighthouse;
             game.broadcastEvent(event);
-        }
+        } else if (game.hasChampion(player)) {
+            defended = true;         
+            GameEvent event = new GameEvent(GameEvent.Type.PlayerDefended, context);
+            event.card = Cards.champion;
+            game.broadcastEvent(event);
+		}
         
         Card reactionCard = null;
         while ((reactionCard = player.controlPlayer.getAttackReaction(context, responsible, defended, reactionCard)) != null) {

@@ -237,7 +237,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         // playing an action
         if (this == actualCard) 
         	context.actionsPlayedSoFar++;
-        if (context.freeActionInEffect == 0) {
+        if (context.freeActionInEffect == 0 && !game.hasChampion(context.getPlayer())) {
             context.actions--;
         }
 
@@ -745,6 +745,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		case DistantLands:
 		case RoyalCarriage:
 		case WineMerchant:
+		case Teacher:
 			tavern(game,context,currentPlayer);
 			break;
 		case Raze:
@@ -758,6 +759,24 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			break;
 		case Gear:
 			gear(game,context,currentPlayer);
+			break;
+		case Fugitive:
+			fugitive(game,context,currentPlayer);
+			break;
+		case Soldier:
+			soldier(game,context,currentPlayer);
+			break;
+		case TreasureHunter:
+			treasureHunter(game,context,currentPlayer);
+			break;
+		case Warrior:
+			warrior(game,context,currentPlayer);
+			break;
+		case Disciple:
+			throneRoomKingsCourt(game,context,currentPlayer);
+			break;
+		case Hero:
+			hero(game,context,currentPlayer);
 			break;
         default:
             break;
@@ -1568,6 +1587,9 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         	case Procession:
         		cardToPlay = (ActionCardImpl) currentPlayer.controlPlayer.procession_cardToPlay(context);
         		break;
+			case Disciple:
+        		cardToPlay = (ActionCardImpl) currentPlayer.controlPlayer.disciple_cardToPlay(context);
+        		break;
 			default:
 				break;
         	}
@@ -1621,7 +1643,10 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
                 	if ((cardToGain != null) && (cardToPlay.getCost(context) + 1) == cardToGain.getCost(context)) {
                 		currentPlayer.gainNewCard(cardToGain, this.controlCard, context);
                 	}
-                }
+                } else if (this.type == Cards.Type.Disciple) {
+					if (game.getPile(cardToPlay).isSupply())
+						currentPlayer.gainNewCard(cardToPlay, this.controlCard, context);
+				}
             }
         }
     }
@@ -5894,5 +5919,83 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
             currentPlayer.gear.add(card);
         }
     }
+
+	public void fugitive(Game game, MoveContext context, Player currentPlayer) {
+        Card toDiscard = currentPlayer.controlPlayer.fugitive_cardToDiscard(context);
+		currentPlayer.hand.remove(toDiscard);
+		currentPlayer.discard(toDiscard, this.controlCard, context);
+	}
+
+	public void soldier(Game game, MoveContext context, Player currentPlayer) {
+		int attacksPlayed=0;
+		for (int i=0;i<currentPlayer.playedCards.size();i++) {
+			Card c = currentPlayer.playedCards.get(i);
+			if (c instanceof ActionCardImpl) {
+				ActionCardImpl a = (ActionCardImpl) c;
+				if (a!=this && a.isAttack())
+					attacksPlayed++;
+			}
+		}
+        context.addGold += attacksPlayed;
+
+        for (Player targetPlayer : game.getPlayersInTurnOrder()) {
+            if (targetPlayer != currentPlayer && !Util.isDefendedFromAttack(game, targetPlayer, this.controlCard)) {
+                targetPlayer.attacked(this.controlCard, context);
+				Card cardToDiscard = (targetPlayer).controlPlayer.soldier_attack_cardToDiscard(context);
+                MoveContext playerContext = new MoveContext(game, targetPlayer);
+				targetPlayer.hand.remove(cardToDiscard);
+				targetPlayer.discard(cardToDiscard, this.controlCard, playerContext);
+            }
+        }
+	}
+
+	public void treasureHunter(Game game, MoveContext context, Player currentPlayer) {
+        int numGained = context.getCardsObtainedByLastPlayer().size();
+		for(int i=0; i < numGained; i++) {
+			if(!currentPlayer.gainNewCard(Cards.silver, this.controlCard, context)) {
+				break;
+			}
+		}
+	}
+
+	public void warrior(Game game,MoveContext context,Player currentPlayer) {
+		int numTraveller=0;
+		for (int i=0;i<currentPlayer.playedCards.size();i++) {
+			Card c = currentPlayer.playedCards.get(i);
+			if (c.isTraveller())
+				numTraveller++;	
+		}
+		for (int i=0;i<numTraveller;i++) {
+			for (Player player : game.getPlayersInTurnOrder()) {
+				if (player != currentPlayer && !Util.isDefendedFromAttack(game, player, this.controlCard)) {
+					player.attacked(this.controlCard, context);
+					MoveContext playerContext = new MoveContext(game, player);
+					playerContext.cardCostModifier = context.cardCostModifier;
+					Card draw;
+					if ((draw = game.draw(player)) != null) {
+						if (draw.getCost(context) == 3 || draw.getCost(context) == 4) {
+							player.trash(draw, this.controlCard, playerContext);
+						} else {
+							player.reveal(draw, this.controlCard, playerContext);
+							player.discard(draw, this.controlCard, null);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void hero(Game game,MoveContext context,Player currentPlayer) {
+		boolean available = false;
+		for (Card c : context.game.getCardsInGame()) {
+			if (c instanceof TreasureCard && context.game.getPile(c).getCount() > 0) {
+				available = true;
+			}
+		}
+		if (available) {
+			Card s = context.player.controlPlayer.hero_cardToObtain(context);
+			context.player.controlPlayer.gainNewCard(s, this.controlCard, context);
+		}
+	}
 
 }

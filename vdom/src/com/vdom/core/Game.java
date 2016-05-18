@@ -710,8 +710,13 @@ public class Game {
             }
         }
 
+		ArrayList<Card> permanentCards = new ArrayList<Card>();
         while (!player.nextTurnCards.isEmpty()) {
         	Card card = player.nextTurnCards.remove(0);
+			if (card.getType() == Cards.Type.Hireling || card.getType() == Cards.Type.Champion) {
+				permanentCards.add(card);
+				continue;
+			}
         	CardImpl behaveAsCard = (CardImpl) card.behaveAsCard();
         	behaveAsCard.cloneCount = 1;
             if (!behaveAsCard.trashAfterPlay) {
@@ -720,6 +725,8 @@ public class Game {
             	behaveAsCard.trashAfterPlay = false;
             }
         }
+		for (Card card:permanentCards)
+			player.nextTurnCards.add(card);
 
         while (!player.haven.isEmpty()) {
             player.hand.add(player.haven.remove(0));
@@ -2261,6 +2268,15 @@ public class Game {
     boolean hasLighthouse(Player player) {
         for (Card card : player.nextTurnCards) {
             if (card.behaveAsCard().equals(Cards.lighthouse) && !((CardImpl) card).trashAfterPlay)
+                return true;
+        }
+
+        return false;
+    }
+
+    boolean hasChampion(Player player) {
+        for (Card card : player.nextTurnCards) {
+            if (card.behaveAsCard().equals(Cards.champion) && !((CardImpl) card).trashAfterPlay)
                 return true;
         }
 

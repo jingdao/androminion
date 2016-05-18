@@ -2691,4 +2691,44 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return getFromHand(context, getCardName(Cards.gear), sco);
     }
 
+    public boolean shouldExchangeTraveller(MoveContext context,Card source, Card target)
+    {
+        String option1 = source.getName() + " " + getString(R.string.exchange_traveller) + " " + target.getName();
+        String option2 = getString(R.string.pass);
+
+        return selectBoolean(context, source.getName(), option1, option2);
+    }
+    
+	public Card fugitive_cardToDiscard(MoveContext context) {
+        if(context.isQuickPlay()) {
+            return super.fugitive_cardToDiscard(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPickType(PickType.DISCARD);
+        return getCardFromHand(context, getActionString(ActionType.DISCARD, Cards.fugitive), sco);
+	}
+
+    public Card soldier_attack_cardToDiscard(MoveContext context) {
+        if(context.isQuickPlay()) {
+            return super.soldier_attack_cardToDiscard(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPickType(PickType.DISCARD);
+        return getCardFromHand(context, getActionString(ActionType.DISCARD,Cards.soldier), sco);
+	}
+
+    public Card hero_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay()) {
+            return super.hero_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().isTreasure();
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.hero), sco);
+    }
+    
+    public ActionCard disciple_cardToPlay(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_kingsCourt_cardToPlay(context)) {
+            return super.kingsCourt_cardToPlay(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().isAction().setPassable(getString(R.string.none)).setPickType(PickType.PLAY);
+        return (ActionCard) getCardFromHand(context, getCardName(Cards.disciple), sco);
+    }
+
 }

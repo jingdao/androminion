@@ -2849,4 +2849,38 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 		return cards.toArray(new Card[0]);
     }
 
+	public boolean shouldExchangeTraveller(MoveContext context, Card source, Card target) {
+		return true;
+	}
+
+	public Card fugitive_cardToDiscard(MoveContext context) {
+		for (Card card : context.getPlayer().getHand()) {
+			if (shouldDiscard(card))
+				return card;
+		}
+		return context.getPlayer().getHand().get(0);
+	}
+
+    public Card soldier_attack_cardToDiscard(MoveContext context) {
+        return lowestCard(context, context.attackedPlayer.getHand(), true);
+	}
+
+	public Card hero_cardToObtain(MoveContext context) {
+		ArrayList<Card> options = new ArrayList<Card>();
+		for (AbstractCardPile pile : game.piles.values()) {
+			if (pile.isSupply() && (pile.card() instanceof TreasureCard) && (pile.getCount() > 0)) {
+				options.add(pile.card());
+			}
+		}
+		if (options.size() > 0) {
+			return Util.randomCard(options);
+		} else {
+			return null;
+		}
+	}
+
+	public ActionCard disciple_cardToPlay(MoveContext context) {
+        return controlPlayer.kingsCourt_cardToPlay(context);
+	}
+
 }

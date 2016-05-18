@@ -750,8 +750,24 @@ public abstract class Player {
     	    {
                 discard.add(card);
     	    }
-    	}
-        else
+    	} else if (card.behaveAsCard().isTraveller() && !commandedDiscard && context!=null) {
+			Card source = card.behaveAsCard();
+			Card target = null;
+			if (source.equals(Cards.page)) target = Cards.treasureHunter;
+			else if (source.equals(Cards.peasant)) target = Cards.soldier;
+			else if (source.equals(Cards.treasureHunter)) target = Cards.warrior;
+			else if (source.equals(Cards.soldier)) target = Cards.fugitive;
+			else if (source.equals(Cards.warrior)) target = Cards.hero;
+			else if (source.equals(Cards.fugitive)) target = Cards.disciple;
+			else if (source.equals(Cards.hero)) target = Cards.champion;
+			else if (source.equals(Cards.disciple)) target = Cards.teacher;
+			AbstractCardPile sourcePile = game.getPile(card);
+			AbstractCardPile targetPile = game.getPile(target);
+			if (target != null && !targetPile.isEmpty() && controlPlayer.shouldExchangeTraveller(context,source,target)) {
+				sourcePile.addCard(card);
+				controlPlayer.gainNewCard(target,card,context);
+			} else discard.add(card);
+		} else
 	    {
 	    	discard.add(card);
 	    }
@@ -1463,6 +1479,11 @@ public abstract class Player {
     public abstract AmuletOption amulet_chooseOption(MoveContext context);
     public abstract Card[] dungeon_cardsToDiscard(MoveContext context);
     public abstract Card[] gear_cardsToSetAside(MoveContext context);
+	public abstract boolean shouldExchangeTraveller(MoveContext context, Card source, Card target);
+	public abstract Card fugitive_cardToDiscard(MoveContext context);
+    public abstract Card soldier_attack_cardToDiscard(MoveContext context);
+	public abstract Card hero_cardToObtain(MoveContext context);
+    public abstract ActionCard disciple_cardToPlay(MoveContext context);
 
 
 	// ////////////////////////////////////////////

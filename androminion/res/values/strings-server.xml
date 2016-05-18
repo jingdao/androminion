@@ -332,6 +332,7 @@
   <string name="amulet_option_one">+(1) Coin</string>
   <string name="amulet_option_two">Trash a card from your hand</string>
   <string name="amulet_option_three">Gain a silver</string>
+  <string name="exchange_traveller">exchange for</string>
   
   
 </resources>
