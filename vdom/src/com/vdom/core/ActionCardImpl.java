@@ -778,6 +778,15 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		case Hero:
 			hero(game,context,currentPlayer);
 			break;
+		case Magpie:
+			magpie(game,context,currentPlayer);
+			break;
+		case Messenger:
+			messenger(game,context,currentPlayer);
+			break;
+		case Miser:
+			miser(game,context,currentPlayer);
+			break;
         default:
             break;
         }
@@ -3952,6 +3961,12 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         case Herald:
             heraldOverpay(context, context.getPlayer());
             break;
+		case Messenger:
+			messenger_onBuy(context);
+			break;
+		case Port:
+			port(context);
+			break;
         default:
             break;
         }
@@ -5997,5 +6012,76 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			context.player.controlPlayer.gainNewCard(s, this.controlCard, context);
 		}
 	}
+
+	public void magpie(Game game, MoveContext context, Player currentPlayer) {
+		Card card = game.draw(currentPlayer);
+		currentPlayer.reveal(card, this.controlCard, context);
+		currentPlayer.putOnTopOfDeck(card);
+		if (card != null) {
+			if (card instanceof TreasureCard) {
+				game.drawToHand(currentPlayer,this.controlCard);
+			}
+			if (card instanceof ActionCard || card instanceof VictoryCard) {
+				context.player.controlPlayer.gainNewCard(this,this.controlCard,context);	
+			}
+		}
+	}
+
+    public void messenger(Game game, MoveContext context, Player currentPlayer) {
+        boolean discard = currentPlayer.controlPlayer.messenger_shouldDiscardDeck(context);
+        if (discard) {
+            while (currentPlayer.getDeckSize() > 0) {
+                currentPlayer.discard(game.draw(currentPlayer), this.controlCard, null, false);
+            }
+        }
+    }
+
+	public void messenger_onBuy(MoveContext context) {
+		Player currentPlayer = context.player.controlPlayer;
+		if (context.game.cardsObtainedLastTurn[context.game.playersTurn].size()==1) {
+			boolean validCard = false;
+			for(Card c : context.getCardsInGame()) {
+				if(c.getCost(context) <= 4 && !c.costPotion() && context.getCardsLeftInPile(c) > 0) {
+					validCard = true;
+					break;
+				}
+			}
+			if(validCard) {
+				Card card = currentPlayer.messenger_cardToObtain((MoveContext) context);
+				if (card != null) {
+					currentPlayer.gainNewCard(card, this.controlCard, (MoveContext) context);
+					for (Player player : context.game.getPlayersInTurnOrder()) {
+						if (player != currentPlayer) {
+							player.gainNewCard(card, this.controlCard, new MoveContext(context.game, player));
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void port(MoveContext context) {
+		context.player.controlPlayer.gainNewCard(this,this.controlCard,context);
+	}
+
+    public void miser(Game game, MoveContext context, Player currentPlayer) {
+        if (currentPlayer.controlPlayer.miser_takeCoin(context)) {
+			int countCopper = 0;
+			for (int i=0;i<currentPlayer.tavern.size();i++) {
+				if (currentPlayer.tavern.get(i).equals(Cards.copper))
+					countCopper++;
+			}
+			context.addGold += countCopper;
+        } else {
+			for (int i = 0; i < currentPlayer.hand.size(); i++) {
+				Card card = currentPlayer.hand.get(i);
+				if (card.equals(Cards.copper)) {
+					Card thisCard = currentPlayer.hand.remove(i);
+					currentPlayer.tavern.add(thisCard);
+					break;
+				}
+			}
+        }
+    }
 
 }

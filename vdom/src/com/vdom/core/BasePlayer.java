@@ -2883,4 +2883,16 @@ public abstract class BasePlayer extends Player implements GameEventListener {
         return controlPlayer.kingsCourt_cardToPlay(context);
 	}
 
+    public boolean messenger_shouldDiscardDeck(MoveContext context) {
+        return true;
+    }
+
+    public Card messenger_cardToObtain(MoveContext context) {
+        return bestCardInPlay(context, 4);
+    }
+
+	public boolean miser_takeCoin(MoveContext context) {
+        return rand.nextBoolean();
+	}
+
 }

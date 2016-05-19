@@ -1484,6 +1484,9 @@ public abstract class Player {
     public abstract Card soldier_attack_cardToDiscard(MoveContext context);
 	public abstract Card hero_cardToObtain(MoveContext context);
     public abstract ActionCard disciple_cardToPlay(MoveContext context);
+    public abstract boolean messenger_shouldDiscardDeck(MoveContext context);
+	public abstract Card messenger_cardToObtain(MoveContext context);
+	public abstract boolean miser_takeCoin(MoveContext context);
 
 
 	// ////////////////////////////////////////////

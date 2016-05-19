@@ -333,6 +333,8 @@
   <string name="amulet_option_two">Trash a card from your hand</string>
   <string name="amulet_option_three">Gain a silver</string>
   <string name="exchange_traveller">exchange for</string>
+  <string name="miser_option_one">Put Copper on Tavern mat</string>
+  <string name="miser_option_two">+1 Coin per Copper on Tavern mat</string>
   
   
 </resources>

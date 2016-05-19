@@ -2731,4 +2731,26 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return (ActionCard) getCardFromHand(context, getCardName(Cards.disciple), sco);
     }
 
+    public boolean messenger_shouldDiscardDeck(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_chancellor_shouldDiscardDeck(context)) {
+            return super.messenger_shouldDiscardDeck(context);
+        }
+        return selectBoolean(context, getCardName(Cards.messenger), getString(R.string.chancellor_query), getString(R.string.pass));
+    }
+
+    public Card messenger_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_workshop_cardToObtain(context)) {
+            return super.messenger_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().maxCost(4).potionCost(0);
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.messenger), sco);
+    }
+
+    public boolean miser_takeCoin(MoveContext context) {
+        if(context.isQuickPlay()) {
+            return super.miser_takeCoin(context);
+        }
+        return !selectBoolean(context, getCardName(Cards.miser), getString(R.string.miser_option_one), getString(R.string.miser_option_two));
+    }
+
 }

@@ -694,7 +694,9 @@ public class Game {
                         context.addGold += 0;
                         context.buys += 1;
                         AddCardsNextTurn = 5;
-                    }
+                    } else if (thisCard.getType() == Cards.Type.Hireling) {
+						AddCardsNextTurn = 1;
+					}
 
                     for (int i = 0; i < AddCardsNextTurn; i++) {
                         drawToHand(player, thisCard, true);
@@ -2201,7 +2203,13 @@ public class Game {
                     } else if (event.card.equals(Cards.deathCart)) {
                     	context.player.controlPlayer.gainNewCard(Cards.virtualRuins, event.card, context);
             			context.player.controlPlayer.gainNewCard(Cards.virtualRuins, event.card, context);
-                    }
+                    } else if (event.card.equals(Cards.lostCity)) {
+						for (Player targetPlayer: getPlayersInTurnOrder()) {
+							if (targetPlayer != player) {
+								drawToHand(targetPlayer, event.card);
+							}
+						}
+					}
                     // Achievement check...
                     if(event.getType() == GameEvent.Type.BuyingCard && !player.achievementSingleCardFailed) {
                         if (Cards.isKingdomCard(event.getCard())) {
