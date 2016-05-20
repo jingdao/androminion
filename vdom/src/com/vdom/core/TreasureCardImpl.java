@@ -136,6 +136,8 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 				player.playedCards.remove(player.playedCards.indexOf(this.getId()));
 				player.tavern.add(this);
 			}
+		} else if (equals(Cards.treasureTrove)) {
+			treasureTrove(context,game,player);
 		}
 
         return reevaluateTreasures;
@@ -293,4 +295,9 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
             }
         }
     }
+
+    public void treasureTrove(MoveContext context,Game game,  Player currentPlayer) {
+        currentPlayer.gainNewCard(Cards.gold, this.controlCard, context);
+        currentPlayer.gainNewCard(Cards.copper, this.controlCard, context);
+	}
 }

@@ -23,6 +23,7 @@ public abstract class Player {
 	public static final String RANDOM_AI = "Random AI";
 	public static final String DISTINCT_CARDS = "Distinct Cards";
 	public static final String VICTORY_TOKENS = "Victory Tokens";
+	public static final String DISTANT_LANDS_ON_TAVERN = "Distant Lands";
 
     // Only used by InteractivePlayer currently
     private String name;
@@ -516,6 +517,20 @@ public abstract class Player {
 
 		cardCounts.put(DISTINCT_CARDS, distinctCards.size());
 
+		int numDistantLands=0;
+		for (Card card : this.tavern) {
+			if (card.getType() == Cards.Type.DistantLands)
+				numDistantLands++;
+		}
+		cardCounts.put(DISTANT_LANDS_ON_TAVERN, numDistantLands);
+		for (Object obj : cardCounts.keySet()) {
+			if (obj instanceof Card) {
+				Card card = (Card) obj;
+				if (card.getType() == Cards.Type.DistantLands)
+					cardCounts.put(card,numDistantLands);
+			}
+		}
+
 		return cardCounts;
 	}
 
@@ -629,6 +644,8 @@ public abstract class Player {
 			totals.put(Cards.silkRoad, counts.get(Cards.silkRoad) * (this.getVictoryCardCount() / 4));
 		if(counts.containsKey(Cards.feodum))
 			totals.put(Cards.feodum, counts.get(Cards.feodum) * (Util.getCardCount(getAllCards(), Cards.silver)  / 3));
+		if (counts.containsKey(Cards.distantLands))
+			totals.put(Cards.distantLands, counts.get(DISTANT_LANDS_ON_TAVERN) * 4);
 
 		totals.put(Cards.victoryTokens, this.getVictoryTokens());
 
@@ -1487,6 +1504,8 @@ public abstract class Player {
     public abstract boolean messenger_shouldDiscardDeck(MoveContext context);
 	public abstract Card messenger_cardToObtain(MoveContext context);
 	public abstract boolean miser_takeCoin(MoveContext context);
+    public abstract Card[] artificer_cardsToDiscard(MoveContext context);
+	public abstract Card artificer_cardToObtain(MoveContext context,int maxCost);
 
 
 	// ////////////////////////////////////////////

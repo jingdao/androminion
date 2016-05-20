@@ -2895,4 +2895,18 @@ public abstract class BasePlayer extends Player implements GameEventListener {
         return rand.nextBoolean();
 	}
 
+    public Card[] artificer_cardsToDiscard(MoveContext context) {
+        ArrayList<Card> cards = new ArrayList<Card>();
+        for (Card card : context.getPlayer().getHand()) {
+            if (!(card instanceof ActionCard) && !(card instanceof TreasureCard) ) {
+                cards.add(card);
+            }
+        }
+        return cards.toArray(new Card[0]);
+    }
+
+	public Card artificer_cardToObtain(MoveContext context, int maxCost) {
+		return bestCardInPlay(context,maxCost,true);
+	}
+
 }

@@ -2753,4 +2753,20 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return !selectBoolean(context, getCardName(Cards.miser), getString(R.string.miser_option_one), getString(R.string.miser_option_two));
     }
 
+    public Card[] artificer_cardsToDiscard(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_cellar_cardsToDiscard(context)) {
+            return super.artificer_cardsToDiscard(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPassable(getString(R.string.none)).setPickType(PickType.DISCARD);
+        return getFromHand(context, getActionString(ActionType.DISCARD, Cards.artificer), sco);
+    }
+
+    public Card artificer_cardToObtain(MoveContext context, int maxCost) {
+        if(context.isQuickPlay()) {
+            return super.artificer_cardToObtain(context, maxCost);
+        }
+        SelectCardOptions sco = new SelectCardOptions().potionCost(0).exactCost(maxCost).setPassable(getString(R.string.none));
+        return getFromTable(context, getActionString(ActionType.GAIN,Cards.artificer), sco);
+    }
+
 }

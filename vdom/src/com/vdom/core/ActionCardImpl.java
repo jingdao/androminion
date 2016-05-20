@@ -20,6 +20,7 @@ import com.vdom.core.Player.JesterOption;
 import com.vdom.core.Player.SpiceMerchantOption;
 import com.vdom.core.Player.TournamentOption;
 import com.vdom.core.Player.TrustySteedOption;
+import android.util.Log;
 
 public class ActionCardImpl extends CardImpl implements ActionCard {
 	// template (immutable)
@@ -786,6 +787,9 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			break;
 		case Miser:
 			miser(game,context,currentPlayer);
+			break;
+		case Artificer:
+			artificer(game,context,currentPlayer);
 			break;
         default:
             break;
@@ -6081,6 +6085,27 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 					break;
 				}
 			}
+        }
+    }
+
+    public void artificer(Game game, MoveContext context, Player currentPlayer) {
+        Card[] cards = currentPlayer.controlPlayer.artificer_cardsToDiscard(context);
+		int numberOfCards = 0;
+        if (cards != null) {
+            for (Card card : cards) {
+                for (int i = 0; i < currentPlayer.hand.size(); i++) {
+                    Card playersCard = currentPlayer.hand.get(i);
+                    if (playersCard.equals(card)) {
+                        currentPlayer.discard(currentPlayer.hand.remove(i), this.controlCard, context);
+                        numberOfCards++;
+                        break;
+                    }
+                }
+            }
+		}
+        Card card = currentPlayer.controlPlayer.artificer_cardToObtain(context,numberOfCards);
+        if (card != null) {
+			currentPlayer.gainNewCard(card, this.controlCard, context);
         }
     }
 
