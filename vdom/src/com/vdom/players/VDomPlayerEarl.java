@@ -635,7 +635,7 @@ public class VDomPlayerEarl extends BasePlayer
      return wouldLose;
    }
  
-   public Card doBuy(MoveContext context) {
+   public Object doBuy(MoveContext context) {
      Card card = calculateBuy(context, context.getCoinAvailableForBuy());
  
      if (willWin(card))

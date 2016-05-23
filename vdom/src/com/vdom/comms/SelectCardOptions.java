@@ -10,6 +10,7 @@ import com.vdom.api.TreasureCard;
 import com.vdom.api.VictoryCard;
 import com.vdom.core.Cards;
 import com.vdom.core.MoveContext;
+import com.vdom.core.Event;
 
 /**
  * Gives information about cards that are selected by the player from the table (piles, hand, play)
@@ -192,6 +193,11 @@ public class SelectCardOptions implements Serializable {
 
 		return true;
 	}
+	
+	public boolean checkValid(Event e) {
+		return isBuyPhase && e.cost >= minCost && e.cost <= maxCost; 
+	}
+
 	public boolean isPassable() {
 		return (passString != null && !passString.trim().equals(""));
 	}

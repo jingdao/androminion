@@ -50,6 +50,7 @@ public class MyCard implements Serializable {
 	public static final int SHELTER_PILES = 6;
 	public static final int RUINS_PILES = 7;
 	public static final int KNIGHTS_PILES = 8;
+	public static final int EVENTS = 9;
 
 	public int pile;
 

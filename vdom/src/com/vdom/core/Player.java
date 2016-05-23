@@ -1086,7 +1086,7 @@ public abstract class Player {
 
     public abstract Card[] actionCardsToPlayInOrder(MoveContext context);
 
-    public abstract Card doBuy(MoveContext context);
+    public abstract Object doBuy(MoveContext context);
 
     public abstract Card[] topOfDeck_orderCards(MoveContext context, Card[] cards);
 
@@ -1506,6 +1506,7 @@ public abstract class Player {
 	public abstract boolean miser_takeCoin(MoveContext context);
     public abstract Card[] artificer_cardsToDiscard(MoveContext context);
 	public abstract Card artificer_cardToObtain(MoveContext context,int maxCost);
+	public abstract Card alms_cardToObtain(MoveContext context);
 
 
 	// ////////////////////////////////////////////

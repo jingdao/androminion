@@ -326,6 +326,11 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     		cardsInPlay.add(index, c);
     		index++;
     	}
+		for (com.vdom.core.Event e : context.game.getEventsInGame()) {
+			mc = new MyCard(index++,e.name,e.name,e.name);
+			mc.pile = MyCard.EVENTS;
+			myCardsInPlayList.add(mc);	
+		}
     	myCardsInPlay = myCardsInPlayList.toArray(new MyCard[0]);
     }
 
@@ -963,7 +968,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     }
     
 	@Override
-    protected Card[] pickCards(MoveContext context, String header, SelectCardOptions sco, int count, boolean exact) {
+    protected Object[] pickCards(MoveContext context, String header, SelectCardOptions sco, int count, boolean exact) {
         if (sco.allowedCards.size() == 0)
         	return null;
 
@@ -981,8 +986,13 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
         else if (p.i == 1 && p.o.is[0] == -1)
             // Hack to notify that "All" was selected
             return new Card[0];
-        else
-        	return intArrToCardArr(p.o.is);
+        else {
+			if (p.o.is.length==1 && p.o.is[0] >= cardsInPlay.size()) {
+				com.vdom.core.Event[] ev = {com.vdom.core.Event.eventsMap.get(myCardsInPlay[p.o.is[0]].name)};
+				return ev;
+			} else 
+	        	return intArrToCardArr(p.o.is);
+		}
     }
 	@Override
     public String selectString(MoveContext context, String header, String[] s) {

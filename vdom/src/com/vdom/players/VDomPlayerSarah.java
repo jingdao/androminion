@@ -470,7 +470,7 @@ public class VDomPlayerSarah extends BasePlayer {
     }
 
     @Override
-    public Card doBuy(MoveContext context) {
+    public Object doBuy(MoveContext context) {
         final int coinAvailableForBuy = context.getCoinAvailableForBuy();
 
         if (earlyCardBuyCount < earlyCardBuyMax) {

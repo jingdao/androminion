@@ -513,9 +513,9 @@
 	<string name="Transmogrify_desc">At the start of your turn, you may call this, to trash a card from your hand, gain a card costing up to 1 Coin more than it, and put that card into your hand.</string>
 	<string name="Artificer_name">Artificer</string>
 	<string name="Artificer_desc">Discard any number of cards. You may gain a card costing exactly 1 Coin per card discarded, putting it on top of your deck.</string>
-	<string name="BridgeTroll_name">BridgeTroll</string>
+	<string name="BridgeTroll_name">Bridge Troll</string>
 	<string name="BridgeTroll_desc">Each other player takes his -1 Coin token. While this is in play, cards cost 1 Coin less on your turns, but not less than 0 Coin.</string>
-	<string name="DistantLands_name">DistantLands</string>
+	<string name="DistantLands_name">Distant Lands</string>
 	<string name="DistantLands_desc">Put this on your Tavern mat. Worth 4 VP if on your Tavern mat at the end of the game (otherwise worth 0 VP).</string>
 	<string name="Giant_name">Giant</string>
 	<string name="Giant_desc">Turn your Journey token over (it starts face up). If it\'s face down, +1 Coin. If it\'s face up, +5 Coin, and each other player reveals the top card of his deck, trashes it if it costs from 3 Coin to 6 Coin, and otherwise discards it and gains a Curse.</string>

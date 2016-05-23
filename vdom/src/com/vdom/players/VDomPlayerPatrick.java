@@ -448,7 +448,7 @@ public class VDomPlayerPatrick extends BasePlayer {
 	}
 	
 	@Override
-	public Card doBuy(MoveContext context) {
+	public Object doBuy(MoveContext context) {
 		int gold = context.getCoinAvailableForBuy();
 		
 		return this.advisorGeneral(context, gold, false, false);

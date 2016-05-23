@@ -81,7 +81,7 @@ public abstract class BasePlayer extends Player implements GameEventListener {
     public abstract Card doAction(MoveContext context);
     
     @Override
-    public abstract Card doBuy(MoveContext context);
+    public abstract Object doBuy(MoveContext context);
     
 	@Override
 	public Card getAttackReaction(MoveContext context, Card responsible, boolean defended, Card lastCard) {
@@ -2908,5 +2908,9 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 	public Card artificer_cardToObtain(MoveContext context, int maxCost) {
 		return bestCardInPlay(context,maxCost,true);
 	}
+
+    public Card alms_cardToObtain(MoveContext context) {
+        return bestCardInPlay(context, 4);
+    }
 
 }

@@ -25,6 +25,7 @@ import com.vdom.api.GameType;
 import com.vdom.api.TreasureCard;
 import com.vdom.api.VictoryCard;
 import com.vdom.core.Player.WatchTowerOption;
+import com.vdom.core.Event;
 
 public class Game {
     public static boolean junit = false;
@@ -91,6 +92,7 @@ public class Game {
     public ArrayList<Card> trashPile = new ArrayList<Card>();
     public ArrayList<Card> possessedTrashPile = new ArrayList<Card>();
     public ArrayList<Card> possessedBoughtPile = new ArrayList<Card>();
+	public ArrayList<Event> eventsList = new ArrayList<Event>();
 
     public int tradeRouteValue = 0;
     public Card baneCard = null;
@@ -635,29 +637,35 @@ public class Game {
     }
 
     protected void playerBuy(Player player, MoveContext context) {
-        Card buy = null;
+        Object bought = null;
         context.goldAvailable = context.getCoinAvailableForBuy();
         do {
             try {
-                buy = player.controlPlayer.doBuy(context);
+				bought = player.controlPlayer.doBuy(context);
             } catch (Throwable t) {
                 Util.playerError(player, t);
             }
 
-            if (buy != null) {
-                if (isValidBuy(context, buy)) {
-                	context.totalCardsBoughtThisTurn++;
-                    GameEvent statusEvent = new GameEvent(GameEvent.Type.Status, (MoveContext) context);
-                    broadcastEvent(statusEvent);
+            if (bought != null) {
+				if (bought instanceof Card) {
+					Card buy = (Card) bought;
+					if (isValidBuy(context, buy)) {
+						context.totalCardsBoughtThisTurn++;
+						GameEvent statusEvent = new GameEvent(GameEvent.Type.Status, (MoveContext) context);
+						broadcastEvent(statusEvent);
 
-                    playBuy(context, buy);
+						playBuy(context, buy);
 
-                } else {
-                    // TODO report?
-                    buy = null;
-                }
+					} else {
+						// TODO report?
+						buy = null;
+					}
+				} else if (bought instanceof Event) {
+					Event e = (Event) bought;
+					playEvent(context,e);
+				}
             }
-        } while (context.buys > 0 && buy != null);
+        } while (context.buys > 0 && bought != null);
         context.buyPhase = false;
     }
 
@@ -1204,6 +1212,14 @@ public class Game {
         haggler(context, buy);
     }
 
+    void playEvent(MoveContext context, Event buy) {
+        Player player = context.getPlayer();
+        context.buys--;
+		int cost = buy.cost;
+		context.gold -= cost;
+        buy.isBought(context);
+    }
+
     private void haggler(MoveContext context, Card cardBought) {
     	if(!context.game.piles.containsKey(Cards.haggler.getName()))
     		return;
@@ -1575,6 +1591,7 @@ public class Game {
 		piles.clear();
 		embargos.clear();
 		trashPile.clear();
+		eventsList.clear();
 
     	boolean platColonyNotPassedIn = false;
     	boolean platColonyPassedIn = false;
@@ -1754,6 +1771,8 @@ public class Game {
 				this.addPile(this.baneCard);
 			}
 		}
+
+		eventsList = Event.getEventSet(gameType);
 
 		if (piles.containsKey(Cards.virtualKnight.getName())) {
 			VariableCardPile kp = (VariableCardPile) this.getPile(Cards.virtualKnight);
@@ -2391,6 +2410,10 @@ public class Game {
         }
         return true;
     }
+
+	public Event[] getEventsInGame() {
+		return eventsList.toArray(new Event[0]);
+	}
 
     public Card[] getCardsInGame() {
         return getCardsInGame(null);

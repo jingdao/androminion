@@ -98,7 +98,7 @@ public class VDomPlayerChuck extends BasePlayer  {
     }
 
     @Override
-    public Card doBuy(MoveContext context) {
+    public Object doBuy(MoveContext context) {
         final int coinAvailableForBuy = context.getCoinAvailableForBuy();
 
         if (coinAvailableForBuy == 0) {

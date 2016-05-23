@@ -22,6 +22,7 @@ import com.vdom.core.MoveContext;
 import com.vdom.core.MoveContext.PileSelection;
 import com.vdom.core.Player;
 import com.vdom.core.QuickPlayPlayer;
+import com.vdom.core.Event;
 /**
  * Class that you can use to play remotely.
  */
@@ -50,9 +51,9 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
     abstract protected int[] orderCards(MoveContext context, int[] cards);
     abstract protected int[] orderCards(MoveContext context, int[] cards, String header);
 
-    abstract protected Card[] pickCards(MoveContext context, String header, SelectCardOptions sco, int count, boolean exact);
-    private Card pickACard(MoveContext context, String header, SelectCardOptions sco) {
-        Card[] cs = pickCards(context, header, sco, 1, true);
+    abstract protected Object[] pickCards(MoveContext context, String header, SelectCardOptions sco, int count, boolean exact);
+    private Object pickACard(MoveContext context, String header, SelectCardOptions sco) {
+        Object[] cs = pickCards(context, header, sco, 1, true);
         return (cs == null ? null : cs[0]);
     }
 
@@ -87,6 +88,20 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         case TRASH: return Strings.format(R.string.card_to_trash, getCardName(cardResponsible));
         case NAMECARD: return Strings.format(R.string.card_to_name, getCardName(cardResponsible));
         case OPPONENTDISCARD: return Strings.format(R.string.opponent_discard, opponentName, getCardName(cardResponsible));
+        }
+        return null;
+    }
+
+    public String getActionString(ActionType action, Event cardResponsible, String opponentName) {
+        switch (action) {
+        case DISCARD: return Strings.format(R.string.card_to_discard, cardResponsible.name);
+        case DISCARDFORCARD: return Strings.format(R.string.card_to_discard_for_card, cardResponsible.name);
+        case DISCARDFORCOIN: return Strings.format(R.string.card_to_discard_for_coin, cardResponsible.name);
+        case REVEAL: return Strings.format(R.string.card_to_reveal, cardResponsible.name);
+        case GAIN: return Strings.format(R.string.card_to_gain, cardResponsible.name);
+        case TRASH: return Strings.format(R.string.card_to_trash, cardResponsible.name);
+        case NAMECARD: return Strings.format(R.string.card_to_name, cardResponsible.name);
+        case OPPONENTDISCARD: return Strings.format(R.string.opponent_discard, opponentName, cardResponsible.name);
         }
         return null;
     }
@@ -165,7 +180,7 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
               str = Strings.format(R.string.select_up_to_x_cards_from_hand, "" + sco.count, header);
       }
 
-      Card[] tempCards = pickCards(context, str, sco, sco.count, sco.exactCount);
+      Card[] tempCards = (Card[]) pickCards(context, str, sco, sco.count, sco.exactCount);
       if (tempCards == null)
           return null;
 
@@ -186,6 +201,63 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
   }
     
     private Card getFromTable(MoveContext context, String header, SelectCardOptions sco) {
+        sco.fromTable();
+        Card[] cards = context.getCardsInGame();
+        
+        for (Card card : cards) {
+            if (sco.allowEmpty || !context.game.isPileEmpty(card)) {
+                if (sco.checkValid(card, card.getCost(context))) {
+                    sco.addValidCard(cardToInt(card));
+                }
+            }
+        }
+        
+        if (sco.getAllowedCardCount() == 0) {
+            // No cards fit the filter, so return early
+            return null;
+        }
+        else if (sco.getAllowedCardCount() == 1 && !sco.isPassable()) {
+            // Only one card available and player can't pass...go ahead and return
+            return intToCard(sco.allowedCards.get(0));
+        }
+        
+        String minCostString = (sco.minCost <= 0) ? "" : "" + sco.minCost;
+        String maxCostString = (sco.maxCost == Integer.MAX_VALUE) ? "" : "" + sco.maxCost + sco.potionString();
+        String selectString;
+	    
+        if (sco.fromPrizes)
+        	selectString = header;
+        else if (sco.minCost == sco.maxCost) {
+            if (sco.isAttack) {
+                selectString = Strings.format(R.string.select_from_table_attack, maxCostString, header);
+            } else if (sco.isAction) {
+                selectString = Strings.format(R.string.select_from_table_exact_action, maxCostString, header);
+            } else {
+                selectString = Strings.format(R.string.select_from_table_exact, maxCostString, header);
+            }
+        } else if (sco.minCost <= 0 && sco.maxCost < Integer.MAX_VALUE) {
+		    if (sco.isVictory) {
+		        selectString = Strings.format(R.string.select_from_table_max_vp, maxCostString, header);
+		    } else if (sco.isNonVictory) {
+		        selectString = Strings.format(R.string.select_from_table_max_non_vp, maxCostString, header);
+		    } else if (sco.isTreasure) {
+		        selectString = Strings.format(R.string.select_from_table_max_treasure, maxCostString, header);
+		    } else if (sco.isAction) {
+		        selectString = Strings.format(R.string.select_from_table_max_action, maxCostString, header);
+		    } else {
+		    	selectString = Strings.format(R.string.select_from_table_max, maxCostString, header);
+		    }
+    	} else if (sco.minCost > 0 && sco.maxCost < Integer.MAX_VALUE) {
+            selectString = Strings.format(R.string.select_from_table_between, minCostString, maxCostString, header);
+    	} else if (sco.minCost > 0) {
+            selectString = Strings.format(R.string.select_from_table_min, minCostString + sco.potionString(), header);
+    	} else {
+            selectString = Strings.format(R.string.select_from_table, header);
+    	}
+        return (Card) pickACard(context, selectString, sco);
+    }
+    
+    private Object getCardOrEventFromTable(MoveContext context, String header, SelectCardOptions sco) {
         sco.fromTable();
         Card[] cards = context.getCardsInGame();
         
@@ -345,9 +417,9 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
     }
 
     @Override
-    public Card doBuy(MoveContext context) {
+    public Object doBuy(MoveContext context) {
         SelectCardOptions sco = new SelectCardOptions().isBuy().maxCost(context.getCoinAvailableForBuy()).copperCountInPlay(context.countCardsInPlay(Cards.copper)).potionCost(context.getPotions()).setPassable(getString(R.string.end_turn)).setPickType(PickType.BUY);
-        return getFromTable(context, getString(R.string.part_buy), sco);
+        return getCardOrEventFromTable(context, getString(R.string.part_buy), sco);
     }
 
     @Override
@@ -2767,6 +2839,14 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         }
         SelectCardOptions sco = new SelectCardOptions().potionCost(0).exactCost(maxCost).setPassable(getString(R.string.none));
         return getFromTable(context, getActionString(ActionType.GAIN,Cards.artificer), sco);
+    }
+
+    public Card alms_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_workshop_cardToObtain(context)) {
+            return super.alms_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().maxCost(4).potionCost(0);
+        return getFromTable(context, getActionString(ActionType.GAIN, Event.alms, ""), sco);
     }
 
 }

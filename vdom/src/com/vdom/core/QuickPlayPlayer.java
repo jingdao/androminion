@@ -31,7 +31,7 @@ public abstract class QuickPlayPlayer extends BasePlayer {
     }
 
     @Override
-    public Card doBuy(MoveContext context) {
+    public Object doBuy(MoveContext context) {
         // Should never be called
         return null;
     }

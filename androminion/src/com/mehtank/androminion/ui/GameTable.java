@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -52,7 +53,7 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 	TextView playedHeader;
 	LinearLayout myCards;
 
-	GridView moneyPileGV, vpPileGV, supplyPileGV, prizePileGV, nonSupplyPileGV;
+	GridView moneyPileGV, vpPileGV, supplyPileGV, prizePileGV, nonSupplyPileGV, eventsGV;
 	CardGroup moneyPile, vpPile, supplyPile, prizePile, nonSupplyPile;
 
 	LinearLayout tr;
@@ -62,6 +63,7 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 	View supply;
 	LinearLayout turnView;
 	View myCardView;
+	EventView selectedEvent;
 	private static int[] costs = {};
 
 	TextView actionText;
@@ -142,6 +144,10 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
     	prizePileGV.setAdapter(prizePile);
     	prizePileGV.setOnItemClickListener(this);
     	prizePileGV.setOnItemLongClickListener(this);
+
+		eventsGV = (GridView) findViewById(R.id.eventsGV);
+		eventsGV.setOnItemClickListener(this);
+		eventsGV.setOnItemLongClickListener(this);
 	}
 
 	/**
@@ -285,7 +291,7 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 	 * @param cards Cards that are in play
 	 * @param players Names of players
 	 */
-	public void newGame(MyCard[] cards, String[] players) {
+	public void newGame(final MyCard[] cards, String[] players) {
 		GameTableViews.clearCards();
 		openedCards.clear();
 		moneyPile.clear();
@@ -309,8 +315,14 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 		gameOverScroll.setVisibility(GONE);
 		tr.setVisibility(VISIBLE);
 
-		for (MyCard c : cards)
-			addCardToTable(c);
+		final ArrayList<com.vdom.core.Event> events = new ArrayList<com.vdom.core.Event>();
+		for (MyCard c : cards) {
+			if (c.pile == MyCard.EVENTS) {
+				events.add(com.vdom.core.Event.eventsMap.get(c.name));
+			} else {
+				addCardToTable(c);
+			}
+		}
 		for (String s : players)
 			addPlayer(s);
 
@@ -369,6 +381,32 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
         {
             nonSupplyPileGV.setNumColumns(4);
         }
+
+		eventsGV.setAdapter(new BaseAdapter(){
+
+			public int getCount() {
+				return events.size();
+			}
+
+			public Object getItem(int pos) {
+				return events.get(pos);
+			}
+
+			public long getItemId(int pos) {
+				return 0;
+			}
+
+			public View getView(int pos, View origView, ViewGroup parent) {
+				EventView ev;
+				if(origView == null) {
+					ev = new EventView(top, events.get(pos));
+					ev.mycard = cards[cards.length - events.size() + pos];
+				} else {
+					ev = (EventView) origView;
+				}
+				return ev;
+			}
+		});
 
         // done setting up, remove splash screen
 		top.nosplash();
@@ -479,7 +517,10 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 			cs.opened = false;
 			cs.order = -1;
 			cs.indicator = sco.getPickType().indicator();
-			ci.parent.updateState(ci.pos, cs);
+			if (ci.parent == null) {
+				selectedEvent.setChecked(false);
+			} else
+				ci.parent.updateState(ci.pos, cs);
 		}
 		openedCards.clear();
 
@@ -504,8 +545,8 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 				int[] cards = new int[openedCards.size()];
 				for (int i = 0; i < openedCards.size(); i++) {
 					CardInfo ci = openedCards.get(i);
-					if (!isAcceptable(ci.cs.c, ci.parent))
-						return;
+//					if (!isAcceptable(ci.cs.c, ci.parent))
+//						return;
 					cards[i] = ci.cs.c.id;
 				}
 
@@ -542,7 +583,10 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 			cs.opened = false;
 			cs.order = -1;
 			cs.indicator = sco.getPickType().indicator();
-			ci.parent.updateState(ci.pos, cs);
+			if (ci.parent == null) {
+				selectedEvent.setChecked(false);
+			} else
+				ci.parent.updateState(ci.pos, cs);
 		}
 		openedCards.clear();
 		sco = null;
@@ -992,8 +1036,7 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		CardView clickedCard = (CardView) view;
-		if (clickedCard == null)
+		if (view == null)
 			return;
 
 		if (sco == null)
@@ -1002,6 +1045,38 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 		if (!canClick)
 			return;
 
+		
+		if (view instanceof EventView) {
+			EventView clickedCard = (EventView) view;
+			if (clickedCard.isChecked) {
+				HapticFeedback.vibrate(getContext(), AlertType.CLICK);
+				clickedCard.setChecked(false);
+				openedCards.clear();
+				selectButtonState();
+			} else if (sco.checkValid(clickedCard.event)){
+				HapticFeedback.vibrate(getContext(), AlertType.CLICK);
+				if (openedCards.size() >= maxOpened) {
+                    CardInfo ci = openedCards.get(0);
+                    ci.cs.opened = false;
+                    ci.cs.order = -1;
+                    ci.cs.indicator = sco.getPickType().indicator();
+					if (ci.parent == null) {
+						selectedEvent.setChecked(false);
+					} else
+	                    ci.parent.updateState(ci.pos, ci.cs);
+					openedCards.remove(0);
+				}
+				CardState cs = new CardState(clickedCard.mycard);
+				CardInfo ci = new CardInfo(cs,null , position);
+				openedCards.add(ci);
+				clickedCard.setChecked(true);
+				selectedEvent = clickedCard;
+				selectButtonState();
+			}
+			return;
+		}
+
+		CardView clickedCard = (CardView) view;
         if (clickedCard.isChecked()) {
 			HapticFeedback.vibrate(getContext(), AlertType.CLICK);
 			for(int i=0;i<openedCards.size();i++){
@@ -1024,7 +1099,10 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
                     ci.cs.opened = false;
                     ci.cs.order = -1;
                     ci.cs.indicator = sco.getPickType().indicator();
-                    ci.parent.updateState(ci.pos, ci.cs);
+					if (ci.parent == null) {
+						selectedEvent.setChecked(false);
+					} else
+	                    ci.parent.updateState(ci.pos, ci.cs);
 					openedCards.remove(0);
 				}
                 clickedCard.setChecked(true, sco.getPickType().indicator());
@@ -1045,7 +1123,13 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-		CardView clickedCard = (CardView) view;
-		return clickedCard.onLongClick(clickedCard);
+		if (view instanceof CardView) {
+			CardView clickedCard = (CardView) view;
+			return clickedCard.onLongClick(clickedCard);
+		} else if (view instanceof EventView) {
+			EventView clickedCard = (EventView) view;
+			return clickedCard.onLongClick(clickedCard);
+		}
+		return false;
 	}
 }
