@@ -2849,4 +2849,103 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return getFromTable(context, getActionString(ActionType.GAIN, Event.alms, ""), sco);
     }
 
+    public QuestOption quest_chooseOption(MoveContext context) {
+        LinkedHashMap<String, QuestOption> h = new LinkedHashMap<String, QuestOption>();
+        h.put(getString(R.string.quest_option_one), QuestOption.Attack);
+        h.put(getString(R.string.quest_option_two), QuestOption.Curses);
+        h.put(getString(R.string.quest_option_three), QuestOption.Cards);
+        return h.get(selectString(context, Cards.eventCard, h.keySet().toArray(new String[0])));
+    }
+
+	public Card quest_attackToDiscard(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().isAttack();
+        return getCardFromHand(context, getActionString(ActionType.DISCARD,Event.quest,""), sco);
+	}
+
+	public Card[] quest_cardsToDiscard(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().setCount(6).exactCount().setPickType(PickType.DISCARD);
+        return getFromHand(context, getActionString(ActionType.DISCARD,Event.quest,""), sco);
+	}
+
+	public Card save_cardToSetAside(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_haven_cardToSetAside(context)) {
+            return super.save_cardToSetAside(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions();
+        return getCardFromHand(context, Event.save.name, sco);
+	}
+
+    public Card[] scoutingParty_cardsFromTopOfDeckToDiscard(MoveContext context, Card[] cards) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cards)
+            options.add(Strings.getCardName(c));
+        do {
+            String o = selectString(context, R.string.Cartographer_query, Cards.eventCard, options.toArray(new String[0]));
+            cardsToDiscard.add(localNameToCard(o, cards));
+            options.remove(o);
+        } while (cardsToDiscard.size() < 3);
+        return cardsToDiscard.toArray(new Card[0]);
+    }
+
+    public Card[] scoutingParty_cardOrder(MoveContext context, Card[] cards) {
+        if(context.isQuickPlay() && shouldAutoPlay_cartographer_cardOrder(context, cards)) {
+            return super.scoutingParty_cardOrder(context, cards);
+        }
+        ArrayList<Card> orderedCards = new ArrayList<Card>();
+        int[] order = orderCards(context, cardArrToIntArr(cards));
+        for (int i : order)
+            orderedCards.add(cards[i]);
+        return orderedCards.toArray(new Card[0]);
+	}
+
+    public boolean travellingFair_shouldPutCardOnDeck(MoveContext context, Card card) {
+        if(context.isQuickPlay() && shouldAutoPlay_royalSeal_shouldPutCardOnDeck(context, card)) {
+            return super.travellingFair_shouldPutCardOnDeck(context, card);
+        }
+        return selectBooleanCardRevealed(context, Cards.eventCard, card, getString(R.string.top_of_deck), getString(R.string.take_normal));
+    }
+
+    public Card[] bonfire_cardsToTrash(MoveContext context, Card[] cards)
+	{
+        ArrayList<Card> cardsToTrash = new ArrayList<Card>();
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cards)
+            options.add(Strings.getCardName(c));
+        String none = getString(R.string.none);
+        options.add(none);
+        do {
+            String o = selectString(context, Cards.eventCard, options.toArray(new String[0]));
+			if (o.equals(none))
+				break;
+            cardsToTrash.add(localNameToCard(o, cards));
+            options.remove(o);
+        } while (cardsToTrash.size() < 2);
+        return cardsToTrash.toArray(new Card[0]);
+    }
+
+    public Card ball_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_workshop_cardToObtain(context)) {
+            return super.ball_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().maxCost(4).potionCost(0);
+        return getFromTable(context, getActionString(ActionType.GAIN, Event.ball, ""), sco);
+    }
+
+    public Card seaway_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_university_actionCardToObtain(context)) {
+            return super.seaway_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().potionCost(0).maxCost(4).isAction();
+        return getFromTable(context, getActionString(ActionType.GAIN,Event.seaway,""), sco);
+    }
+
+    public Card[] trade_cardsToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_chapel_cardsToTrash(context)) {
+            return super.trade_cardsToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setCount(2).setPassable(getString(R.string.none)).setPickType(PickType.TRASH);
+        return getFromHand(context, getActionString(ActionType.TRASH, Event.trade,""), sco);
+    }
+
 }

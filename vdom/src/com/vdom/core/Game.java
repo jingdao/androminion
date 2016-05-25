@@ -561,6 +561,17 @@ public class Game {
             drawToHand(player, null, false);
         }
 
+		while (!player.save.isEmpty()) {
+			player.hand.add(player.save.remove(0));
+		}
+
+		for (Event e: player.boughtEvents) {
+			if (e.equals(Event.expedition)) {
+				drawToHand(player,null,false);
+				drawToHand(player,null,false);
+			}
+		}
+
         // /////////////////////////////////
         // Reset context for status update
         // /////////////////////////////////
@@ -663,6 +674,7 @@ public class Game {
 				} else if (bought instanceof Event) {
 					Event e = (Event) bought;
 					playEvent(context,e);
+					player.controlPlayer.boughtEvents.add(e);
 				}
             }
         } while (context.buys > 0 && bought != null);
@@ -678,6 +690,7 @@ public class Game {
         }
 
         cardsObtainedLastTurn[playersTurn].clear();
+		player.boughtEvents.clear();
         if (consecutiveTurnCounter == 1)
         	player.newTurn();
         GameEvent gevent = new GameEvent(GameEvent.Type.TurnBegin, context);
@@ -2102,6 +2115,8 @@ public class Game {
                             } else {
                                 player.discard(event.card, null, null, commandedDiscard);
                             }
+						} else if (context.player.boughtEvents.contains(Event.travellingFair) && context.player.controlPlayer.travellingFair_shouldPutCardOnDeck(context,event.card)) {
+							player.putOnTopOfDeck(event.card);
                         } else {
                             player.discard(event.card, null, null, commandedDiscard);
                         }

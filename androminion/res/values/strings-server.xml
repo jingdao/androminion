@@ -335,6 +335,9 @@
   <string name="exchange_traveller">exchange for</string>
   <string name="miser_option_one">Put Copper on Tavern mat</string>
   <string name="miser_option_two">+1 Coin per Copper on Tavern mat</string>
+  <string name="quest_option_one">Discard an Attack</string>
+  <string name="quest_option_two">Discard two Curses</string>
+  <string name="quest_option_three">Discard six cards</string>
   
   
 </resources>

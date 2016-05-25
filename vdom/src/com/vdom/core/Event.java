@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Collections;
 import com.vdom.api.GameType;
 import com.vdom.api.Card;
+import com.vdom.api.ActionCard;
 import com.vdom.api.TreasureCard;
 
 public class Event {
@@ -57,6 +58,36 @@ public class Event {
 		switch (type) {
 			case Alms:
 				alms(context,currentPlayer);
+				break;
+			case Borrow:
+				borrow(context,currentPlayer);
+				break;
+			case Quest:
+				quest(context,currentPlayer);
+				break;
+			case Save:
+				save(context,currentPlayer);
+				break;
+			case ScoutingParty:
+				scoutingParty(context,currentPlayer);
+				break;
+			case TravellingFair:
+				travellingFair(context,currentPlayer);
+				break;
+			case Bonfire:
+				bonfire(context,currentPlayer);
+				break;
+			case Ball:
+				ball(context,currentPlayer);
+				break;
+			case Raid:
+				raid(context,currentPlayer);
+				break;
+			case Seaway:
+				seaway(context,currentPlayer);
+				break;
+			case Trade:
+				trade(context,currentPlayer);
 				break;
 			default:
 				break;
@@ -114,6 +145,10 @@ public class Event {
 	}
 
 	public void alms(MoveContext context, Player currentPlayer) {
+		for (Event e : currentPlayer.controlPlayer.boughtEvents) {
+			if (e.equals(Event.alms))
+				return;
+		}
 		boolean playedTreasure = false;
 		for (int i=0;i<currentPlayer.playedCards.size();i++) {
 			Card c = currentPlayer.playedCards.get(i);
@@ -125,8 +160,153 @@ public class Event {
 		if (!playedTreasure) {
 			Card card = currentPlayer.alms_cardToObtain((MoveContext) context);
 			if (card != null) 
-				currentPlayer.gainNewCard(card,Cards.copper, (MoveContext) context);
+				currentPlayer.gainNewCard(card,Cards.eventCard, (MoveContext) context);
 		}
 
 	}
+
+	public void borrow(MoveContext context, Player currentPlayer) {
+		context.buys++;
+		for (Event e : currentPlayer.controlPlayer.boughtEvents) {
+			if (e.equals(Event.borrow))
+				return;
+		}
+		context.addGold += 1;
+	}
+
+	public void quest(MoveContext context, Player currentPlayer) {
+        Player.QuestOption option = currentPlayer.controlPlayer.quest_chooseOption(context);
+		boolean valid = false;
+		if (option == Player.QuestOption.Attack) {
+			int numAttack = 0;
+			Card attackCard = null;
+			for (Card card : currentPlayer.hand) {
+				if (card instanceof ActionCard && ((ActionCard)card).isAttack()) {
+					numAttack++;
+					attackCard = card;
+				}
+			}
+			if (numAttack > 1) {
+				attackCard = currentPlayer.controlPlayer.quest_attackToDiscard(context);
+			}
+			if (attackCard!=null && attackCard instanceof ActionCard && ((ActionCard)attackCard).isAttack()) {
+				currentPlayer.hand.remove(attackCard);
+				valid = true;
+			}
+		} else if (option == Player.QuestOption.Curses) {
+			valid = currentPlayer.hand.remove(Cards.curse) && currentPlayer.hand.remove(Cards.curse);
+		} else if (option == Player.QuestOption.Cards) {
+			Card[] cards;
+			if (currentPlayer.hand.size() > 6) {
+				cards = currentPlayer.controlPlayer.quest_cardsToDiscard(context);
+			} else {
+				cards = currentPlayer.getHand().toArray();
+			}
+			for (int i = 0; i < cards.length; i++) {
+				currentPlayer.hand.remove(cards[i]);
+				currentPlayer.discard(cards[i], Cards.eventCard, null);
+			}
+			valid = cards.length == 6;
+
+		}
+		if (valid) 		
+			currentPlayer.gainNewCard(Cards.gold,Cards.eventCard, context);
+	}
+
+	public void save(MoveContext context, Player currentPlayer) {
+		context.buys++;
+		for (Event e : currentPlayer.controlPlayer.boughtEvents) {
+			if (e.equals(Event.save))
+				return;
+		}
+		if (currentPlayer.hand.size() == 0) 
+			return;
+        Card card = currentPlayer.controlPlayer.save_cardToSetAside(context);
+        if (card != null) {
+			currentPlayer.hand.remove(card);
+			currentPlayer.save.add(card);
+        }
+	}
+
+	public void scoutingParty(MoveContext context, Player currentPlayer) {
+		context.buys++;
+        ArrayList<Card> topOfTheDeck = new ArrayList<Card>();
+        for (int i = 0; i < 5; i++) {
+            Card card = context.game.draw(currentPlayer);
+            if (card != null) {
+                topOfTheDeck.add(card);
+            }
+        }
+        if (topOfTheDeck.size() > 0) {
+            Card[] cardsToDiscard;
+			if (topOfTheDeck.size() <= 3)
+				cardsToDiscard = topOfTheDeck.toArray(new Card[0]);
+			else
+				cardsToDiscard = currentPlayer.controlPlayer.scoutingParty_cardsFromTopOfDeckToDiscard(context, topOfTheDeck.toArray(new Card[topOfTheDeck.size()]));
+			for(Card toDiscard : cardsToDiscard) {
+				topOfTheDeck.remove(toDiscard);
+				currentPlayer.discard(toDiscard, Cards.eventCard, null);
+			}
+            if (topOfTheDeck.size() > 0) {
+                Card[] order;
+                if(topOfTheDeck.size() == 1) {
+                    order = topOfTheDeck.toArray(new Card[topOfTheDeck.size()]);
+                } else {
+                    order = currentPlayer.controlPlayer.scoutingParty_cardOrder(context, topOfTheDeck.toArray(new Card[topOfTheDeck.size()]));
+                }
+                for (int i = order.length - 1; i >= 0; i--) {
+                    currentPlayer.putOnTopOfDeck(order[i]);
+                }
+            }
+        }
+	}
+
+	public void travellingFair(MoveContext context, Player currentPlayer) {
+		context.buys += 2;
+	}
+
+	public void bonfire(MoveContext context, Player currentPlayer) {
+		ArrayList<Card> inPlay = new ArrayList<Card>();
+		for (Card card: currentPlayer.playedCards)
+			inPlay.add(card);
+		Card[] cardsToTrash = currentPlayer.controlPlayer.bonfire_cardsToTrash(context,inPlay.toArray(new Card[0])); 
+		for (Card card: cardsToTrash) {
+			currentPlayer.playedCards.remove(card);
+			currentPlayer.trash(card, Cards.eventCard, context);
+		}
+	}
+
+	public void ball(MoveContext context, Player currentPlayer) {
+		Card card = currentPlayer.ball_cardToObtain((MoveContext) context);
+		currentPlayer.gainNewCard(card,Cards.eventCard, (MoveContext) context);
+		card = currentPlayer.ball_cardToObtain((MoveContext) context);
+		currentPlayer.gainNewCard(card,Cards.eventCard, (MoveContext) context);
+	}
+
+	public void raid(MoveContext context, Player currentPlayer) {
+		int numSilver = 0;
+		for (Card card : currentPlayer.playedCards)
+			if (card.equals(Cards.silver))
+				numSilver++;
+		for (int i=0;i<numSilver;i++)
+			currentPlayer.gainNewCard(Cards.silver,Cards.eventCard, context);
+	}
+
+	public void seaway(MoveContext context, Player currentPlayer) {
+		Card card = currentPlayer.seaway_cardToObtain((MoveContext) context);
+		currentPlayer.gainNewCard(card,Cards.eventCard, (MoveContext) context);
+	}
+
+	public void trade(MoveContext context, Player currentPlayer) {
+        Card[] cards = currentPlayer.controlPlayer.trade_cardsToTrash(context);
+		if (cards != null) {
+			for (Card card : cards) {
+				currentPlayer.hand.remove(card);
+				currentPlayer.trash(card,Cards.eventCard,context);
+			}
+			for (int i=0;i<cards.length;i++)
+				currentPlayer.gainNewCard(Cards.silver,Cards.eventCard, context);
+		}
+	}
+
 }

@@ -58,7 +58,7 @@ public class Cards {
 		// Adventures
 		CoinOfTheRealm, Page, Peasant, Ratcatcher, Raze, Amulet, CaravanGuard, Dungeon, Gear, Guide, Duplicate, Magpie, Messenger, Miser, Port, Ranger, Transmogrify,
 		Artificer, BridgeTroll, DistantLands, Giant, HauntedWoods, LostCity, Relic, RoyalCarriage, Storyteller, SwampHag, TreasureTrove, WineMerchant, Hireling, 
-		Soldier, TreasureHunter, Fugitive, Warrior, Disciple, Hero, Teacher, Champion,
+		Soldier, TreasureHunter, Fugitive, Warrior, Disciple, Hero, Teacher, Champion, Event,
         // Promo Cards
         Envoy, Governor, WalledVillage,
         // Promo Cards (not yet implemented)
@@ -370,6 +370,7 @@ public class Cards {
 	public static final Card hero;
 	public static final Card teacher;
 	public static final Card champion;
+	public static final Card eventCard;
 
 
     // Promo Cards (Incomplete)
@@ -659,6 +660,7 @@ public class Cards {
 		nonSupplyCards.add(hero = new ActionCardImpl.Builder(Cards.Type.Hero,5).isTraveller().addGold(2).description("Gain a Treasure. When you discard this from play, you may exchange it for a Champion.").expansion("Adventures").build());
 		nonSupplyCards.add(teacher = new ActionCardImpl.Builder(Cards.Type.Teacher,6).isReserve().description("Put this on your tavern mat. At the start of your turn, you may call this, to move your +1 Card, +1 Action, +1 Buy, or +1 Coin token to an Action supply pile you have no tokens on.").expansion("Adventures").build());
 		nonSupplyCards.add(champion = new ActionDurationCardImpl.Builder(Cards.Type.Champion,6).addActions(1).description("For the rest of the game, when another player plays an Attack, it doesn\'t affect you, and when you play an Action, +1 Action.").expansion("Adventures").build());
+		eventCard = new ActionCardImpl.Builder(Cards.Type.Event,0).build();
 
         // Non-Supply Cards
         nonSupplyCards.add(madman    = new ActionCardImpl.Builder(Cards.Type.Madman, 0).addActions(2).description("Return this to the Madman pile. If you do, +1 Card per card in your hand. (This is not in the supply)").expansion("DarkAges").build());

@@ -2913,4 +2913,68 @@ public abstract class BasePlayer extends Player implements GameEventListener {
         return bestCardInPlay(context, 4);
     }
 
+    public QuestOption quest_chooseOption(MoveContext context) {
+		return QuestOption.Cards;
+	}
+
+	public Card quest_attackToDiscard(MoveContext context) {
+		for (Card c : context.player.hand) {
+			if (c instanceof ActionCard && ((ActionCard)c).isAttack())
+				return c;
+		}
+		return null;
+	}
+
+	public Card[] quest_cardsToDiscard(MoveContext context) {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		for (Card c: context.player.hand)
+			cards.add(c);
+		return cards.toArray(new Card[0]);
+	}
+
+	public Card save_cardToSetAside(MoveContext context) {
+		return context.player.hand.get(0);
+	}
+
+    public Card[] scoutingParty_cardsFromTopOfDeckToDiscard(MoveContext context, Card[] cards) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+		cardsToDiscard.add(cards[0]);
+		cardsToDiscard.add(cards[1]);
+		cardsToDiscard.add(cards[2]);
+		return cardsToDiscard.toArray(new Card[0]);
+	}
+
+    public Card[] scoutingParty_cardOrder(MoveContext context, Card[] cards) {
+		return cards;
+	}
+
+    public boolean travellingFair_shouldPutCardOnDeck(MoveContext context, Card card) {
+		return ! isOnlyVictory(card);
+    }
+
+    public Card[] bonfire_cardsToTrash(MoveContext context, Card[] cards) {
+        ArrayList<Card> cardsToTrash = new ArrayList<Card>();
+		ArrayList<Card> trashCards = new ArrayList<Card>(Arrays.asList(getTrashCards()));
+		for (Card c: cards) {
+			if (trashCards.contains(c)) {
+				cardsToTrash.add(c);
+				if (cardsToTrash.size() >= 2)
+					break;
+			}
+		}
+		return cardsToTrash.toArray(new Card[0]);
+	}
+
+	public Card ball_cardToObtain(MoveContext context) {
+        return bestCardInPlay(context, 4);
+	}
+
+	public Card seaway_cardToObtain(MoveContext context) {
+        return bestCardInPlay(context, 4, false, false, true, false);
+	}
+
+	public Card[] trade_cardsToTrash(MoveContext context) {
+		return pickOutCards(context.getPlayer().getHand(), 2, getTrashCards());
+	}
+
 }

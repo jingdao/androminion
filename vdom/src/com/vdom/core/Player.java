@@ -50,6 +50,8 @@ public abstract class Player {
     protected CardList horseTraders;
 	protected CardList tavern;
 	protected CardList gear;
+	protected CardList save;
+	public ArrayList<Event> boughtEvents = new ArrayList<Event>();
     public Game game;
     public Player controlPlayer = this;
 
@@ -217,6 +219,7 @@ public abstract class Player {
         horseTraders = new CardList(this, "Horse Traders");
 		tavern = new CardList(this,"Tavern");
 		gear = new CardList(this,"Gear");
+		save = new CardList(this,"Save");
     }
 
     private List<PutBackOption> getPutBackOptions(MoveContext context) {
@@ -1044,6 +1047,12 @@ public abstract class Player {
 		GainSilver
 	}
 
+	public enum QuestOption {
+		Attack,
+		Curses,
+		Cards
+	}
+
     // Context is passed for the player to add a GameEventListener
     // if they want or to see what cards the game has, etc.
     public void newGame(MoveContext context) {
@@ -1507,6 +1516,17 @@ public abstract class Player {
     public abstract Card[] artificer_cardsToDiscard(MoveContext context);
 	public abstract Card artificer_cardToObtain(MoveContext context,int maxCost);
 	public abstract Card alms_cardToObtain(MoveContext context);
+    public abstract QuestOption quest_chooseOption(MoveContext context);
+	public abstract Card quest_attackToDiscard(MoveContext context);
+	public abstract Card[] quest_cardsToDiscard(MoveContext context);
+	public abstract Card save_cardToSetAside(MoveContext context);
+    public abstract Card[] scoutingParty_cardsFromTopOfDeckToDiscard(MoveContext context, Card[] cards);
+    public abstract Card[] scoutingParty_cardOrder(MoveContext context, Card[] cards);
+    public abstract boolean travellingFair_shouldPutCardOnDeck(MoveContext context, Card card);
+    public abstract Card[] bonfire_cardsToTrash(MoveContext context, Card[] cards);
+	public abstract Card ball_cardToObtain(MoveContext context);
+	public abstract Card seaway_cardToObtain(MoveContext context);
+	public abstract Card[] trade_cardsToTrash(MoveContext context);
 
 
 	// ////////////////////////////////////////////
