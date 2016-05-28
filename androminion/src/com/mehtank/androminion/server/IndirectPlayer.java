@@ -2948,4 +2948,35 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return getFromHand(context, getActionString(ActionType.TRASH, Event.trade,""), sco);
     }
 
+	public boolean callReserveCard(MoveContext context, Card target) {
+        if(context.isQuickPlay()) {
+			return true;
+        }
+        return selectBoolean(context, getCardName(target), getString(R.string.call_query), getString(R.string.pass));
+	}
+
+    public Card ratcatcher_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_trader_cardToTrash(context)) {
+            return super.ratcatcher_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.ratcatcher), sco);
+    }
+    
+    public Card transmogrify_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_trader_cardToTrash(context)) {
+            return super.transmogrify_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.transmogrify), sco);
+    }
+    
+    public Card transmogrify_cardToObtain(MoveContext context, int maxCost, boolean potion) {
+        if(context.isQuickPlay() && shouldAutoPlay_remodel_cardToObtain(context, maxCost, potion)) {
+            return super.transmogrify_cardToObtain(context, maxCost, potion);
+        }
+        SelectCardOptions sco = new SelectCardOptions().maxCost(maxCost).potionCost(potion ? 1 : 0);
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.transmogrify), sco);
+    }
+
 }

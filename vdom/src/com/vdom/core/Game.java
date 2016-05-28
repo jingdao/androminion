@@ -764,6 +764,30 @@ public class Game {
 		while (!player.gear.isEmpty()) {
 			player.hand.add(player.gear.remove(0));
 		}
+
+		ArrayList<Card> calledReserves = new ArrayList<Card>();
+		for (Card reserve : player.tavern) {
+			if (reserve.equals(Cards.ratcatcher) && player.controlPlayer.callReserveCard(context,reserve)) {
+				((ActionCardImpl)reserve).ratcatcher(this,context,player);
+				calledReserves.add(reserve);
+			} else if (reserve.equals(Cards.guide) && player.callReserveCard(context,reserve)) {
+				((ActionCardImpl)reserve).guide(this,context,player);
+				calledReserves.add(reserve);
+			} else if (reserve.equals(Cards.transmogrify) && player.callReserveCard(context,reserve)) {
+				((ActionCardImpl)reserve).transmogrify(this,context,player);
+				calledReserves.add(reserve);
+			} else if (reserve.equals(Cards.teacher) && player.callReserveCard(context,reserve)) {
+				calledReserves.add(reserve);
+			}
+		}
+		for (Card reserve : calledReserves) {
+			player.tavern.remove(reserve);
+			player.playedCards.add(reserve);
+			GameEvent event = new GameEvent(GameEvent.Type.PlayingAction, (MoveContext) context);
+			event.card = reserve;
+			broadcastEvent(event);
+		}
+
     }
 
     private static void printStats(HashMap<String, Double> wins, int gameCount, String gameType) {
@@ -2108,7 +2132,7 @@ public class Game {
                             	} else if (event.card.equals(Cards.silver)) {
                             		player.discard.add(event.card);
                             	}
-                            } else if (r.equals(Cards.tradingPost) || r.equals(Cards.mine) || r.equals(Cards.explorer) || r.equals(Cards.torturer)) {
+                            } else if (r.equals(Cards.tradingPost) || r.equals(Cards.mine) || r.equals(Cards.explorer) || r.equals(Cards.torturer) || r.equals(Cards.transmogrify)) {
                                 player.hand.add(event.card);
                             } else if (r.equals(Cards.illGottenGains) && event.card.equals(Cards.copper)) {
                                 player.hand.add(event.card);
@@ -2242,6 +2266,32 @@ public class Game {
 							if (targetPlayer != player) {
 								drawToHand(targetPlayer, event.card);
 							}
+						}
+					}
+					AbstractCardPile pile = getPile(event.card);
+					if (!pile.isEmpty() && pile.isSupply() && event.card.getCost(context)<=6 && !event.card.costPotion()) {
+						ArrayList<Card> called = new ArrayList<Card>();
+						for (Card reserve:player.tavern) {
+							if (reserve.equals(Cards.duplicate)) {
+								if (player.callReserveCard(context,reserve))
+									called.add(reserve);
+								else
+									break;
+							}
+						}
+						for (Card reserve : called) {
+							player.tavern.remove(reserve);
+							player.playedCards.add(reserve);
+							GameEvent ev = new GameEvent(GameEvent.Type.PlayingAction, (MoveContext) context);
+							ev.card = reserve;
+							broadcastEvent(ev);
+						}
+						for (int i=0;i<called.size();i++) {
+							takeFromPile(event.card);
+							GameEvent gainEvent = new GameEvent(GameEvent.Type.CardObtained, (MoveContext) context);
+							gainEvent.card = event.card;
+							gainEvent.responsible = called.get(i);
+							broadcastEvent(gainEvent);
 						}
 					}
                     // Achievement check...

@@ -2977,4 +2977,28 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 		return pickOutCards(context.getPlayer().getHand(), 2, getTrashCards());
 	}
 
+	public boolean callReserveCard(MoveContext context, Card target) {
+		return true;
+	}
+
+	public Card ratcatcher_cardToTrash(MoveContext context) {
+        Card card = pickOutCard(context.getPlayer().getHand(), getTrashCards());
+    	if (card != null) 
+    		return card;
+        else 
+	        return context.getPlayer().getHand().get(0);
+	}
+
+	public Card transmogrify_cardToTrash(MoveContext context) {
+        Card card = pickOutCard(context.getPlayer().getHand(), getTrashCards());
+    	if (card != null) 
+    		return card;
+        else 
+	        return context.getPlayer().getHand().get(0);
+	}
+
+    public Card transmogrify_cardToObtain(MoveContext context, int maxCost, boolean potion) {
+        return bestCardInPlay(context, maxCost, false, potion);
+    }
+
 }

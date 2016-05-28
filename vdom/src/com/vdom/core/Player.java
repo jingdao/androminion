@@ -380,6 +380,22 @@ public abstract class Player {
             discard(hand.remove(0, false), null, null, false);
         }
 
+		if (context.gold >= 2) {
+			ArrayList<Card> called = new ArrayList<Card>();
+			for (Card reserve:tavern) {
+				if (reserve.equals(Cards.wineMerchant)) {
+					if (callReserveCard(context,reserve))
+						called.add(reserve);		
+					else
+						break;
+				}
+			}
+			for (Card reserve : called) {
+				tavern.remove(reserve);
+				discard(reserve,null,null,false);
+			}
+		}
+
 // /////////////////////////////////
         // Double check that deck/discard/hand all have valid cards.
         // /////////////////////////////////
@@ -1527,6 +1543,10 @@ public abstract class Player {
 	public abstract Card ball_cardToObtain(MoveContext context);
 	public abstract Card seaway_cardToObtain(MoveContext context);
 	public abstract Card[] trade_cardsToTrash(MoveContext context);
+	public abstract boolean callReserveCard(MoveContext context, Card target);
+	public abstract Card ratcatcher_cardToTrash(MoveContext context);
+	public abstract Card transmogrify_cardToTrash(MoveContext context);
+    public abstract Card transmogrify_cardToObtain(MoveContext context, int maxCost, boolean potion);
 
 
 	// ////////////////////////////////////////////

@@ -261,6 +261,30 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         event = new GameEvent(GameEvent.Type.PlayedAction, (MoveContext) context);
         event.card = this;
         game.broadcastEvent(event);
+
+		if (this.numberTimesAlreadyPlayed==0) {
+			ArrayList<Card> calledReserves = new ArrayList<Card>();
+			for (Card reserve : currentPlayer.tavern) {
+				if (reserve.equals(Cards.coinOfTheRealm) && currentPlayer.controlPlayer.callReserveCard(context,reserve)) {
+					context.actions += 2;
+					calledReserves.add(reserve);
+				} else if (reserve.equals(Cards.royalCarriage) && currentPlayer.playedCards.getLastCard().equals(this) && currentPlayer.controlPlayer.callReserveCard(context,reserve)) {
+					context.freeActionInEffect++;
+					this.cloneCount++;
+					this.numberTimesAlreadyPlayed++;
+					this.play(game, context,false);
+					context.freeActionInEffect--;
+					calledReserves.add(reserve);
+				}
+			}
+			for (Card reserve : calledReserves) {
+				currentPlayer.tavern.remove(reserve);
+				currentPlayer.playedCards.add(reserve);
+				event = new GameEvent(GameEvent.Type.PlayingAction, (MoveContext) context);
+				event.card = reserve;
+				game.broadcastEvent(event);
+			}
+		}
     }
 
     protected void additionalCardActions(Game game, MoveContext context, Player currentPlayer) {
@@ -6109,4 +6133,32 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         }
     }
 
+	public void guide(Game game, MoveContext context, Player currentPlayer) {
+		while (!currentPlayer.hand.isEmpty()) {
+			currentPlayer.discard(currentPlayer.hand.remove(0), this.controlCard, null);
+		}
+		for (int i=0;i<5;i++)
+			drawToHand(game, currentPlayer, this.controlCard);
+	}
+
+	public void ratcatcher(Game game, MoveContext context, Player currentPlayer) {
+		if (!currentPlayer.hand.isEmpty()) {
+			Card card = currentPlayer.controlPlayer.ratcatcher_cardToTrash(context);
+	        currentPlayer.hand.remove(card);
+	        currentPlayer.trash(card, this.controlCard, context);
+		}
+	}
+	
+	public void transmogrify(Game game,MoveContext context, Player currentPlayer) {
+        if(currentPlayer.getHand().size() > 0) {
+            Card cardToTrash = currentPlayer.controlPlayer.transmogrify_cardToTrash(context);
+            int cost = cardToTrash.getCost(context);
+            boolean potion = cardToTrash.costPotion();
+			currentPlayer.hand.remove(cardToTrash);
+			currentPlayer.trash(cardToTrash, this.controlCard, context);
+            Card card = currentPlayer.controlPlayer.transmogrify_cardToObtain(context, cost+1, potion);
+			if (card!=null)
+				currentPlayer.gainNewCard(card, this.controlCard, context);
+        }
+	}
 }

@@ -338,6 +338,7 @@
   <string name="quest_option_one">Discard an Attack</string>
   <string name="quest_option_two">Discard two Curses</string>
   <string name="quest_option_three">Discard six cards</string>
+  <string name="call_query">Call Reserve card</string>
   
   
 </resources>
