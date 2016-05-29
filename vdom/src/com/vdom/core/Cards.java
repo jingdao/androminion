@@ -635,7 +635,7 @@ public class Cards {
 		actionCardsAdventures.add(magpie = new ActionCardImpl.Builder(Cards.Type.Magpie,4).addCards(1).addActions(1).description("Reveal the top card of your deck.  If it's a Treasure, put it into your hand.  If it's an Action or Victory card, gain a Magpie.").expansion("Adventures").build());
 		actionCardsAdventures.add(messenger = new ActionCardImpl.Builder(Cards.Type.Messenger,4).addBuys(1).addGold(2).description("You may put your deck into your discard pile. When this is your first buy in a turn, gain a card costing up to 4 Coin, and each other player gains a copy of it.").expansion("Adventures").build());
 		actionCardsAdventures.add(miser = new ActionCardImpl.Builder(Cards.Type.Miser,4).description("Choose one: Put a Copper from your hand onto your Tavern mat; or +1 Coin per Copper on your Tavern mat.").expansion("Adventures").build());
-		actionCardsAdventures.add(port = new ActionCardImpl.Builder(Cards.Type.Port,4).addCards(1).addActions(1).description("When you buy this, gain another Port.").expansion("Adventures").build());
+		actionCardsAdventures.add(port = new ActionCardImpl.Builder(Cards.Type.Port,4).addCards(1).addActions(2).description("When you buy this, gain another Port.").expansion("Adventures").build());
 		actionCardsAdventures.add(ranger = new ActionCardImpl.Builder(Cards.Type.Ranger,4).addBuys(1).description("Turn your Journey token over (it starts face up). If it's face up, +5 Cards.").expansion("Adventures").build());
 		actionCardsAdventures.add(transmogrify = new ActionCardImpl.Builder(Cards.Type.Transmogrify,4).addActions(1).isReserve().description("At the start of your turn, you may call this, to trash a card from your hand, gain a card costing up to 1 Coin more than it, and put that card into your hand.").expansion("Adventures").build());
 		actionCardsAdventures.add(artificer = new ActionCardImpl.Builder(Cards.Type.Artificer,5).addCards(1).addActions(1).addGold(1).description("Discard any number of cards. You may gain a card costing exactly 1 Coin per card discarded, putting it on top of your deck.").expansion("Adventures").build());
@@ -708,6 +708,8 @@ public class Cards {
         for (Card card : actionCardsHinterlands) { actionCards.add(card); }
         for (Card card : actionCardsDarkAges)    { actionCards.add(card); }
         for (Card card : actionCardsGuilds)      { actionCards.add(card); }
+		for (Card card : actionCardsAdventures) { actionCards.add(card); }
+		for (Card card : actionCardsEmpires)    { actionCards.add(card); }
         for (Card card : actionCardsPromo)       { actionCards.add(card); }
     }
     

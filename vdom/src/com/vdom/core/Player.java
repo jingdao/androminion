@@ -36,6 +36,11 @@ public abstract class Player {
     
     // The number of coin tokens held by the player
     private int guildsCoinTokenCount;
+
+	//adventures tokens
+	boolean minusCardToken = false;
+	boolean minusCoinToken = false;
+	boolean journeyToken = false;
     
     private Card checkLeadCard;
     private int victoryTokens;
@@ -443,6 +448,18 @@ public abstract class Player {
     {
         return guildsCoinTokenCount;
     }
+
+	public boolean getMinusCardToken(){
+		return minusCardToken;
+	}
+    
+	public boolean getMinusCoinToken(){
+		return minusCoinToken;
+	}
+    
+	public boolean getJourneyToken(){
+		return journeyToken;
+	}
     
     public void gainGuildsCoinTokens(int tokenCount)
     {
@@ -1547,6 +1564,7 @@ public abstract class Player {
 	public abstract Card ratcatcher_cardToTrash(MoveContext context);
 	public abstract Card transmogrify_cardToTrash(MoveContext context);
     public abstract Card transmogrify_cardToObtain(MoveContext context, int maxCost, boolean potion);
+    public abstract Card[] pilgrimage_cardsToObtain(MoveContext context,Card[] cards);
 
 
 	// ////////////////////////////////////////////

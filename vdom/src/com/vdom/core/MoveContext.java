@@ -17,6 +17,7 @@ public class MoveContext {
     public int actions = 1;
     public int buys = 1;
     public int addGold = 0;
+	public int previousGold = 0;
 
     public int gold;
     public int potions;
@@ -243,6 +244,11 @@ public class MoveContext {
     }
 
     public int getCoinForStatus() {
+		if (gold + addGold > previousGold && player.minusCoinToken) {
+			gold--;
+			player.minusCoinToken = false;
+		}
+		previousGold = gold + addGold;
         return getCoinAvailableForBuy();
 
         /*

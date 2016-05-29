@@ -273,6 +273,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 					this.cloneCount++;
 					this.numberTimesAlreadyPlayed++;
 					this.play(game, context,false);
+					this.numberTimesAlreadyPlayed--;
 					context.freeActionInEffect--;
 					calledReserves.add(reserve);
 				}
@@ -815,6 +816,14 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		case Artificer:
 			artificer(game,context,currentPlayer);
 			break;
+		case Ranger:
+			ranger(game,context,currentPlayer);
+			break;
+		case Giant:
+			giant(game,context,currentPlayer);
+			break;
+		case BridgeTroll:
+			bridgeTroll(game,context,currentPlayer);
         default:
             break;
         }
@@ -2582,10 +2591,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 
         int numCards = distinct ? 3 : 1;
         for (int i = 0; i < numCards; i++) {
-            Card draw = game.draw(currentPlayer);
-            if (draw != null) {
-                currentPlayer.hand.add(draw);
-            }
+			game.drawToHand(currentPlayer, this.controlCard);
         }
     }
 
@@ -2636,11 +2642,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
     	}
 
     	if (!opponentsRevealedProvince) {
-    		Card draw = game.draw(currentPlayer);
-    		if (draw != null) {
-    			currentPlayer.hand.add(draw);
-    		}
-
+			game.drawToHand(currentPlayer, this.controlCard);
     		context.addGold++;
     	}
     }
@@ -6161,4 +6163,47 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 				currentPlayer.gainNewCard(card, this.controlCard, context);
         }
 	}
+
+	public void ranger(Game game,MoveContext context, Player currentPlayer) {
+		if (currentPlayer.journeyToken) {
+			for (int i=0;i<5;i++)
+				drawToHand(game, currentPlayer, this.controlCard);
+		}
+		currentPlayer.journeyToken = !currentPlayer.journeyToken;
+	}
+
+	public void giant(Game game,MoveContext context, Player currentPlayer) {
+		if (currentPlayer.journeyToken) {
+			context.addGold += 5;
+			for (Player player : game.getPlayersInTurnOrder()) {
+				if (player != currentPlayer && !Util.isDefendedFromAttack(game, player, this.controlCard)) {
+					player.attacked(this.controlCard, context);
+					MoveContext playerContext = new MoveContext(game, player);
+					playerContext.cardCostModifier = context.cardCostModifier;
+					Card draw;
+					if ((draw = game.draw(player)) != null) {
+						if (draw.getCost(context) >= 3 && draw.getCost(context) <= 6) {
+							player.trash(draw, this.controlCard, playerContext);
+						} else {
+							player.reveal(draw, this.controlCard, playerContext);
+							player.discard(draw, this.controlCard, null);
+							player.gainNewCard(Cards.curse, this.controlCard, playerContext);
+						}
+					}
+				}
+			}
+		} else {
+			context.addGold += 1;
+		}
+		currentPlayer.journeyToken = !currentPlayer.journeyToken;
+	}
+
+	public void bridgeTroll(Game game,MoveContext context, Player currentPlayer) {
+		for (Player player : game.getPlayersInTurnOrder()) {
+			if (player != currentPlayer && !Util.isDefendedFromAttack(game, player, this.controlCard)) {
+				player.minusCoinToken = true;
+			}
+		}
+	}
+
 }

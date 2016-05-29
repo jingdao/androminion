@@ -123,9 +123,7 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
             reevaluateTreasures = illGottenGains(context, player, reevaluateTreasures);
         } else if (equals(Cards.counterfeit)) {
         	reevaluateTreasures = counterfeit(context, game, reevaluateTreasures, player);
-        }
-		else if (equals(Cards.spoils))
-        {
+        } else if (equals(Cards.spoils)) {
 			if (!isClone) {
 				// Return to the spoils pile
 	            AbstractCardPile pile = game.getPile(this);
@@ -138,6 +136,8 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 			}
 		} else if (equals(Cards.treasureTrove)) {
 			treasureTrove(context,game,player);
+		} else if (equals(Cards.relic)) {
+			relic(context,game,player);
 		}
 
         return reevaluateTreasures;
@@ -300,4 +300,13 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
         currentPlayer.gainNewCard(Cards.gold, this.controlCard, context);
         currentPlayer.gainNewCard(Cards.copper, this.controlCard, context);
 	}
+
+	public void relic(MoveContext context,Game game, Player currentPlayer) {
+		for (Player player : game.getPlayersInTurnOrder()) {
+			if (player != currentPlayer && !Util.isDefendedFromAttack(game, player, this.controlCard)) {
+				player.minusCardToken = true;
+			}
+		}
+	}
+
 }

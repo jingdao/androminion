@@ -3001,4 +3001,13 @@ public abstract class BasePlayer extends Player implements GameEventListener {
         return bestCardInPlay(context, maxCost, false, potion);
     }
 
+    public Card[] pilgrimage_cardsToObtain(MoveContext context,Card[] cards) {
+		ArrayList<Card> choices = new ArrayList<Card>(Arrays.asList(cards));
+		Collections.sort(choices, new CardCostComparator());
+		ArrayList<Card> selected = new ArrayList<Card>();
+		for (int i=0;i<3&&i<choices.size();i++)
+			selected.add(choices.get(i));
+		return selected.toArray(new Card[0]);
+	}
+
 }

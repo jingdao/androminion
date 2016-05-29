@@ -1,5 +1,6 @@
 package com.mehtank.androminion.server;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -9,6 +10,7 @@ import com.mehtank.androminion.R;
 
 import com.vdom.api.ActionCard;
 import com.vdom.api.Card;
+import com.vdom.api.CardCostComparator;
 import com.vdom.api.TreasureCard;
 import com.vdom.api.VictoryCard;
 import com.vdom.comms.SelectCardOptions;
@@ -2977,6 +2979,25 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         }
         SelectCardOptions sco = new SelectCardOptions().maxCost(maxCost).potionCost(potion ? 1 : 0);
         return getFromTable(context, getActionString(ActionType.GAIN, Cards.transmogrify), sco);
+    }
+
+    public Card[] pilgrimage_cardsToObtain(MoveContext context, Card[] cards) {
+		ArrayList<Card> choices = new ArrayList<Card>(Arrays.asList(cards));
+		Collections.sort(choices, new CardCostComparator());
+        ArrayList<Card> cardsToObtain = new ArrayList<Card>();
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : choices)
+            options.add(Strings.getCardName(c));
+        String none = getString(R.string.none);
+        options.add(none);
+        do {
+            String o = selectString(context, Cards.eventCard, options.toArray(new String[0]));
+			if (o.equals(none))
+				break;
+            cardsToObtain.add(localNameToCard(o, cards));
+            options.remove(o);
+        } while (cardsToObtain.size() < 3);
+        return cardsToObtain.toArray(new Card[0]);
     }
 
 }

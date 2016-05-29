@@ -1350,6 +1350,10 @@ public class Game {
     }
 
     boolean drawToHand(Player player, Card responsible, boolean showUI) {
+		if (player.minusCardToken) {
+			player.minusCardToken = false;
+			return false;
+		}
         Card card = draw(player);
         if (card == null)
             return false;
@@ -1709,12 +1713,25 @@ public class Game {
             	String s = cardName;
             	if (card == null) { // maybe we need equalsIgnoreCase
                     for (Card c : Cards.actionCards) {
-                        if(c.getSafeName().equalsIgnoreCase(s)) {
+//                        if(c.getSafeName().equalsIgnoreCase(s)) {
+                        if(c.getName().equalsIgnoreCase(s)) {
                             card = c;
                             break;
                         }
                     }
             	}
+				if (card == null) {
+					boolean foundEvent = false;
+					for (Event e : Event.allEvents) {
+						if (e.name.equalsIgnoreCase(s)) {
+							eventsList.add(e);
+							foundEvent = true;
+							break;
+						}
+					}
+					if (foundEvent)
+						continue;
+				}
                 if(card != null && bane) {
                     baneCard = card;
                 }
@@ -1807,9 +1824,8 @@ public class Game {
 				//Adding the bane card could probably be done in the CardSet class, but it seems better to call it out explicitly.
 				this.addPile(this.baneCard);
 			}
+			eventsList = Event.getEventSet(gameType);
 		}
-
-		eventsList = Event.getEventSet(gameType);
 
 		if (piles.containsKey(Cards.virtualKnight.getName())) {
 			VariableCardPile kp = (VariableCardPile) this.getPile(Cards.virtualKnight);

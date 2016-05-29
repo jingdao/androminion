@@ -1,6 +1,7 @@
 package com.vdom.core;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Collections;
 import com.vdom.api.GameType;
 import com.vdom.api.Card;
@@ -89,6 +90,9 @@ public class Event {
 			case Trade:
 				trade(context,currentPlayer);
 				break;
+			case Pilgrimage:
+				pilgrimage(context,currentPlayer);
+				break;
 			default:
 				break;
 		}
@@ -171,7 +175,10 @@ public class Event {
 			if (e.equals(Event.borrow))
 				return;
 		}
-		context.addGold += 1;
+		if (!currentPlayer.minusCardToken) {
+			currentPlayer.minusCardToken = true;
+			context.addGold += 1;
+		}
 	}
 
 	public void quest(MoveContext context, Player currentPlayer) {
@@ -277,6 +284,7 @@ public class Event {
 	}
 
 	public void ball(MoveContext context, Player currentPlayer) {
+		currentPlayer.minusCoinToken = true;
 		Card card = currentPlayer.ball_cardToObtain((MoveContext) context);
 		currentPlayer.gainNewCard(card,Cards.eventCard, (MoveContext) context);
 		card = currentPlayer.ball_cardToObtain((MoveContext) context);
@@ -290,6 +298,10 @@ public class Event {
 				numSilver++;
 		for (int i=0;i<numSilver;i++)
 			currentPlayer.gainNewCard(Cards.silver,Cards.eventCard, context);
+		for (Player player : context.game.getPlayersInTurnOrder()) {
+			if (player != currentPlayer)
+				player.minusCardToken = true;
+		}
 	}
 
 	public void seaway(MoveContext context, Player currentPlayer) {
@@ -307,6 +319,29 @@ public class Event {
 			for (int i=0;i<cards.length;i++)
 				currentPlayer.gainNewCard(Cards.silver,Cards.eventCard, context);
 		}
+	}
+
+	public void pilgrimage(MoveContext context, Player currentPlayer) {
+		for (Event e : currentPlayer.controlPlayer.boughtEvents) {
+			if (e.equals(Event.pilgrimage))
+				return;
+		}
+		if (currentPlayer.journeyToken) {
+			HashSet<Card> uniqueCards = new HashSet<Card>();
+			for (Card card : currentPlayer.playedCards) {
+				AbstractCardPile pile = context.game.getPile(card);
+				if (!pile.isEmpty() && pile.isSupply())
+					uniqueCards.add(card);
+			}
+			if (uniqueCards.size() > 0) {
+				Card[] selectedCards = currentPlayer.controlPlayer.pilgrimage_cardsToObtain(context,uniqueCards.toArray(new Card[0]));
+				for (Card card : selectedCards) {
+					currentPlayer.gainNewCard(card,Cards.eventCard,context);
+				}
+			}
+		}
+		currentPlayer.journeyToken = !currentPlayer.journeyToken;
+
 	}
 
 }

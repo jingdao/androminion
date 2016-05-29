@@ -455,7 +455,11 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
         int pirates[] = new int[numPlayers];
         int victoryTokens[] = new int[numPlayers];
         int guildsCoinTokens[] = new int[numPlayers];
+		boolean minusCardToken[] = new boolean[numPlayers];
+		boolean minusCoinToken[] = new boolean[numPlayers];
+		boolean journeyToken[] = new boolean[numPlayers];
 		String realNames[] = new String[numPlayers];
+		int coinsAvailable = context.getCoinForStatus();
 
         for (int i=0; i<numPlayers; i++) {
         	Player p = allPlayers.get(i);
@@ -471,6 +475,9 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
         	pirates[i] = p.getPirateShipTreasure();
         	victoryTokens[i] = p.getVictoryTokens();
         	guildsCoinTokens[i] = p.getGuildsCoinTokenCount();
+			minusCardToken[i] = p.getMinusCardToken();
+			minusCoinToken[i] = p.getMinusCoinToken();
+			journeyToken[i] = p.getJourneyToken();
         	realNames[i] = p.getPlayerName(false);
         }
 
@@ -485,7 +492,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     	
     	gs.setTurnStatus(new int[] {context.getActionsLeft(),
     					  context.getBuysLeft(),
-                          context.getCoinForStatus(),
+                          coinsAvailable,
 						  context.countThroneRoomsInEffect()
     					 })
     	  .setFinal(isFinal)
@@ -505,6 +512,9 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     	  .setPirates(pirates)
     	  .setVictoryTokens(victoryTokens)
     	  .setGuildsCoinTokens(guildsCoinTokens)
+		  .setMinusCardToken(minusCardToken)
+		  .setMinusCoinToken(minusCoinToken)
+		  .setJourneyToken(journeyToken)
     	  .setCardCostModifier(context.cardCostModifier)
     	  .setPotions(context.getPotionsForStatus(player))
     	  .setIsland(cardArrToIntArr(player.getIsland().toArray()))
