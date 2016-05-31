@@ -246,8 +246,25 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         context.buys += addBuys;
         context.addGold += addGold;
         currentPlayer.addVictoryTokens(context, addVictoryTokens);
-
         int cardsToDraw = addCards;
+
+		Card originCard;
+		if (this.isKnight()) 
+			originCard = Cards.virtualKnight;
+		else if (this.isRuins()) 
+			originCard = Cards.virtualRuins;
+		else 
+			originCard = this.controlCard;
+
+		if (currentPlayer.plusActionToken!=null && currentPlayer.plusActionToken.getName().equals(originCard.getName()))
+			context.actions++;
+		if (currentPlayer.plusBuyToken!=null && currentPlayer.plusBuyToken.getName().equals(originCard.getName()))
+			context.buys++;
+		if (currentPlayer.plusCoinToken!=null && currentPlayer.plusCoinToken.getName().equals(originCard.getName()))
+			context.addGold++;
+		if (currentPlayer.plusCardToken!=null && currentPlayer.plusCardToken.getName().equals(originCard.getName()))
+			cardsToDraw++;
+
         while (cardsToDraw > 0) {
             cardsToDraw--;
             game.drawToHand(currentPlayer, this);
@@ -824,6 +841,10 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			break;
 		case BridgeTroll:
 			bridgeTroll(game,context,currentPlayer);
+			break;
+		case Estate:
+			inheritedEstate(game,context,currentPlayer);
+			break;
         default:
             break;
         }
@@ -6206,4 +6227,46 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		}
 	}
 
+	public void teacher(Game game,MoveContext context, Player currentPlayer) {
+		Player.TeacherOption option = currentPlayer.controlPlayer.teacher_chooseOption(context);
+		Card card = currentPlayer.controlPlayer.teacher_placeToken(context);
+		if (card != null) {
+			switch (option) {
+				case PlusCard: currentPlayer.plusCardToken = card; break;
+				case PlusAction: currentPlayer.plusActionToken = card; break;
+				case PlusCoin: currentPlayer.plusCoinToken = card; break;
+				case PlusBuy: currentPlayer.plusBuyToken = card; break;
+			}
+		}
+	}
+
+    public void inheritedEstate(Game game, MoveContext context, Player currentPlayer) {
+    	// Already impersonating another card?
+    	if (!this.isImpersonatingAnotherCard()) {
+			this.startImpersonatingCard(currentPlayer.estateToken.getTemplateCard().instantiate());
+    	}
+    	
+    	// Play the impersonated card
+        ActionCardImpl cardToPlay = (ActionCardImpl) this.impersonatingCard;
+        context.freeActionInEffect++;
+        cardToPlay.play(game, context, false);
+        context.freeActionInEffect--;
+
+        // impersonated card stays in play until next turn?
+        if (cardToPlay.trashOnUse) {
+            int idx = currentPlayer.playedCards.lastIndexOf(this);
+            if (idx >= 0) currentPlayer.playedCards.remove(idx);
+            currentPlayer.trash(this, null, context);
+        } else if (cardToPlay instanceof DurationCard && !cardToPlay.equals(Cards.outpost)) {
+            if (!this.controlCard.movedToNextTurnPile) {
+                this.controlCard.movedToNextTurnPile = true;
+                int idx = currentPlayer.playedCards.lastIndexOf(this);
+                if (idx >= 0) {
+                	currentPlayer.playedCards.remove(idx);
+                    currentPlayer.nextTurnCards.add(this);
+                }
+            }
+        }
+    }
+    
 }

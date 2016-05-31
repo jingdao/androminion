@@ -2761,7 +2761,7 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         if(context.isQuickPlay()) {
             return super.gear_cardsToSetAside(context);
         }
-        SelectCardOptions sco = new SelectCardOptions().setCount(2).exactCount().setPickType(PickType.SELECT);
+        SelectCardOptions sco = new SelectCardOptions().setCount(2).setPickType(PickType.SELECT);
         return getFromHand(context, getCardName(Cards.gear), sco);
     }
 
@@ -2999,5 +2999,74 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         } while (cardsToObtain.size() < 3);
         return cardsToObtain.toArray(new Card[0]);
     }
+
+    public Card plan_placeToken(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().isAction().allowEmpty();
+        return getFromTable(context, Event.plan.name , sco);
+    }
+
+    public Card ferry_placeToken(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().isAction();
+        return getFromTable(context, Event.ferry.name , sco);
+    }
+
+    public Card lostArts_placeToken(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().isAction().allowEmpty();
+        return getFromTable(context, Event.lostArts.name , sco);
+    }
+
+    public Card training_placeToken(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().isAction().allowEmpty();
+        return getFromTable(context, Event.training.name , sco);
+    }
+
+    public Card pathfinding_placeToken(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().isAction().allowEmpty();
+        return getFromTable(context, Event.pathfinding.name , sco);
+    }
+
+    public Card inheritance_placeToken(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().isAction().isNonVictory().potionCost(0).maxCost(4).allowEmpty();
+        return getFromTable(context, Event.inheritance.name , sco);
+    }
+
+    public TeacherOption teacher_chooseOption(MoveContext context) {
+        LinkedHashMap<String, TeacherOption> h = new LinkedHashMap<String, TeacherOption>();
+        h.put(getString(R.string.teacher_option_one), TeacherOption.PlusCard);
+        h.put(getString(R.string.teacher_option_two), TeacherOption.PlusAction);
+        h.put(getString(R.string.teacher_option_three), TeacherOption.PlusCoin);
+        h.put(getString(R.string.teacher_option_four), TeacherOption.PlusBuy);
+        return h.get(selectString(context, Cards.eventCard, h.keySet().toArray(new String[0])));
+	}
+
+	public Card teacher_placeToken(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().isAction().allowEmpty();
+        sco.fromTable();
+        Card[] cards = context.getCardsInGame();
+        for (Card card : cards) {
+            if ((card instanceof ActionCard) &&
+				card != context.player.trashingToken &&
+				card != context.player.minusCostToken &&
+				card != context.player.plusCardToken &&
+				card != context.player.plusActionToken &&
+				card != context.player.plusCoinToken &&
+				card != context.player.plusBuyToken) {
+                    sco.addValidCard(cardToInt(card));
+            }
+        }
+        if (sco.getAllowedCardCount() == 0) {
+            return null;
+        }
+        String selectString = Strings.format(R.string.select_from_table, Cards.teacher.getName());
+        return (Card) pickACard(context, selectString, sco);
+    }
+
+	public Card trashingToken_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_trader_cardToTrash(context)) {
+            return super.trashingToken_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPickType(PickType.TRASH).setPassable(getString(R.string.none));
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Event.plan,""), sco);
+	}
 
 }

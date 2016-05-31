@@ -495,6 +495,7 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 	private int[] lastSupplySizes;
 
 	private int[] lastEmbargos;
+	private int[] lastSupplyTokens;
 
 	void resetButtons() {
 		CharSequence selectText = select.getText();
@@ -776,10 +777,10 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 	 * @param supplySizes Sizes of piles
 	 * @param embargos number of embargos
 	 */
-	public void setSupplySizes(int[] supplySizes, int[] embargos) {
+	public void setSupplySizes(int[] supplySizes, int[] embargos, int[] supplyTokens) {
 		moneyPile.updateCounts(supplySizes, embargos);
 		vpPile.updateCounts(supplySizes, embargos);
-		supplyPile.updateCounts(supplySizes, embargos);
+		supplyPile.updateCounts(supplySizes, embargos, supplyTokens);
 		prizePile.updateCounts(supplySizes, embargos);
 		nonSupplyPile.updateCounts(supplySizes, embargos);
 	}
@@ -856,7 +857,7 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 	void uncheckAllShowCardsButtons() {
 		for (ToggleButton t : showCardsButtons)
 			t.setChecked(false);
-		setSupplySizes(this.lastSupplySizes, this.lastEmbargos);
+		setSupplySizes(this.lastSupplySizes, this.lastEmbargos, this.lastSupplyTokens);
 	}
 
 	/**
@@ -948,11 +949,12 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 
 		this.lastSupplySizes = gs.supplySizes;
 		this.lastEmbargos = gs.embargos;
+		this.lastSupplyTokens = gs.supplyTokens;
 		costs = gs.costs;
         
         supplyPile.updateCardName(gs.ruinsID, gs.ruinsTopCard, gs.ruinsTopCardDesc);
         supplyPile.updateCardName(gs.knightsID, gs.knightsTopCard, gs.knightsTopCardDesc, gs.knightsTopCardCost);
-		setSupplySizes(gs.supplySizes, gs.embargos);
+		setSupplySizes(gs.supplySizes, gs.embargos, gs.supplyTokens);
         setCardCosts(top.findViewById(android.R.id.content));
 	}
 

@@ -632,7 +632,6 @@ public class Game {
                     if (isValidAction(context, action)) {
                         GameEvent event = new GameEvent(GameEvent.Type.Status, (MoveContext) context);
                         broadcastEvent(event);
-
                         try {
                             ((ActionCardImpl) action).play(this, (MoveContext) context, true);
                         } catch (RuntimeException e) {
@@ -777,6 +776,7 @@ public class Game {
 				((ActionCardImpl)reserve).transmogrify(this,context,player);
 				calledReserves.add(reserve);
 			} else if (reserve.equals(Cards.teacher) && player.callReserveCard(context,reserve)) {
+				((ActionCardImpl)reserve).teacher(this,context,player);
 				calledReserves.add(reserve);
 			}
 		}
@@ -1244,6 +1244,22 @@ public class Game {
         		player.gainNewCard(Cards.gold, Cards.hoard, context);
         	}
         }
+
+		Card originCard;
+		if (buy.isKnight()) 
+			originCard = Cards.virtualKnight;
+		else if (buy.isRuins()) 
+			originCard = Cards.virtualRuins;
+		else 
+			originCard = buy.getControlCard();
+
+		if (player.trashingToken!=null && player.trashingToken.getName().equals(originCard.getName())) {
+			Card toTrash = player.controlPlayer.trashingToken_cardToTrash(context);
+			if (toTrash != null) {
+				player.hand.remove(toTrash);
+				player.trash(toTrash,Cards.eventCard,context);
+			}
+		}
 
         buy.isBought(context);
         haggler(context, buy);
@@ -2043,6 +2059,9 @@ public class Game {
 
                     MoveContext context = event.getContext();
                     Player player = context.getPlayer();
+
+					if (event.card.equals(Cards.estate) && player.estateToken != null)
+						event.card =  Cards.inheritedEstate.getTemplateCard().instantiate();
 
                     if (player.isPossessed()) {
                         possessedBoughtPile.add(event.card);

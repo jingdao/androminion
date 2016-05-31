@@ -49,6 +49,8 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 	private TextView cost, countLeft, embargos;
 	private TextView checked;
 	private TextView cardDesc;
+	private TextView estateToken,minusCostToken,trashingToken;
+	private TextView plusCardToken,plusActionToken,plusCoinToken,plusBuyToken;
 
 	private String viewstyle;
 	private boolean autodownload;
@@ -126,6 +128,14 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 		embargos = (TextView) findViewById(R.id.embargos);
 		checked = (TextView) findViewById(R.id.checked);
 		cardDesc = (TextView) findViewById(R.id.cardDesc);
+
+		estateToken = (TextView) findViewById(R.id.estateToken);
+		minusCostToken = (TextView) findViewById(R.id.minusCostToken);
+		trashingToken = (TextView) findViewById(R.id.trashingToken);
+		plusCardToken = (TextView) findViewById(R.id.plusCardToken);
+		plusActionToken = (TextView) findViewById(R.id.plusActionToken);
+		plusCoinToken = (TextView) findViewById(R.id.plusCoinToken);
+		plusBuyToken = (TextView) findViewById(R.id.plusBuyToken);
 
 		state = new CardState(null);
 
@@ -336,6 +346,24 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 		} else {
 			embargos.setVisibility(GONE);
 		}
+	}
+
+	public void setSupplyTokens(int id,boolean visible) {
+		TextView tv;
+		switch (id) {
+			case 0: tv = estateToken; break;
+			case 1: tv = minusCostToken; break;
+			case 2: tv = trashingToken; break;
+			case 3: tv = plusCardToken; break;
+			case 4: tv = plusActionToken; break;
+			case 5: tv = plusCoinToken; break;
+			case 6: tv = plusBuyToken; break;
+			default: tv = plusBuyToken; break;
+		}
+		if (visible)
+			tv.setVisibility(VISIBLE);
+		else
+			tv.setVisibility(GONE);
 	}
 
 	public void setCost(int newCost, boolean overpay) {

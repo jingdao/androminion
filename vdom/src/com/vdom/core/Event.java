@@ -93,6 +93,24 @@ public class Event {
 			case Pilgrimage:
 				pilgrimage(context,currentPlayer);
 				break;
+			case Plan:
+				plan(context,currentPlayer);
+				break;
+			case Ferry:
+				ferry(context,currentPlayer);
+				break;
+			case LostArts:
+				lostArts(context,currentPlayer);
+				break;
+			case Training:
+				training(context,currentPlayer);
+				break;
+			case Pathfinding:
+				pathfinding(context,currentPlayer);
+				break;
+			case Inheritance:
+				inheritance(context,currentPlayer);
+				break;
 			default:
 				break;
 		}
@@ -307,6 +325,7 @@ public class Event {
 	public void seaway(MoveContext context, Player currentPlayer) {
 		Card card = currentPlayer.seaway_cardToObtain((MoveContext) context);
 		currentPlayer.gainNewCard(card,Cards.eventCard, (MoveContext) context);
+		currentPlayer.plusBuyToken = card;
 	}
 
 	public void trade(MoveContext context, Player currentPlayer) {
@@ -341,7 +360,56 @@ public class Event {
 			}
 		}
 		currentPlayer.journeyToken = !currentPlayer.journeyToken;
+	}
 
+	public void plan(MoveContext context, Player currentPlayer) {
+		Card card = currentPlayer.plan_placeToken((MoveContext) context);
+		currentPlayer.trashingToken = card;
+	}
+
+	public void ferry(MoveContext context, Player currentPlayer) {
+		Card card = currentPlayer.ferry_placeToken((MoveContext) context);
+		currentPlayer.minusCostToken = card;
+	}
+
+	public void lostArts(MoveContext context, Player currentPlayer) {
+		Card card = currentPlayer.lostArts_placeToken((MoveContext) context);
+		currentPlayer.plusActionToken = card;
+	}
+
+	public void training(MoveContext context, Player currentPlayer) {
+		Card card = currentPlayer.training_placeToken((MoveContext) context);
+		currentPlayer.plusCoinToken = card;
+	}
+
+	public void pathfinding(MoveContext context, Player currentPlayer) {
+		Card card = currentPlayer.pathfinding_placeToken((MoveContext) context);
+		currentPlayer.plusCardToken = card;
+	}
+
+	public void inheritance(MoveContext context, Player currentPlayer) {
+		if (currentPlayer.estateToken==null) {
+			Card card = currentPlayer.inheritance_placeToken((MoveContext) context);
+			currentPlayer.estateToken = context.game.takeFromPile(card);
+			ArrayList<CardList> lists = new ArrayList<CardList>();
+			lists.add(currentPlayer.hand);
+			lists.add(currentPlayer.deck);
+			lists.add(currentPlayer.discard);
+			lists.add(currentPlayer.playedCards);
+			lists.add(currentPlayer.nextTurnCards);
+			lists.add(currentPlayer.nativeVillage);
+			lists.add(currentPlayer.island);
+			lists.add(currentPlayer.haven);
+			lists.add(currentPlayer.horseTraders);
+			lists.add(currentPlayer.tavern);
+			for (CardList cl : lists) {
+				int numEstate = 0;
+				while (cl.remove(Cards.estate))
+					numEstate++;
+				for (int i=0;i<numEstate;i++)
+					cl.add(Cards.inheritedEstate.getTemplateCard().instantiate());
+			}
+		}
 	}
 
 }

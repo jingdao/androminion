@@ -41,6 +41,13 @@ public abstract class Player {
 	boolean minusCardToken = false;
 	boolean minusCoinToken = false;
 	boolean journeyToken = false;
+	public Card plusCardToken = null;
+	public Card plusActionToken = null;
+	public Card plusCoinToken = null;
+	public Card plusBuyToken = null;
+	public Card minusCostToken = null;
+	public Card trashingToken = null;
+	public Card estateToken = null;
     
     private Card checkLeadCard;
     private int victoryTokens;
@@ -521,6 +528,8 @@ public abstract class Player {
 		for (Card card: gear) {
 			allCards.add(card);
 		}
+		if (estateToken != null)
+			allCards.add(estateToken);
         if (checkLeadCard != null) {
         	allCards.add(checkLeadCard);
         }
@@ -908,6 +917,8 @@ public abstract class Player {
         // Add to trash pile
     	if (isPossessed()) {
             context.game.possessedTrashPile.add(card);
+		} else if (card.getTemplateCard()==Cards.inheritedEstate) {
+			context.game.trashPile.add(Cards.estate.getTemplateCard().instantiate());
         } else {
             context.game.trashPile.add(card);
         }
@@ -1084,6 +1095,13 @@ public abstract class Player {
 		Attack,
 		Curses,
 		Cards
+	}
+
+	public enum TeacherOption {
+		PlusCard,
+		PlusAction,
+		PlusCoin,
+		PlusBuy
 	}
 
     // Context is passed for the player to add a GameEventListener
@@ -1565,6 +1583,15 @@ public abstract class Player {
 	public abstract Card transmogrify_cardToTrash(MoveContext context);
     public abstract Card transmogrify_cardToObtain(MoveContext context, int maxCost, boolean potion);
     public abstract Card[] pilgrimage_cardsToObtain(MoveContext context,Card[] cards);
+	public abstract Card plan_placeToken(MoveContext context);
+	public abstract Card ferry_placeToken(MoveContext context);
+	public abstract Card lostArts_placeToken(MoveContext context);
+	public abstract Card training_placeToken(MoveContext context);
+	public abstract Card pathfinding_placeToken(MoveContext context);
+	public abstract Card inheritance_placeToken(MoveContext context);
+    public abstract TeacherOption teacher_chooseOption(MoveContext context);
+	public abstract Card teacher_placeToken(MoveContext context); 
+	public abstract Card trashingToken_cardToTrash(MoveContext context);
 
 
 	// ////////////////////////////////////////////

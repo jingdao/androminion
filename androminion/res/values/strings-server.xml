@@ -339,6 +339,10 @@
   <string name="quest_option_two">Discard two Curses</string>
   <string name="quest_option_three">Discard six cards</string>
   <string name="call_query">Call Reserve card</string>
+  <string name="teacher_option_one">+1 Card token</string>
+  <string name="teacher_option_two">+1 Action token</string>
+  <string name="teacher_option_three">+1 Coin token</string>
+  <string name="teacher_option_four">+1 Buy token</string>
   
   
 </resources>

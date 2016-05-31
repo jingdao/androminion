@@ -460,6 +460,14 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 		boolean journeyToken[] = new boolean[numPlayers];
 		String realNames[] = new String[numPlayers];
 		int coinsAvailable = context.getCoinForStatus();
+		Card supplyTokens[] = context.getSupplyTokens();
+		int supplyTokensId[] = new int[supplyTokens.length];
+		for (int i=0;i<supplyTokens.length;i++) {
+			if (supplyTokens[i]==null)
+				supplyTokensId[i] = -1;
+			else
+				supplyTokensId[i] = cardToInt(supplyTokens[i]);
+		}
 
         for (int i=0; i<numPlayers; i++) {
         	Player p = allPlayers.get(i);
@@ -500,6 +508,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
           .setTurnCounts(turnCounts)
     	  .setSupplySizes(supplySizes)
     	  .setEmbargos(embargos)
+		  .setSupplyTokens(supplyTokensId)
     	  .setCosts(costs)
     	  .setHand(cardArrToIntArr(Game.sortCards ? shownHand.sort(new Util.CardHandComparator()) : shownHand.toArray()))
     	  .setPlayedCards(playedArray)

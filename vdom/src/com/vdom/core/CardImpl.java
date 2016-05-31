@@ -222,6 +222,15 @@ public class CardImpl implements Card {
         costModifier -= context.countCardsInPlay(Cards.highway);
         costModifier -= (buyPhase && this.equals(Cards.peddler)) ? (2 * context.countActionCardsInPlayThisTurn()) : 0;
         //costModifier -= (this.isKnight ? (cost - game. (2 * context.countCardsInPlay(Cards.quarry)) : 0;
+		Card originCard;
+		if (this.isKnight()) 
+			originCard = Cards.virtualKnight;
+		else if (this.isRuins()) 
+			originCard = Cards.virtualRuins;
+		else 
+			originCard = this.controlCard;
+		if (context.player.minusCostToken!=null && context.player.minusCostToken.getName().equals(originCard.getName()))
+			costModifier -= 2;
 
         return Math.max(0, cost + costModifier + context.cardCostModifier);
     }

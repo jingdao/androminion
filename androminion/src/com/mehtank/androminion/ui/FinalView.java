@@ -48,7 +48,7 @@ public class FinalView extends FrameLayout implements OnClickListener {
 	public void onClick(View v) {
 		if (showCards.isChecked()) {
 			gt.uncheckAllShowCardsButtons();
-			gt.setSupplySizes(cardCounts, embargos);
+			gt.setSupplySizes(cardCounts, embargos, null);
 			showCards.setChecked(true);
 		} else
 			gt.uncheckAllShowCardsButtons();

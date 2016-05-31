@@ -3010,4 +3010,50 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 		return selected.toArray(new Card[0]);
 	}
 
+	public Card plan_placeToken(MoveContext context) {
+        return bestCardInPlay(context, 4, false, false, true, false);
+	}
+
+	public Card ferry_placeToken(MoveContext context) {
+        return bestCardInPlay(context, 5, false, false, true, false);
+	}
+
+	public Card lostArts_placeToken(MoveContext context) {
+        return bestCardInPlay(context, 5, false, false, true, false);
+	}
+
+	public Card training_placeToken(MoveContext context) {
+        return bestCardInPlay(context, 5, false, false, true, false);
+	}
+
+	public Card pathfinding_placeToken(MoveContext context) {
+        return bestCardInPlay(context, 5, false, false, true, false);
+	}
+
+	public Card inheritance_placeToken(MoveContext context) {
+        return bestCardInPlay(context, 4, false, false, true, false);
+	}
+
+    public TeacherOption teacher_chooseOption(MoveContext context) {
+		TeacherOption options[] = TeacherOption.values();
+		return options[rand.nextInt(options.length)];
+	}
+
+	public Card teacher_placeToken(MoveContext context){
+		Card card;
+		do {
+			card = bestCardInPlay(context, 5, false, false, true, false);
+		} while (card!=context.player.trashingToken &&
+				card!=context.player.minusCostToken &&
+				card!=context.player.plusCardToken &&
+				card!=context.player.plusActionToken &&
+				card!=context.player.plusCoinToken &&
+				card!=context.player.plusBuyToken);
+		return card;
+	}
+
+	public Card trashingToken_cardToTrash(MoveContext context) {
+        return pickOutCard(context.getPlayer().getHand(), getTrashCards());
+	}
+
 }

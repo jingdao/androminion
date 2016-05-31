@@ -371,6 +371,7 @@ public class Cards {
 	public static final Card teacher;
 	public static final Card champion;
 	public static final Card eventCard;
+	public static final Card inheritedEstate;
 
 
     // Promo Cards (Incomplete)
@@ -661,6 +662,7 @@ public class Cards {
 		nonSupplyCards.add(teacher = new ActionCardImpl.Builder(Cards.Type.Teacher,6).isReserve().description("Put this on your tavern mat. At the start of your turn, you may call this, to move your +1 Card, +1 Action, +1 Buy, or +1 Coin token to an Action supply pile you have no tokens on.").expansion("Adventures").build());
 		nonSupplyCards.add(champion = new ActionDurationCardImpl.Builder(Cards.Type.Champion,6).addActions(1).description("For the rest of the game, when another player plays an Attack, it doesn\'t affect you, and when you play an Action, +1 Action.").expansion("Adventures").build());
 		eventCard = new ActionCardImpl.Builder(Cards.Type.Event,0).build();
+        inheritedEstate = new ActionVictoryCardImpl.Builder(Cards.Type.Estate, 2).vp(1).expansion("Base").build();
 
         // Non-Supply Cards
         nonSupplyCards.add(madman    = new ActionCardImpl.Builder(Cards.Type.Madman, 0).addActions(2).description("Return this to the Madman pile. If you do, +1 Card per card in your hand. (This is not in the supply)").expansion("DarkAges").build());

@@ -31,13 +31,83 @@
         android:textSize="7dp"
         android:visibility="gone" />
 
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	   android:layout_width="fill_parent"
+	   android:layout_height="fill_parent"
+	   android:gravity="right|center_vertical"
+	   android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/estateToken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/estatetoken"
+		android:text=" E "
+        android:textColor="#000000"
+        android:textSize="10.5dp"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/minusCostToken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/minuscosttoken"
+		android:text=" - "
+        android:textColor="#000000"
+        android:textSize="10.5dp"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/plusCoinToken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/pluscointoken"
+		android:text=" + "
+        android:textColor="#000000"
+        android:textSize="10.5dp"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/trashingToken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/trashingtoken"
+		android:text=" T "
+        android:textColor="#000000"
+        android:textSize="10.5dp"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/plusBuyToken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/plusbuytoken"
+		android:text=" B "
+        android:textColor="#000000"
+        android:textSize="10.5dp"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/plusCardToken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/pluscardtoken"
+		android:text=" C "
+        android:textColor="#000000"
+        android:textSize="10.5dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/plusActionToken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/plusactiontoken"
+		android:text=" A "
+        android:textColor="#000000"
+        android:textSize="10.5dp"
+        android:visibility="gone" />
+
     <!-- Embargos can only happen on supply piles (where countLeft is also shown) -->
 
     <TextView
         android:id="@+id/embargos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|center_vertical"
         android:background="@drawable/embargos"
         android:textColor="@android:color/white"
         android:textSize="10.5dp"
@@ -47,10 +117,11 @@
         android:id="@+id/checked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|right"
         android:background="@android:drawable/arrow_down_float"
         android:textColor="#ff0000"
         android:textStyle="bold"
         android:visibility="gone" />
+
+	</LinearLayout>
 
 </FrameLayout>

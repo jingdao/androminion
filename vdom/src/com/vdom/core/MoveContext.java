@@ -168,6 +168,19 @@ public class MoveContext {
         return game.getEmbargos(card);
     }
 
+	public Card[] getSupplyTokens() {
+		Card[] tokens = {
+			player.estateToken,
+			player.minusCostToken,
+			player.trashingToken,
+			player.plusCardToken,
+			player.plusActionToken,
+			player.plusCoinToken,
+			player.plusBuyToken
+		};
+		return tokens;
+	}
+
     public ArrayList<Card> getCardsObtainedByLastPlayer() {
         return game.getCardsObtainedByLastPlayer();
     }
