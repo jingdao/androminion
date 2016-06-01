@@ -1852,7 +1852,7 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         if (reactionCards.size() > 0) {
             ArrayList<String> options = new ArrayList<String>();
             for (Card c : reactionCards)
-                if (lastCard == null || !Game.suppressRedundantReactions || c.getName() != lastCard.getName() || c.equals(Cards.horseTraders) || c.equals(Cards.beggar))
+                if (lastCard == null || !Game.suppressRedundantReactions || c.getName() != lastCard.getName() || c.equals(Cards.horseTraders) || c.equals(Cards.beggar) || c.equals(Cards.caravanGuard))
                    options.add(Strings.getCardName(c));
             if (options.size() > 0) {
                 String none = getString(R.string.none);
@@ -3067,6 +3067,11 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         }
         SelectCardOptions sco = new SelectCardOptions().setPickType(PickType.TRASH).setPassable(getString(R.string.none));
         return getCardFromHand(context, getActionString(ActionType.TRASH, Event.plan,""), sco);
+	}
+
+	public Card[] storyteller_cardsToPlay(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().isTreasure().setPassable(getString(R.string.none)).setCount(3).ordered().setPickType(PickType.SELECT);
+        return getFromHand(context, Cards.storyteller.getName(), sco);
 	}
 
 }

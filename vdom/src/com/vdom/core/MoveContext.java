@@ -89,6 +89,10 @@ public class MoveContext {
             	cardsInPlay++;
             }
         }
+		for (Card c : player.nextTurnCards) {
+			if (c.behaveAsCard().equals(card))
+				cardsInPlay++;
+		}
         return cardsInPlay;
 	}
 

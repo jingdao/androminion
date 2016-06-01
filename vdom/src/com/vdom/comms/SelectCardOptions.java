@@ -182,12 +182,8 @@ public class SelectCardOptions implements Serializable {
 		if (isNonRats && c.equals(Cards.rats)) return false;
 	    if (c.equals(Cards.grandMarket) && copperCountInPlay > 0) return false;
 		if (isNonShelter && c.isShelter()) return false;
-		
-		if (c instanceof ActionCard) {
-			if (isAttack && !(((ActionCard) c).isAttack())) return false;
-		} else {
-			if (isAction || isAttack) return false;
-		}
+		if (isAction && ! (c instanceof ActionCard)) return false;
+		if (isAttack && ! c.isAttack()) return false;
 		if (isBuyPhase && !Cards.isSupplyCard(c)) return false; 
 
 		return true;

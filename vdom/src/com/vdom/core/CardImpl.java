@@ -22,6 +22,7 @@ public class CardImpl implements Card {
     boolean isOverpay = false;  // can this card be overpaid for?
 	boolean isReserve = false;
 	boolean isTraveller = false;
+    protected boolean attack = false;
 
     static int maxNameLen;	// across all cards
 
@@ -57,6 +58,7 @@ public class CardImpl implements Card {
         isOverpay   = builder.isOverpay;
 		isReserve   = builder.isReserve;
 		isTraveller = builder.isTraveller;
+		attack = builder.isAttack;
     }
 
     public static class Builder {
@@ -77,6 +79,7 @@ public class CardImpl implements Card {
 	    protected boolean isOverpay = false;
 		protected boolean isReserve = false;
 		protected boolean isTraveller = false;
+		protected boolean isAttack = false;
 
 
         public Builder(Cards.Type type, int cost) {
@@ -142,6 +145,11 @@ public class CardImpl implements Card {
 			isTraveller = true;
 			return this;
 		}
+
+        public Builder attack() {
+            isAttack = true;
+            return this;
+        }
 
         public CardImpl build() {
             return new CardImpl(this);
@@ -221,6 +229,7 @@ public class CardImpl implements Card {
         costModifier -= (this instanceof ActionCardImpl) ? (2 * context.countCardsInPlay(Cards.quarry)) : 0;
         costModifier -= context.countCardsInPlay(Cards.highway);
         costModifier -= (buyPhase && this.equals(Cards.peddler)) ? (2 * context.countActionCardsInPlayThisTurn()) : 0;
+		costModifier -= context.countCardsInPlay(Cards.bridgeTroll);
         //costModifier -= (this.isKnight ? (cost - game. (2 * context.countCardsInPlay(Cards.quarry)) : 0;
 		Card originCard;
 		if (this.isKnight()) 
@@ -317,6 +326,10 @@ public class CardImpl implements Card {
 		return isTraveller;
 	}
     
+    public boolean isAttack() {
+        return attack;
+    }
+
     @Override
     public void isBought(MoveContext context) {
     }

@@ -362,7 +362,7 @@ public abstract class BasePlayer extends Player implements GameEventListener {
             } else if (c.equals(Cards.secretChamber) && !secretChamberSelected) {
                 reactionCards.add(c);
                 secretChamberSelected = true;
-            } else if (c.equals(Cards.horseTraders) || c.equals(Cards.watchTower) || c.equals(Cards.beggar) || c.equals(Cards.marketSquare)) {
+            } else if (c.equals(Cards.horseTraders) || c.equals(Cards.watchTower) || c.equals(Cards.beggar) || c.equals(Cards.marketSquare) || c.equals(Cards.caravanGuard)) {
                 reactionCards.add(c);
             }
         }
@@ -1636,12 +1636,7 @@ public abstract class BasePlayer extends Player implements GameEventListener {
     }
     
     public boolean isAttackCard(Card card) {
-        if(card instanceof ActionCard ) {
-        	ActionCard aCard = (ActionCard) card;
-            return aCard.isAttack();
-        }
-        
-        return false;
+		return card.isAttack();
     }
     
     public boolean isOnlyVictory(Card card) {
@@ -2036,11 +2031,8 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 	public Card squire_cardToObtain(MoveContext context) {
 		ArrayList<Card> options = new ArrayList<Card>();
 		for (AbstractCardPile pile : game.piles.values()) {
-			if ((pile.card() instanceof ActionCard) && (pile.getCount() > 0)) {
-				ActionCard ac = (ActionCard) pile.card();
-				if (ac.isAttack()) {
-					options.add(pile.card());
-				}
+			if (pile.card().isAttack() && (pile.getCount() > 0)) {
+				options.add(pile.card());
 			}
 		}
 		
@@ -2919,7 +2911,7 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 
 	public Card quest_attackToDiscard(MoveContext context) {
 		for (Card c : context.player.hand) {
-			if (c instanceof ActionCard && ((ActionCard)c).isAttack())
+			if (c.isAttack())
 				return c;
 		}
 		return null;
@@ -3054,6 +3046,18 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 
 	public Card trashingToken_cardToTrash(MoveContext context) {
         return pickOutCard(context.getPlayer().getHand(), getTrashCards());
+	}
+
+	public Card[] storyteller_cardsToPlay(MoveContext context) {
+        ArrayList<Card> ret = new ArrayList<Card>();
+        for (Card c : context.getPlayer().getHand()) {
+            if(c instanceof TreasureCard) {
+                ret.add(c);
+				if (ret.size() >= 3)
+					break;
+            }
+        }
+		return ret.toArray(new Card[0]);
 	}
 
 }

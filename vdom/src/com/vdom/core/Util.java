@@ -284,7 +284,8 @@ public class Util {
                 event = new GameEvent(GameEvent.Type.PlayerDefended, context);
                 event.card = reactionCard;
                 game.broadcastEvent(event);
-        	}
+        	} else if (reactionCard.equals(Cards.caravanGuard)) 
+				doCaravanGuard(context,game,player,reactionCard);
         }
 
         return defended;
@@ -397,6 +398,10 @@ public class Util {
     	
     	return false;
     }
+
+	static void doCaravanGuard(MoveContext context, Game game, Player player,Card reactionCard) {
+		((ActionCardImpl)reactionCard).play(game,context,true);
+	}
 
     public static ArrayList<Card> copy(CardList cards) {
         if (cards == null) {

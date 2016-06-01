@@ -29,7 +29,6 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
     protected int addCards;
     protected int addGold;
     protected int addVictoryTokens;
-    protected boolean attack;
     protected boolean looter;
     boolean trashForced = false;
     boolean trashOnUse = false;
@@ -41,7 +40,6 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         addCards         = builder.addCards;
         addGold          = builder.addGold;
         addVictoryTokens = builder.addVictoryTokens;
-        attack           = builder.attack;
         looter           = builder.looter;
         trashOnUse       = builder.trashOnUse;
         trashForced      = builder.trashForced;
@@ -84,11 +82,6 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 
         public Builder addVictoryTokens(int val) {
             addVictoryTokens = val;
-            return this;
-        }
-
-        public Builder attack() {
-            attack = true;
             return this;
         }
 
@@ -164,10 +157,6 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 
     public int getAddVictoryTokens() {
         return addVictoryTokens;
-    }
-
-    public boolean isAttack() {
-        return attack;
     }
 
     public boolean trashForced() {
@@ -841,6 +830,9 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			break;
 		case BridgeTroll:
 			bridgeTroll(game,context,currentPlayer);
+			break;
+		case Storyteller:
+			storyteller(game,context,currentPlayer);
 			break;
 		case Estate:
 			inheritedEstate(game,context,currentPlayer);
@@ -6268,5 +6260,17 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
             }
         }
     }
+
+	public void storyteller(Game game, MoveContext context, Player currentPlayer) {
+		Card[] treasures = currentPlayer.controlPlayer.storyteller_cardsToPlay(context); 
+		for (Card card : treasures) {
+			((TreasureCardImpl)card).playTreasure(context,false);
+		}
+		int coinAvailable = context.getCoinAvailableForBuy();
+		context.gold = 0;
+		context.addGold = 0;
+		for (int i=0;i<coinAvailable;i++)
+            game.drawToHand(currentPlayer, this);
+	}
     
 }

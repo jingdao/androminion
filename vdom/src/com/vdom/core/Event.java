@@ -206,7 +206,7 @@ public class Event {
 			int numAttack = 0;
 			Card attackCard = null;
 			for (Card card : currentPlayer.hand) {
-				if (card instanceof ActionCard && ((ActionCard)card).isAttack()) {
+				if (card.isAttack()) {
 					numAttack++;
 					attackCard = card;
 				}
@@ -214,7 +214,7 @@ public class Event {
 			if (numAttack > 1) {
 				attackCard = currentPlayer.controlPlayer.quest_attackToDiscard(context);
 			}
-			if (attackCard!=null && attackCard instanceof ActionCard && ((ActionCard)attackCard).isAttack()) {
+			if (attackCard!=null && attackCard.isAttack()) {
 				currentPlayer.hand.remove(attackCard);
 				valid = true;
 			}

@@ -716,6 +716,10 @@ public class Game {
                         AddCardsNextTurn = 5;
                     } else if (thisCard.getType() == Cards.Type.Hireling) {
 						AddCardsNextTurn = 1;
+					} else if (thisCard.getType() == Cards.Type.Amulet) {
+						((ActionCardImpl)thisCard).amulet(this,context,player);
+					} else if (thisCard.getType() == Cards.Type.Dungeon) {
+						((ActionCardImpl)thisCard).dungeon(this,context,player);
 					}
 
                     for (int i = 0; i < AddCardsNextTurn; i++) {
@@ -1174,6 +1178,22 @@ public class Game {
         for (int i = 0; i < embargos; i++) {
         	player.gainNewCard(Cards.curse, Cards.embargo, context);
         }
+		boolean hauntedWoodsPresent = false;
+        for (Player p : getPlayersInTurnOrder()) {
+            if (p != player) {
+				for (Card c : p.nextTurnCards) {
+					if (c.equals(Cards.swampHag)) {
+						player.gainNewCard(Cards.curse, Cards.swampHag, context);
+					} else if (c.equals(Cards.hauntedWoods)) {
+						hauntedWoodsPresent = true;
+					}
+				}
+			}
+		}
+		if (hauntedWoodsPresent) {
+			while (player.hand.size() > 0)
+				player.putOnTopOfDeck(player.hand.remove(0));
+		}
 
         Card card = takeFromPileCheckTrader(buy, context);
         if (card != null) {

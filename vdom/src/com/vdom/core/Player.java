@@ -1592,6 +1592,7 @@ public abstract class Player {
     public abstract TeacherOption teacher_chooseOption(MoveContext context);
 	public abstract Card teacher_placeToken(MoveContext context); 
 	public abstract Card trashingToken_cardToTrash(MoveContext context);
+    public abstract Card[] storyteller_cardsToPlay(MoveContext context);
 
 
 	// ////////////////////////////////////////////

@@ -39,6 +39,8 @@ public interface Card {
 	public boolean isReserve();
 
 	public boolean isTraveller();
+
+	public boolean isAttack();
     
     public Integer getId();
     
