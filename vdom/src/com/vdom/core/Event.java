@@ -17,6 +17,8 @@ public class Event {
 	public enum Type {
 		Alms, Borrow, Quest, Save, ScoutingParty, TravellingFair, Bonfire, Expedition, Ferry, Plan,
 		Mission, Pilgrimage, Ball, Raid, Seaway, Trade, LostArts, Training, Inheritance, Pathfinding,
+
+		Triumph, Annex, Donate, Advance, Delve, Tax, Banquet, Ritual, SaltTheEarth, Wedding, Windfall, Conquest, Dominate
 	}
 
 	public static final Event alms;
@@ -40,16 +42,32 @@ public class Event {
 	public static final Event inheritance;
 	public static final Event pathfinding;
 
+	public static final Event triumph;
+	public static final Event annex;
+	public static final Event donate;
+	public static final Event advance;
+	public static final Event delve;
+	public static final Event tax;
+	public static final Event banquet;
+	public static final Event ritual;
+	public static final Event saltTheEarth;
+	public static final Event wedding;
+	public static final Event windfall;
+	public static final Event conquest;
+	public static final Event dominate;
+
 	public Type type;
 	public int cost;
+	public int debt;
 	public String name;
 	public String displayName = "";
 	public String description = "";
 	public String expansion = "";
 
-	public Event(Type type,int cost,String expansion) {
+	public Event(Type type,int cost,int debt,String expansion) {
 		this.type = type;
 		this.cost = cost;
+		this.debt = debt;
 		this.name = type.toString();
 		this.expansion = expansion;
 	}
@@ -117,26 +135,40 @@ public class Event {
 	}
 
 	static {
-		eventsAdventures.add(alms = new Event(Event.Type.Alms,0,"Adventures"));
-		eventsAdventures.add(borrow = new Event(Event.Type.Borrow,0,"Adventures"));
-		eventsAdventures.add(quest = new Event(Event.Type.Quest,0,"Adventures"));
-		eventsAdventures.add(save = new Event(Event.Type.Save,1,"Adventures"));
-		eventsAdventures.add(scoutingParty = new Event(Event.Type.ScoutingParty,2,"Adventures"));
-		eventsAdventures.add(travellingFair = new Event(Event.Type.TravellingFair,2,"Adventures"));
-		eventsAdventures.add(bonfire = new Event(Event.Type.Bonfire,3,"Adventures"));
-		eventsAdventures.add(expedition = new Event(Event.Type.Expedition,3,"Adventures"));
-		eventsAdventures.add(ferry = new Event(Event.Type.Ferry,3,"Adventures"));
-		eventsAdventures.add(plan = new Event(Event.Type.Plan,3,"Adventures"));
-		eventsAdventures.add(mission = new Event(Event.Type.Mission,4,"Adventures"));
-		eventsAdventures.add(pilgrimage = new Event(Event.Type.Pilgrimage,4,"Adventures"));
-		eventsAdventures.add(ball = new Event(Event.Type.Ball,5,"Adventures"));
-		eventsAdventures.add(raid = new Event(Event.Type.Raid,5,"Adventures"));
-		eventsAdventures.add(seaway = new Event(Event.Type.Seaway,5,"Adventures"));
-		eventsAdventures.add(trade = new Event(Event.Type.Trade,5,"Adventures"));
-		eventsAdventures.add(lostArts = new Event(Event.Type.LostArts,6,"Adventures"));
-		eventsAdventures.add(training = new Event(Event.Type.Training,6,"Adventures"));
-		eventsAdventures.add(inheritance = new Event(Event.Type.Inheritance,7,"Adventures"));
-		eventsAdventures.add(pathfinding = new Event(Event.Type.Pathfinding,8,"Adventures"));
+		eventsAdventures.add(alms = new Event(Event.Type.Alms,0,0,"Adventures"));
+		eventsAdventures.add(borrow = new Event(Event.Type.Borrow,0,0,"Adventures"));
+		eventsAdventures.add(quest = new Event(Event.Type.Quest,0,0,"Adventures"));
+		eventsAdventures.add(save = new Event(Event.Type.Save,1,0,"Adventures"));
+		eventsAdventures.add(scoutingParty = new Event(Event.Type.ScoutingParty,2,0,"Adventures"));
+		eventsAdventures.add(travellingFair = new Event(Event.Type.TravellingFair,2,0,"Adventures"));
+		eventsAdventures.add(bonfire = new Event(Event.Type.Bonfire,3,0,"Adventures"));
+		eventsAdventures.add(expedition = new Event(Event.Type.Expedition,3,0,"Adventures"));
+		eventsAdventures.add(ferry = new Event(Event.Type.Ferry,3,0,"Adventures"));
+		eventsAdventures.add(plan = new Event(Event.Type.Plan,3,0,"Adventures"));
+		eventsAdventures.add(mission = new Event(Event.Type.Mission,4,0,"Adventures"));
+		eventsAdventures.add(pilgrimage = new Event(Event.Type.Pilgrimage,4,0,"Adventures"));
+		eventsAdventures.add(ball = new Event(Event.Type.Ball,5,0,"Adventures"));
+		eventsAdventures.add(raid = new Event(Event.Type.Raid,5,0,"Adventures"));
+		eventsAdventures.add(seaway = new Event(Event.Type.Seaway,5,0,"Adventures"));
+		eventsAdventures.add(trade = new Event(Event.Type.Trade,5,0,"Adventures"));
+		eventsAdventures.add(lostArts = new Event(Event.Type.LostArts,6,0,"Adventures"));
+		eventsAdventures.add(training = new Event(Event.Type.Training,6,0,"Adventures"));
+		eventsAdventures.add(inheritance = new Event(Event.Type.Inheritance,7,0,"Adventures"));
+		eventsAdventures.add(pathfinding = new Event(Event.Type.Pathfinding,8,0,"Adventures"));
+
+		eventsEmpires.add(triumph = new Event(Event.Type.Triumph,0,5,"Empires"));
+		eventsEmpires.add(annex = new Event(Event.Type.Annex,0,8,"Empires"));
+		eventsEmpires.add(donate = new Event(Event.Type.Donate,0,8,"Empires"));
+		eventsEmpires.add(advance = new Event(Event.Type.Advance,0,0,"Empires"));
+		eventsEmpires.add(delve = new Event(Event.Type.Delve,2,0,"Empires"));
+		eventsEmpires.add(tax = new Event(Event.Type.Tax,2,0,"Empires"));
+		eventsEmpires.add(banquet = new Event(Event.Type.Banquet,3,0,"Empires"));
+		eventsEmpires.add(ritual = new Event(Event.Type.Ritual,4,0,"Empires"));
+		eventsEmpires.add(saltTheEarth = new Event(Event.Type.SaltTheEarth,4,0,"Empires"));
+		eventsEmpires.add(wedding = new Event(Event.Type.Wedding,4,3,"Empires"));
+		eventsEmpires.add(windfall = new Event(Event.Type.Windfall,5,0,"Empires"));
+		eventsEmpires.add(conquest = new Event(Event.Type.Conquest,6,0,"Empires"));
+		eventsEmpires.add(dominate = new Event(Event.Type.Dominate,14,0,"Empires"));
 
 		for (Event e: eventsAdventures) allEvents.add(e);
 		for (Event e: eventsEmpires) allEvents.add(e);
@@ -146,7 +178,77 @@ public class Event {
 	static ArrayList<Event> getEventSet(GameType gameType) {
 		ArrayList<Event> candidates;
 		ArrayList<Event> set = new ArrayList<Event>();
-		if (gameType == GameType.Random)
+		if (gameType == GameType.GentleIntro) {
+			set.add(scoutingParty);
+			return set;
+		} else if (gameType == GameType.ExpertIntro) {
+			set.add(plan);
+			set.add(mission);
+			return set;
+		} else if (gameType == GameType.LevelUp) {
+			set.add(training);
+			return set;
+		} else if (gameType == GameType.SonOfSizeDistortion) {
+			set.add(bonfire);
+			set.add(raid);
+			return set;
+		} else if (gameType == GameType.RoyaltyFactory) {
+			set.add(pilgrimage);
+			return set;
+		} else if (gameType == GameType.MastersOfFinance) {
+			set.add(borrow);
+			set.add(ball);
+			return set;
+		} else if (gameType == GameType.PrinceOfOrange) {
+			set.add(mission);
+			return set;
+		} else if (gameType == GameType.GiftsAndMathoms) {
+			set.add(quest);
+			set.add(expedition);
+			return set;
+		} else if (gameType == GameType.HastePotion) {
+			set.add(plan);
+			return set;
+		} else if (gameType == GameType.Cursecatchers) {
+			set.add(save);
+			set.add(trade);
+			return set;
+		} else if (gameType == GameType.LastWillAndMonument) {
+			set.add(inheritance);
+			return set;
+		} else if (gameType == GameType.ThinkBig) {
+			set.add(ferry);
+			set.add(ball);
+			return set;
+		} else if (gameType == GameType.TheHerosReturn) {
+			set.add(travellingFair);
+			return set;
+		} else if (gameType == GameType.SeacraftAndWitchcraft) {
+			set.add(ferry);
+			set.add(seaway);
+			return set;
+		} else if (gameType == GameType.TradersAndRaiders) {
+			set.add(raid);
+			return set;
+		} else if (gameType == GameType.Journeys) {
+			set.add(expedition);
+			set.add(inheritance);
+			return set;
+		} else if (gameType == GameType.CemeteryPolka) {
+			set.add(alms);
+			return set;
+		} else if (gameType == GameType.GroovyDecay) {
+			set.add(lostArts);
+			set.add(pathfinding);
+			return set;
+		} else if (gameType == GameType.Spendthrift) {
+			set.add(lostArts);
+			return set;
+		} else if (gameType == GameType.QueenOfTan) {
+			set.add(save);
+			set.add(pathfinding);
+			return set;
+		} else if (gameType == GameType.Random)
 			candidates = allEvents;
 		else if (gameType == GameType.RandomAdventures)
 			candidates = eventsAdventures;

@@ -39,4 +39,31 @@
 	<string name="Inheritance_desc">Once per game: Set aside a non-Victory Action card from the supply costing up to 4 Coin. Move your Estate token to it.</string>
 	<string name="Pathfinding_name">Pathfinding</string>
 	<string name="Pathfinding_desc">Move your +1 Card token to an Action supply pile.</string>
+
+	<string name="Triumph_name">Triumph</string>
+	<string name="Triumph_desc">Gain an Estate. If you did, +1 Victory token per card you\'ve gained this turn.</string>
+	<string name="Annex_name">Annex</string>
+	<string name="Annex_desc">Look through your discard pile. Shuffle all but up to 5 cards from it into your deck. Gain a Duchy.</string>
+	<string name="Donate_name">Donate</string>
+	<string name="Donate_desc">After this turn, put all cards from your deck and discard pile into your hand, trash any number, shuffle your hand into your deck, then draw 5 cards.</string>
+	<string name="Advance_name">Advance</string>
+	<string name="Advance_desc">You may trash an Action card from your hand. If you do, gain an Action card costing up to 6 Coin.</string>
+	<string name="Delve_name">Delve</string>
+	<string name="Delve_desc">+1 Buy\nGain a Silver.</string>
+	<string name="Tax_name">Tax</string>
+	<string name="Tax_desc">Add 2 Debt to a Supply pile. Setup: add 1 Debt to each Supply pile.</string>
+	<string name="Banquet_name">Banquet</string>
+	<string name="Banquet_desc">Gain 2 Coppers and a non-Victory card costing up to 5 Coin.</string>
+	<string name="Ritual_name">Ritual</string>
+	<string name="Ritual_desc">Gain a curse. If you do, trash a card from your hand. +1 Victory token per Coin it cost.</string>
+	<string name="SaltTheEarth_name">Salt the Earth</string>
+	<string name="SaltTheEarth_desc">+1 Victory token\nTrash a Victory card from the Supply.</string>
+	<string name="Wedding_name">Wedding</string>
+	<string name="Wedding_desc">+1 Victory token\nGain a Gold.</string>
+	<string name="Windfall_name">Windfall</string>
+	<string name="Windfall_desc">If your deck and discard pile are empty, gain 3 Golds.</string>
+	<string name="Conquest_name">Conquest</string>
+	<string name="Conquest_desc">Gain 2 Silvers. +1 Victory token per Silver you\'ve gained this turn.</string>
+	<string name="Dominate_name">Dominate</string>
+	<string name="Dominate_desc">Gain a Province. If you do, +9 Victory tokens.</string>
 </resources>

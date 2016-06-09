@@ -84,8 +84,6 @@ public enum GameType {
     
     // Guilds
     RandomGuilds("Random Guilds"),
-    RandomAdventures("Random Adventures"),
-    RandomEmpires("Random Empires"),
     
     // Guilds + Base
     ArtsAndCrafts("Arts and Crafts (Guilds, Base)"), CleanLiving("Clean Living (Guilds, Base)"), GildingTheLily("Gilding the Lily (Guilds, Base)"),
@@ -93,6 +91,39 @@ public enum GameType {
     // Guilds + Intrigue
     NameThatCard("Name That Card (Guilds, Intr)"), TricksOfTheTrade("Tricks of the Trade (Guilds, Intr)"), DecisionsDecisions("Decisions, Decisions (Guilds, Intr)"),
     
+	//Adventures
+    RandomAdventures("Random Adventures"), GentleIntro("Gentle Intro (Adv)"), ExpertIntro("Expert Intro (Adv)"),
+
+	//Adventures + Base
+	LevelUp("Level Up (Adv, Base)"), SonOfSizeDistortion("Son of Size Distortion (Adv, Base)"),
+
+	//Adventures + Intrigue
+	RoyaltyFactory("Royalty Factory (Adv, Intr)"), MastersOfFinance("Masters of Finance (Adv, Intr)"),
+
+	//Adventures + Seaside
+	PrinceOfOrange("Prince of Orange (Adv, Sea)"), GiftsAndMathoms("Gifts and Mathoms (Adv, Sea)"),
+
+	//Adventures + Alchemy
+	HastePotion("Haste Potion (Adv, Alch)"), Cursecatchers("Cursecatchers (Adv, Alch)"),
+
+	//Adventures + Prosperity
+	LastWillAndMonument("Last Will and Monument (Adv, Prsp)"), ThinkBig("Think Big (Adv, Prsp)"),
+
+	//Adventures + Cornucopia
+	TheHerosReturn("The Hero's Return (Adv, Corn)"), SeacraftAndWitchcraft("Seacraft and Witchcraft (Adv, Corn)"),
+
+	//Adventures + Hinterlands
+	TradersAndRaiders("Traders and Raiders (Adv, Hntr)"), Journeys("Journeys (Adv, Hntr)"),
+
+	//Adventures + Dark Ages
+	CemeteryPolka("Cemetery Polka (Adv, DA)"), GroovyDecay("Groovy Decay (Adv, DA)"),
+
+	//Adventures + Guilds
+	Spendthrift("Spendthrift (Adv, Guilds)"), QueenOfTan("Queen of Tan (Adv, Guilds)"),
+
+	//Empires
+    RandomEmpires("Random Empires"),
+
     // All Cards
     Random("Random"),
 

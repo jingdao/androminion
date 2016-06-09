@@ -216,6 +216,27 @@ public class CardSet {
 		CardSetMap.put(GameType.NameThatCard,       new CardSet(new Card[]{Cards.baker, Cards.doctor, Cards.plaza, Cards.advisor, Cards.masterpiece, Cards.courtyard, Cards.wishingWell, Cards.harem, Cards.tribute, Cards.nobles}, null));
 		CardSetMap.put(GameType.TricksOfTheTrade,   new CardSet(new Card[]{Cards.stonemason, Cards.herald, Cards.soothsayer, Cards.journeyman, Cards.butcher, Cards.greatHall, Cards.nobles, Cards.conspirator, Cards.masquerade, Cards.coppersmith}, null));
 		CardSetMap.put(GameType.DecisionsDecisions, new CardSet(new Card[]{Cards.merchantGuild, Cards.candlestickMaker, Cards.masterpiece, Cards.taxman, Cards.butcher, Cards.bridge, Cards.pawn, Cards.miningVillage, Cards.upgrade, Cards.duke}, null));
+
+		CardSetMap.put(GameType.GentleIntro, new CardSet(new Card[]{Cards.amulet,Cards.distantLands,Cards.dungeon,Cards.duplicate,Cards.giant,Cards.hireling,Cards.port,Cards.ranger,Cards.ratcatcher,Cards.treasureTrove},null));
+		CardSetMap.put(GameType.ExpertIntro, new CardSet(new Card[]{Cards.caravanGuard,Cards.coinOfTheRealm,Cards.hauntedWoods,Cards.lostCity,Cards.magpie,Cards.peasant,Cards.raze,Cards.swampHag,Cards.transmogrify,Cards.wineMerchant},null));
+		CardSetMap.put(GameType.LevelUp, new CardSet(new Card[]{Cards.dungeon,Cards.gear,Cards.guide,Cards.lostCity,Cards.miser,Cards.market,Cards.militia,Cards.spy,Cards.throneRoom,Cards.workshop},null));
+		CardSetMap.put(GameType.SonOfSizeDistortion, new CardSet(new Card[]{Cards.amulet,Cards.duplicate,Cards.giant,Cards.messenger,Cards.treasureTrove,Cards.bureaucrat,Cards.gardens,Cards.moneyLender,Cards.thief,Cards.witch},null));
+		CardSetMap.put(GameType.RoyaltyFactory, new CardSet(new Card[]{Cards.bridgeTroll,Cards.duplicate,Cards.page,Cards.raze,Cards.royalCarriage,Cards.conspirator,Cards.harem,Cards.nobles,Cards.secretChamber,Cards.swindler},null));
+		CardSetMap.put(GameType.MastersOfFinance, new CardSet(new Card[]{Cards.artificer,Cards.distantLands,Cards.gear,Cards.transmogrify,Cards.wineMerchant,Cards.bridge,Cards.pawn,Cards.shantyTown,Cards.steward,Cards.upgrade},null));
+		CardSetMap.put(GameType.PrinceOfOrange, new CardSet(new Card[]{Cards.amulet,Cards.dungeon,Cards.hauntedWoods,Cards.page,Cards.swampHag,Cards.caravan,Cards.fishingVillage,Cards.merchantShip,Cards.tactician,Cards.treasureMap},null));
+		CardSetMap.put(GameType.GiftsAndMathoms, new CardSet(new Card[]{Cards.bridgeTroll,Cards.caravanGuard,Cards.hireling,Cards.lostCity,Cards.messenger,Cards.ambassador,Cards.embargo,Cards.haven,Cards.salvager,Cards.smugglers},null));
+		CardSetMap.put(GameType.HastePotion, new CardSet(new Card[]{Cards.magpie,Cards.messenger,Cards.port,Cards.royalCarriage,Cards.treasureTrove,Cards.apprentice,Cards.scryingPool,Cards.transmute,Cards.university,Cards.vineyard},null));
+		CardSetMap.put(GameType.Cursecatchers, new CardSet(new Card[]{Cards.amulet,Cards.bridgeTroll,Cards.caravanGuard,Cards.peasant,Cards.ratcatcher,Cards.apothecary,Cards.familiar,Cards.golem,Cards.herbalist,Cards.philosophersStone},null));
+		CardSetMap.put(GameType.LastWillAndMonument, new CardSet(new Card[]{Cards.coinOfTheRealm,Cards.dungeon,Cards.messenger,Cards.relic,Cards.treasureTrove,Cards.bishop,Cards.countingHouse,Cards.monument,Cards.rabble,Cards.vault},null));
+		CardSetMap.put(GameType.ThinkBig, new CardSet(new Card[]{Cards.distantLands,Cards.giant,Cards.hireling,Cards.miser,Cards.storyteller,Cards.contraband,Cards.expand,Cards.hoard,Cards.kingsCourt,Cards.peddler},null));
+		CardSetMap.put(GameType.TheHerosReturn, new CardSet(new Card[]{Cards.artificer,Cards.miser,Cards.page,Cards.ranger,Cards.relic,Cards.fairgrounds,Cards.farmingVillage,Cards.horseTraders,Cards.jester,Cards.menagerie},null));
+		CardSetMap.put(GameType.SeacraftAndWitchcraft, new CardSet(new Card[]{Cards.peasant,Cards.storyteller,Cards.swampHag,Cards.transmogrify,Cards.wineMerchant,Cards.fortuneTeller,Cards.hamlet,Cards.hornOfPlenty,Cards.tournament,Cards.youngWitch},null));
+		CardSetMap.put(GameType.TradersAndRaiders, new CardSet(new Card[]{Cards.hauntedWoods,Cards.lostCity,Cards.page,Cards.port,Cards.wineMerchant,Cards.develop,Cards.farmland,Cards.haggler,Cards.spiceMerchant,Cards.trader},null));
+		CardSetMap.put(GameType.Journeys, new CardSet(new Card[]{Cards.bridgeTroll,Cards.distantLands,Cards.giant,Cards.guide,Cards.ranger,Cards.cartographer,Cards.crossroads,Cards.highway,Cards.inn,Cards.silkRoad},null));
+		CardSetMap.put(GameType.CemeteryPolka, new CardSet(new Card[]{Cards.amulet,Cards.caravanGuard,Cards.hireling,Cards.peasant,Cards.relic,Cards.graverobber,Cards.marauder,Cards.procession,Cards.rogue,Cards.wanderingMinstrel},null));
+		CardSetMap.put(GameType.GroovyDecay, new CardSet(new Card[]{Cards.dungeon,Cards.hauntedWoods,Cards.ratcatcher,Cards.raze,Cards.transmogrify,Cards.cultist,Cards.deathCart,Cards.fortress,Cards.virtualKnight,Cards.rats},null));
+		CardSetMap.put(GameType.Spendthrift, new CardSet(new Card[]{Cards.artificer,Cards.gear,Cards.magpie,Cards.miser,Cards.storyteller,Cards.doctor,Cards.masterpiece,Cards.merchantGuild,Cards.soothsayer,Cards.stonemason},null));
+		CardSetMap.put(GameType.QueenOfTan, new CardSet(new Card[]{Cards.coinOfTheRealm,Cards.duplicate,Cards.guide,Cards.ratcatcher,Cards.royalCarriage,Cards.advisor,Cards.butcher,Cards.candlestickMaker,Cards.herald,Cards.journeyman},null));
 	}
 
 }
