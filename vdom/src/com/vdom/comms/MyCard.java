@@ -20,6 +20,7 @@ public class MyCard implements Serializable {
 	public String originalName;
 
 	public int cost = 0;
+	public int costDebt = 0;
 	public boolean costPotion = false;
 	public int vp = 0;
 	public int gold = 0;
@@ -177,6 +178,10 @@ public class MyCard implements Serializable {
 			if(card0.cost < card1.cost) {
 				return -1;
 			} else if(card0.cost > card1.cost) {
+				return 1;
+			} else if (card0.costDebt < card1.costDebt) {
+				return -1;
+			} else if (card0.costDebt > card1.costDebt) {
 				return 1;
 			} else if(card0.isKnight) {
 				return -1;

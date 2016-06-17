@@ -7,6 +7,7 @@ import com.vdom.api.GameType;
 import com.vdom.api.Card;
 import com.vdom.api.ActionCard;
 import com.vdom.api.TreasureCard;
+import android.util.Log;
 
 public class Event {
 	public static ArrayList<Event> eventsAdventures = new ArrayList<Event>();
@@ -128,6 +129,12 @@ public class Event {
 				break;
 			case Inheritance:
 				inheritance(context,currentPlayer);
+				break;
+			case Triumph:
+				triumph(context,currentPlayer);
+				break;
+			case Annex:
+				annex(context,currentPlayer);
 				break;
 			default:
 				break;
@@ -512,6 +519,32 @@ public class Event {
 					cl.add(Cards.inheritedEstate.getTemplateCard().instantiate());
 			}
 		}
+	}
+
+	public void triumph(MoveContext context, Player currentPlayer) {
+		if(currentPlayer.gainNewCard(Cards.estate,Cards.eventCard, context)) {
+			int numGained = context.game.getCardsObtainedByPlayer().size();
+			currentPlayer.controlPlayer.addVictoryTokens(context,numGained);
+		}
+	}
+
+	public void annex(MoveContext context, Player currentPlayer) {
+		if (currentPlayer.discard.size()>0) {
+			ArrayList<Card> discard = new ArrayList<Card>();
+			int numDiscards = currentPlayer.discard.size();
+			for (int i=0;i<numDiscards;i++)
+				discard.add(currentPlayer.discard.removeLastCard());
+			Card[] cardsToKeepInDiscard = currentPlayer.controlPlayer.annex_cardsToKeepInDiscard(context,discard.toArray(new Card[0]));
+			for (Card card : cardsToKeepInDiscard) {
+				currentPlayer.discard.add(card);
+				discard.remove(card);
+			}
+			for (Card card : discard) {
+				currentPlayer.deck.add(card);
+			}
+			currentPlayer.shuffleDeck();
+		}
+		currentPlayer.gainNewCard(Cards.duchy,Cards.eventCard,context);
 	}
 
 }

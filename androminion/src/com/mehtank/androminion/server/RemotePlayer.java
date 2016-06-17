@@ -164,6 +164,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     	card.originalExpansion = c.getExpansion();
     	card.cost = c.getCost(null);
     	card.costPotion = c.costPotion();
+		card.costDebt = c.costDebt();
     	card.isBane = isBane;
     	card.isShelter = c.isShelter();
     	card.isLooter = c.isLooter();
@@ -455,6 +456,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
         int pirates[] = new int[numPlayers];
         int victoryTokens[] = new int[numPlayers];
         int guildsCoinTokens[] = new int[numPlayers];
+		int debtTokens[] = new int[numPlayers];
 		boolean minusCardToken[] = new boolean[numPlayers];
 		boolean minusCoinToken[] = new boolean[numPlayers];
 		boolean journeyToken[] = new boolean[numPlayers];
@@ -483,6 +485,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
         	pirates[i] = p.getPirateShipTreasure();
         	victoryTokens[i] = p.getVictoryTokens();
         	guildsCoinTokens[i] = p.getGuildsCoinTokenCount();
+			debtTokens[i] = p.getDebtTokens();
 			minusCardToken[i] = p.getMinusCardToken();
 			minusCoinToken[i] = p.getMinusCoinToken();
 			journeyToken[i] = p.getJourneyToken();
@@ -521,6 +524,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     	  .setPirates(pirates)
     	  .setVictoryTokens(victoryTokens)
     	  .setGuildsCoinTokens(guildsCoinTokens)
+		  .setDebtTokens(debtTokens)
 		  .setMinusCardToken(minusCardToken)
 		  .setMinusCoinToken(minusCoinToken)
 		  .setJourneyToken(journeyToken)

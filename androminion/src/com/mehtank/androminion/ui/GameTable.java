@@ -905,7 +905,7 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 
 		turnStatus.setStatus(gs.turnStatus, gs.potions, myTurn);
 		for (int i=0; i<players.getCount(); i++) {
-	        players.getItem(i).set(players.getItem(i).name, gs.turnCounts[i], gs.deckSizes[i], gs.handSizes[i], gs.numCards[i], gs.pirates[i], gs.victoryTokens[i], gs.guildsCoinTokens[i], gs.minusCardToken[i], gs.minusCoinToken[i], gs.journeyToken[i], gs.whoseTurn == i);
+	        players.getItem(i).set(players.getItem(i).name, gs.turnCounts[i], gs.deckSizes[i], gs.handSizes[i], gs.numCards[i], gs.pirates[i], gs.victoryTokens[i], gs.guildsCoinTokens[i], gs.debtTokens[i], gs.minusCardToken[i], gs.minusCoinToken[i], gs.journeyToken[i], gs.whoseTurn == i);
 		}
 		players.notifyDataSetChanged();
 

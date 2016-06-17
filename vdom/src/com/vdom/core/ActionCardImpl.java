@@ -837,6 +837,42 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		case Estate:
 			inheritedEstate(game,context,currentPlayer);
 			break;
+		case Engineer:
+			engineer(game,context,currentPlayer);
+			break;
+		case CityQuarter:
+			cityQuarter(game,context,currentPlayer);
+			break;
+		case Overlord:
+			overlord(game,context,currentPlayer);
+			break;
+		case RoyalBlacksmith:
+			royalBlacksmith(game,context,currentPlayer);
+			break;
+		case Patrician:
+			patrician(game,context,currentPlayer);
+			break;
+		case Settlers:
+			settlers(game,context,currentPlayer);
+			break;
+		case BustlingVillage:
+			bustlingVillage(game,context,currentPlayer);
+			break;
+		case Catapult:
+			catapult(game,context,currentPlayer);
+			break;
+		case ChariotRace:
+			chariotRace(game,context,currentPlayer);
+			break;
+		case Sacrifice:
+			sacrifice(game,context,currentPlayer);
+			break;
+		case Forum:
+			forum(game,context,currentPlayer);
+			break;
+		case Legionary:
+			legionary(game,context,currentPlayer);
+			break;
         default:
             break;
         }
@@ -1169,7 +1205,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
                     Card thisCard = removeFromHand(currentPlayer, i);
                     currentPlayer.trash(thisCard, this.controlCard, context);
 
-                    TreasureCard newCard = currentPlayer.controlPlayer.mine_treasureToObtain(context, card.getCost(context) + 3, card.costPotion());
+                    TreasureCard newCard = currentPlayer.controlPlayer.mine_treasureToObtain(context, card.getCost(context) + 3, card.costPotion(),card.costDebt());
                     if (!(newCard != null && newCard.getCost(context) <= card.getCost(context) + 3 && context.getCardsLeftInPile(newCard) > 0)) {
                         Util.playerError(currentPlayer, "Mine treasure to obtain was invalid, picking random treasure from table.");
                         for (Card treasureCard : context.getTreasureCardsInGame()) {
@@ -1586,7 +1622,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         currentPlayer.hand.remove(card);
         currentPlayer.trash(card, this.controlCard, context);
 
-        card = currentPlayer.controlPlayer.expand_cardToObtain(context, maxCost, potion);
+        card = currentPlayer.controlPlayer.expand_cardToObtain(context, maxCost, potion, card.costDebt());
         if (card != null) {
             if (card.getCost(context) > maxCost) {
                 Util.playerError(currentPlayer, "Expand error, new card costs too much.");
@@ -1698,7 +1734,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
                 		}
                 	}
 
-                	Card cardToGain = currentPlayer.controlPlayer.procession_cardToGain(context, 1 + cardToPlay.getCost(context), cardToPlay.costPotion());
+                	Card cardToGain = currentPlayer.controlPlayer.procession_cardToGain(context, 1 + cardToPlay.getCost(context), cardToPlay.costPotion(),cardToPlay.costDebt());
                 	if ((cardToGain != null) && (cardToPlay.getCost(context) + 1) == cardToGain.getCost(context)) {
                 		currentPlayer.gainNewCard(cardToGain, this.controlCard, context);
                 	}
@@ -2543,7 +2579,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 
             cost += 2;
 
-            Card card = currentPlayer.controlPlayer.remodel_cardToObtain(context, cost, potion);
+            Card card = currentPlayer.controlPlayer.remodel_cardToObtain(context, cost, potion, cardToTrash.costDebt());
             if (card != null) {
                 // check cost
                 if (card.getCost(context) > cost) {
@@ -2579,7 +2615,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
             currentPlayer.hand.remove(card);
             currentPlayer.trash(card, this.controlCard, context);
 
-            card = currentPlayer.controlPlayer.remake_cardToObtain(context, value, potion);
+            card = currentPlayer.controlPlayer.remake_cardToObtain(context, value, potion, card.costDebt());
             if (card != null) {
                 if (card.getCost(context) != value || card.costPotion() != potion) {
                     Util.playerError(currentPlayer, "Remake error, new card must cost exactly " + value + ".");
@@ -2848,7 +2884,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 
                         player.trash(draw, this.controlCard, playerContext);
 
-                        Card card = (player).controlPlayer.saboteur_cardToObtain(playerContext, value, potion);
+                        Card card = (player).controlPlayer.saboteur_cardToObtain(playerContext, value, potion, draw.costDebt());
                         if (card != null) {
                             if (card.getCost(context) > value || (card.costPotion() && !potion) || !Cards.isSupplyCard(card)) {
                                 Util.playerError(currentPlayer, "Saboteur obtain error, ignoring.");
@@ -3021,7 +3057,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
             currentPlayer.hand.remove(card);
             currentPlayer.trash(card, this.controlCard, context);
 
-            card = currentPlayer.controlPlayer.upgrade_cardToObtain(context, value, potion);
+            card = currentPlayer.controlPlayer.upgrade_cardToObtain(context, value, potion, card.costDebt());
             if (card != null) {
                 if (card.getCost(context) != value || card.costPotion() != potion) {
                     Util.playerError(currentPlayer, "Upgrade error, new card does not cost value of the old card +1.");
@@ -3117,7 +3153,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
                 if (draw != null) {
                     player.trash(draw, this.controlCard, playerContext);
 
-                    Card card = currentPlayer.controlPlayer.swindler_cardToSwitch(context, draw.getCost(context), draw.costPotion());
+                    Card card = currentPlayer.controlPlayer.swindler_cardToSwitch(context, draw.getCost(context), draw.costPotion(),draw.costDebt());
 
                     boolean bad = false;
                     if (card == null) {
@@ -3395,14 +3431,14 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
             Card highCardToGain = null;
 
             if(context.isNewCardAvailable(trashedCardCost - 1, trashedCardPotion)) {
-                lowCardToGain = currentPlayer.controlPlayer.develop_lowCardToGain(context, trashedCardCost - 1, trashedCardPotion);
+                lowCardToGain = currentPlayer.controlPlayer.develop_lowCardToGain(context, trashedCardCost - 1, trashedCardPotion,cardToTrash.costDebt());
                 if (lowCardToGain == null) {
                 	lowCardToGain = Util.randomCard(context.getAvailableCards(trashedCardCost - 1, trashedCardPotion));
                 }
             }
 
             if(context.isNewCardAvailable(trashedCardCost + 1, trashedCardPotion)) {
-                highCardToGain = currentPlayer.controlPlayer.develop_highCardToGain(context, trashedCardCost + 1, trashedCardPotion);
+                highCardToGain = currentPlayer.controlPlayer.develop_highCardToGain(context, trashedCardCost + 1, trashedCardPotion,cardToTrash.costDebt());
                 if (highCardToGain == null) {
                 	highCardToGain = Util.randomCard(context.getAvailableCards(trashedCardCost + 1, trashedCardPotion));
                 }
@@ -4010,6 +4046,9 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		case Port:
 			port(context);
 			break;
+		case Forum:
+			context.buys++;
+			break;
         default:
             break;
         }
@@ -4418,7 +4457,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			currentPlayer.hand.remove(toTrash);
 			currentPlayer.trash(toTrash, this.controlCard, context);
 
-			toGain = currentPlayer.controlPlayer.graverobber_cardToReplace(context, 3 + toTrash.getCost(context), toTrash.costPotion());
+			toGain = currentPlayer.controlPlayer.graverobber_cardToReplace(context, 3 + toTrash.getCost(context), toTrash.costPotion(),toTrash.costDebt());
 			if (toGain != null) {
 				currentPlayer.gainNewCard(toGain, this.controlCard, context);
 			}
@@ -4762,7 +4801,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 	                currentPlayer.hand.remove(card);
 	                currentPlayer.trash(card, this.controlCard, context);
 
-	                card = currentPlayer.controlPlayer.governor_cardToObtain(context, value, potion);
+	                card = currentPlayer.controlPlayer.governor_cardToObtain(context, value, potion, card.costDebt());
 	                if (card != null) {
 	                    if (card.getCost(context) != value || card.costPotion() != potion) {
 	                        Util.playerError(currentPlayer, "Governor error, new card does not cost value of the old card +2.");
@@ -4788,7 +4827,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 	    	                player.hand.remove(card);
 	    	                player.trash(card, this.controlCard, playerContext);
 
-	    	                card = player.controlPlayer.governor_cardToObtain(playerContext, value, potion);
+	    	                card = player.controlPlayer.governor_cardToObtain(playerContext, value, potion, card.costDebt());
 	    	                if (card != null) {
 	    	                    if (card.getCost(playerContext) != value || card.costPotion() != potion) {
 	    	                        Util.playerError(player, "Governor error, new card does not cost value of the old card +1.");
@@ -5611,7 +5650,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
                         value += numTokensToSpend;
                     }
 
-                    card = currentPlayer.controlPlayer.butcher_cardToObtain(context, value, potion);
+                    card = currentPlayer.controlPlayer.butcher_cardToObtain(context, value, potion, card.costDebt());
                     
                     if (card != null) 
                     {
@@ -5692,7 +5731,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
                
                 if (value >= 0)
                 {
-                    card = currentPlayer.controlPlayer.stonemason_cardToGain(context, value, potion);
+                    card = currentPlayer.controlPlayer.stonemason_cardToGain(context, value, potion, card.costDebt());
                     
                     if (card != null) 
                     {
@@ -5705,7 +5744,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
                     
                     if (!cardGainError)
                     {
-                        card = currentPlayer.controlPlayer.stonemason_cardToGain(context, value, potion);
+                        card = currentPlayer.controlPlayer.stonemason_cardToGain(context, value, potion, card.costDebt());
                         
                         if (card != null)
                         {
@@ -5725,7 +5764,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         if (context.overpayAmount > 0 || context.overpayPotions > 0)
         {
             // Gain two action cards each costing the amount overpaid
-            Card c = context.player.stonemason_cardToGainOverpay(context, context.overpayAmount, (context.overpayPotions > 0 ? true : false));
+            Card c = context.player.stonemason_cardToGainOverpay(context, context.overpayAmount, (context.overpayPotions > 0 ? true : false),0);
             
             if (c != null)
             {
@@ -5734,7 +5773,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
                     Util.playerError(context.player, "Stone Mason overpay gain #1 error, pile is empty or card is not in the game.");
                 }
                 
-                c = context.player.stonemason_cardToGainOverpay(context, context.overpayAmount, (context.overpayPotions > 0 ? true : false));
+                c = context.player.stonemason_cardToGainOverpay(context, context.overpayAmount, (context.overpayPotions > 0 ? true : false),0);
                 
                 if (c != null)
                 {
@@ -6171,7 +6210,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
             boolean potion = cardToTrash.costPotion();
 			currentPlayer.hand.remove(cardToTrash);
 			currentPlayer.trash(cardToTrash, this.controlCard, context);
-            Card card = currentPlayer.controlPlayer.transmogrify_cardToObtain(context, cost+1, potion);
+            Card card = currentPlayer.controlPlayer.transmogrify_cardToObtain(context, cost+1, potion, cardToTrash.costDebt());
 			if (card!=null)
 				currentPlayer.gainNewCard(card, this.controlCard, context);
         }
@@ -6273,4 +6312,221 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
             game.drawToHand(currentPlayer, this);
 	}
     
+    public void engineer(Game game, MoveContext context, Player currentPlayer) {
+        Card card = currentPlayer.controlPlayer.engineer_cardToObtain(context);
+		currentPlayer.gainNewCard(card, this.controlCard, context);
+		if (!this.controlCard.movedToNextTurnPile && currentPlayer.controlPlayer.engineer_shouldTrash(context)) {
+			this.controlCard.movedToNextTurnPile = true;
+			currentPlayer.trash(this.controlCard, null, context);
+			currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(this.controlCard));
+			card = currentPlayer.controlPlayer.engineer_cardToObtain(context);
+			currentPlayer.gainNewCard(card, this.controlCard, context);
+		}
+    }
+
+	public void cityQuarter(Game game, MoveContext context, Player currentPlayer) {
+		int actions = 0;
+	    for (int i = 0; i < currentPlayer.hand.size(); i++) {
+	        Card card = currentPlayer.hand.get(i);
+	        currentPlayer.reveal(card, this.controlCard, context);
+	        if (card instanceof ActionCard) {
+	        	actions++;
+	        }
+	    }
+		for (int i=0;i<actions;i++)
+            game.drawToHand(currentPlayer, this);
+	}
+
+    public void overlord(Game game, MoveContext context, Player currentPlayer) {
+    	// Already impersonating another card?
+    	if (!this.isImpersonatingAnotherCard()) {
+	    	// Get card to impersonate
+	        ActionCard cardToImpersonate = currentPlayer.controlPlayer.overlord_actionCardToImpersonate(context);
+	        if (cardToImpersonate != null 
+	        		&& !game.isPileEmpty(cardToImpersonate) 
+	        		&& cardToImpersonate instanceof ActionCard 
+	        		&& (context.golemInEffect == 0 || cardToImpersonate != Cards.golem)) {
+	        	GameEvent event = new GameEvent(GameEvent.Type.CardNamed, (MoveContext) context);
+	            event.card = cardToImpersonate;
+	            event.responsible = this;
+	            game.broadcastEvent(event);
+	            this.startImpersonatingCard(cardToImpersonate.getTemplateCard().instantiate());
+	        } else return;    	
+		}
+    	// Play the impersonated card
+        ActionCardImpl cardToPlay = (ActionCardImpl) this.impersonatingCard;
+        context.freeActionInEffect++;
+        cardToPlay.play(game, context, false);
+        context.freeActionInEffect--;
+        // impersonated card stays in play until next turn?
+        if (cardToPlay.trashOnUse) {
+            int idx = currentPlayer.playedCards.lastIndexOf(this);
+            if (idx >= 0) currentPlayer.playedCards.remove(idx);
+            currentPlayer.trash(this, null, context);
+        } else if (cardToPlay instanceof DurationCard && !cardToPlay.equals(Cards.outpost)) {
+            if (!this.controlCard.movedToNextTurnPile) {
+                this.controlCard.movedToNextTurnPile = true;
+                int idx = currentPlayer.playedCards.lastIndexOf(this);
+                if (idx >= 0) {
+                	currentPlayer.playedCards.remove(idx);
+                    currentPlayer.nextTurnCards.add(this);
+                }
+            }
+        }
+    }
+
+	public void royalBlacksmith(Game game, MoveContext context, Player currentPlayer) {
+		int coppers = 0;
+	    for (int i = 0; i < currentPlayer.hand.size(); i++) {
+	        Card card = currentPlayer.hand.get(i);
+	        currentPlayer.reveal(card, this.controlCard, context);
+	        if (card.equals(Cards.copper)) {
+	        	coppers++;
+	        }
+	    }
+		for (int i=0;i<coppers;i++) {
+			currentPlayer.hand.remove(Cards.copper);
+			currentPlayer.discard(Cards.copper.getTemplateCard().instantiate(), this.controlCard, context);
+		}
+	}
+    
+	public void patrician(Game game, MoveContext context, Player currentPlayer) {
+		Card c = game.draw(currentPlayer);
+		if (c != null) {
+			currentPlayer.reveal(c, this.controlCard, context);
+			if (c.getCost(context) >= 5) {
+				currentPlayer.hand.add(c);
+			} else {
+				currentPlayer.putOnTopOfDeck(c);
+			}
+		}
+	}
+	
+    public void settlers(Game game, MoveContext context, Player currentPlayer) {
+        if (!currentPlayer.discard.isEmpty()) {
+            for (Iterator<Card> it = currentPlayer.discard.iterator(); it.hasNext();) {
+                Card card = it.next();
+                if (Cards.copper.equals(card)) {
+					if (currentPlayer.controlPlayer.settlers_shouldReveal(context) ) {
+						currentPlayer.reveal(card, this.controlCard, context);
+						it.remove();
+						currentPlayer.hand.add(card);
+					}
+					break;
+                }
+            }
+        }
+    }
+
+    public void bustlingVillage(Game game, MoveContext context, Player currentPlayer) {
+        if (!currentPlayer.discard.isEmpty()) {
+            for (Iterator<Card> it = currentPlayer.discard.iterator(); it.hasNext();) {
+                Card card = it.next();
+                if (Cards.settlers.equals(card)) {
+					if (currentPlayer.controlPlayer.bustlingVillage_shouldReveal(context) ) {
+						currentPlayer.reveal(card, this.controlCard, context);
+						it.remove();
+						currentPlayer.hand.add(card);
+					}
+					break;
+                }
+            }
+        }
+    }
+
+	public void catapult(Game game, MoveContext context, Player currentPlayer) {
+    	if(currentPlayer.hand.size() > 0) {
+            Card cardToTrash = currentPlayer.controlPlayer.catapult_cardToTrash(context);
+            currentPlayer.hand.remove(cardToTrash);
+            currentPlayer.trash(cardToTrash, this.controlCard, context);
+			if (cardToTrash.getCost(context) >= 3) {
+				for (Player player : game.getPlayersInTurnOrder()) {
+					if (player != currentPlayer && !isDefendedFromAttack(game, player, this.controlCard)) {
+						player.attacked(this.controlCard, context);
+						player.gainNewCard(Cards.curse, this.controlCard, new MoveContext(game, player));
+					}
+				}
+			}
+			if (cardToTrash instanceof TreasureCard) {
+				for (Player player : game.getPlayersInTurnOrder()) {
+					if (player != currentPlayer && !Util.isDefendedFromAttack(game, player, this.controlCard)) {
+						player.attacked(this.controlCard, context);
+						int keepCardCount = 3;
+						if (player.hand.size() > keepCardCount) {
+							Card[] cardsToKeep = player.controlPlayer.catapult_attack_cardsToKeep(context);
+							player.discardRemainingCardsFromHand(context, cardsToKeep, this.controlCard, keepCardCount);
+						}
+					}
+				}
+			}
+    	}
+	}
+
+	public void chariotRace(Game game, MoveContext context, Player currentPlayer) {
+		Card c = game.draw(currentPlayer);
+		currentPlayer.reveal(c, this.controlCard, context);
+		currentPlayer.hand.add(c);
+        Player nextPlayer = game.getNextPlayer();
+        Card revealedCard = game.draw(nextPlayer);
+		nextPlayer.reveal(revealedCard, this.controlCard, context);
+		nextPlayer.putOnTopOfDeck(revealedCard);
+		if (c.costPotion()==revealedCard.costPotion() && 
+			(c.getCost(context)==revealedCard.getCost(context) && c.costDebt() > revealedCard.costDebt() ||
+			 c.getCost(context) >revealedCard.getCost(context) && c.costDebt() ==revealedCard.costDebt())) {
+			context.addGold += 1;
+			currentPlayer.addVictoryTokens(context,1);
+		}
+	}
+
+	public void sacrifice(Game game, MoveContext context, Player currentPlayer) {
+    	if(currentPlayer.hand.size() > 0) {
+            Card cardToTrash = currentPlayer.controlPlayer.sacrifice_cardToTrash(context);
+            currentPlayer.hand.remove(cardToTrash);
+            currentPlayer.trash(cardToTrash, this.controlCard, context);
+			if (cardToTrash instanceof ActionCard) {
+				context.actions += 2;
+				game.drawToHand(currentPlayer, this.controlCard);
+				game.drawToHand(currentPlayer, this.controlCard);
+			}
+			if (cardToTrash instanceof TreasureCard) {
+				context.addGold += 2;
+			}
+			if (cardToTrash instanceof VictoryCard) {
+				currentPlayer.addVictoryTokens(context,2);
+			}
+    	}
+	}
+
+	public void forum(Game game, MoveContext context, Player currentPlayer) {
+		if (currentPlayer.hand.size() > 0) {
+			Card[] cards;
+			if (currentPlayer.hand.size() <= 2)
+				cards = currentPlayer.hand.toArray();
+			else
+				cards = currentPlayer.controlPlayer.forum_cardsToDiscard(context);
+			for (Card toDiscard: cards) {
+				currentPlayer.hand.remove(toDiscard);
+				currentPlayer.discard(toDiscard, this.controlCard, context);
+			}
+		}
+	}
+
+	public void legionary(Game game, MoveContext context, Player currentPlayer) {
+		if (currentPlayer.hand.contains(Cards.gold) && currentPlayer.controlPlayer.legionary_shouldRevealGold(context)) {
+			currentPlayer.reveal(Cards.gold, this.controlCard, context);
+			for (Player player : game.getPlayersInTurnOrder()) {
+				if (player != currentPlayer && !Util.isDefendedFromAttack(game, player, this.controlCard)) {
+					player.attacked(this.controlCard, context);
+					int keepCardCount = 2;
+					if (player.hand.size() > keepCardCount) {
+						Card[] cardsToKeep = player.controlPlayer.legionary_attack_cardsToKeep(context);
+						player.discardRemainingCardsFromHand(context, cardsToKeep, this.controlCard, keepCardCount);
+					}
+					game.drawToHand(player, this.controlCard);
+				}
+			}
+		}
+
+	}
+
 }

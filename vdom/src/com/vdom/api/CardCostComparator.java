@@ -16,7 +16,11 @@ public class CardCostComparator implements Comparator<Card> {
                     return 1;
                 }
             } else {
-                if (cardOne.equals(Cards.curse)) {
+				if (cardOne.costDebt() > cardTwo.costDebt()) {
+					return -1;
+				} else if (cardOne.costDebt() < cardTwo.costDebt()) {
+					return 1;
+				} else if (cardOne.equals(Cards.curse)) {
                     return 1;
                 } else if (cardTwo.equals(Cards.curse)) {
                     return -1;

@@ -47,6 +47,7 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 	private TextView name;
 	private View cardBox;
 	private TextView cost, countLeft, embargos;
+	private TextView debtCost;
 	private TextView checked;
 	private TextView cardDesc;
 	private TextView estateToken,minusCostToken,trashingToken;
@@ -124,6 +125,7 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 		name = (TextView) findViewById(R.id.name);
 		cardBox = findViewById(R.id.cardBox);
 		cost = (TextView) findViewById(R.id.cost);
+		debtCost = (TextView) findViewById(R.id.debtCost);
 		countLeft = (TextView) findViewById(R.id.countLeft);
 		embargos = (TextView) findViewById(R.id.embargos);
 		checked = (TextView) findViewById(R.id.checked);
@@ -155,16 +157,24 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 			cardDesc.setText(c.desc);
 		}
 
+		cost.setVisibility(VISIBLE);
 		if (c.costPotion) {
 			cost.setBackgroundResource(R.drawable.coinpotion);
 		} else {
 			cost.setBackgroundResource(R.drawable.coin);
 		}
 
+		if (c.costDebt != 0) {
+			debtCost.setVisibility(VISIBLE);
+			debtCost.setText(" "+c.costDebt+" ");
+			if (GameTable.getCardCost(c)==0)
+				cost.setVisibility(GONE);
+		} else {
+			debtCost.setVisibility(INVISIBLE);
+		}
+
 		if (c.isPrize) {
 			cost.setVisibility(INVISIBLE);
-		} else {
-			cost.setVisibility(VISIBLE);
 		}
 
 		// TODO: Merge this border with the color setting below, then get rid of cardBox.

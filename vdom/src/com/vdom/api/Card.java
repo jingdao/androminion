@@ -23,6 +23,8 @@ public interface Card {
     public int getCost(MoveContext context, boolean buyPhase);
 
     public boolean costPotion();
+
+	public int costDebt();
     
     public boolean isPrize();
     

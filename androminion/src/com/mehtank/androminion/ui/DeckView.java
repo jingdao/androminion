@@ -18,6 +18,7 @@ public class DeckView extends RelativeLayout {
 	private TextView pirates;
 	private TextView victoryTokens;
 	private TextView guildsCoinTokens;
+	private TextView debtTokens;
 	private TextView minusCoinToken;
 	private TextView minusCardToken;
 	private TextView journeyToken;
@@ -37,6 +38,7 @@ public class DeckView extends RelativeLayout {
 		pirates = (TextView) findViewById(R.id.pirates);
 		victoryTokens = (TextView) findViewById(R.id.victoryTokens);
 		guildsCoinTokens = (TextView) findViewById(R.id.guildsCoinTokens);
+		debtTokens = (TextView) findViewById(R.id.debtTokens);
 		minusCoinToken = (TextView) findViewById(R.id.minusCoinToken);
 		minusCardToken = (TextView) findViewById(R.id.minusCardToken);
 		journeyToken = (TextView) findViewById(R.id.journeyToken);
@@ -48,7 +50,7 @@ public class DeckView extends RelativeLayout {
         }
 	}
 
-	public void set(String nameStr, int turns, int deckSize, int handSize, int numCards, int pt, int vt, int gct, boolean md, boolean mc, boolean jt, boolean highlight) {
+	public void set(String nameStr, int turns, int deckSize, int handSize, int numCards, int pt, int vt, int gct, int dt, boolean md, boolean mc, boolean jt, boolean highlight) {
 		String txt = nameStr + getContext().getString(R.string.turn_header) + turns;
 		name.setText(txt);
 		if (highlight) {
@@ -78,6 +80,12 @@ public class DeckView extends RelativeLayout {
             guildsCoinTokens.setVisibility(VISIBLE);
         else
             guildsCoinTokens.setVisibility(INVISIBLE);
+
+        debtTokens.setText(" " + dt + " ");
+        if (dt != 0)
+            debtTokens.setVisibility(VISIBLE);
+        else
+            debtTokens.setVisibility(INVISIBLE);
 
 		if (mc)
 			minusCoinToken.setVisibility(VISIBLE);

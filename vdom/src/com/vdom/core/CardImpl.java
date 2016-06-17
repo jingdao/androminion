@@ -9,6 +9,7 @@ public class CardImpl implements Card {
     String name;
     String safeName;
     int cost;
+	int costDebt = 0;
     boolean costPotion = false;
 
     String description = "";
@@ -47,6 +48,7 @@ public class CardImpl implements Card {
     public CardImpl(Builder builder) {
         this(builder.type, builder.cost);
         costPotion = builder.costPotion;
+		costDebt = builder.costDebt;
         vp = builder.vp;
         description = builder.description;
         expansion   = builder.expansion;
@@ -68,6 +70,7 @@ public class CardImpl implements Card {
         protected int vp = 0;
 
         protected boolean costPotion = false;
+		protected int costDebt = 0;
         protected String description = "";
         protected String expansion = "";
 
@@ -102,6 +105,11 @@ public class CardImpl implements Card {
             costPotion = true;
             return this;
         }
+
+		public Builder costDebt(int val) {
+			costDebt = val;
+			return this;
+		}
 
         public Builder vp(int val) {
             vp = val;
@@ -193,6 +201,7 @@ public class CardImpl implements Card {
         c.name = name;
         c.cost = cost;
         c.costPotion = costPotion;
+		c.costDebt = costDebt;
         c.description = description;
         c.expansion = expansion;
         c.isPrize = isPrize;
@@ -289,6 +298,10 @@ public class CardImpl implements Card {
     public boolean costPotion() {
         return costPotion;
     }
+
+	public int costDebt() {
+		return costDebt;
+	}
     @Override
     public boolean isPrize() {
         return isPrize;

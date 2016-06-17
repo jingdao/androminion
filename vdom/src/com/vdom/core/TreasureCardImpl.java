@@ -138,6 +138,16 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 			treasureTrove(context,game,player);
 		} else if (equals(Cards.relic)) {
 			relic(context,game,player);
+		} else if (equals(Cards.plunder)) {
+			player.addVictoryTokens(context,1);
+		} else if (equals(Cards.fortune)) {
+			context.buys++;
+			if (!context.hasDoubledCoin) {
+				context.hasDoubledCoin = true;
+				context.addGold += context.getCoinAvailableForBuy();
+			}
+		} else if (equals(Cards.capital)) {
+			context.buys++;
 		}
 
         return reevaluateTreasures;
@@ -285,6 +295,14 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
         }
     }
     
+	public void isTrashed(MoveContext context) {
+		switch (this.controlCard.behaveAsCard().getType()) {
+		case Rocks:
+			context.player.controlPlayer.gainNewCard(Cards.silver,this,context);
+			break;
+		}
+	}
+
     public void masterpiece(MoveContext context)
     {
         for (int i = 0; i < context.overpayAmount; ++i)

@@ -22,7 +22,7 @@ public class EventView extends FrameLayout implements OnLongClickListener{
 
 	private TextView name;
 	private View cardBox;
-	private TextView cost, countLeft, embargos;
+	private TextView cost, countLeft, embargos, debtCost;
 	private TextView checked;
 	public Event event;
 	public MyCard mycard;
@@ -44,6 +44,7 @@ public class EventView extends FrameLayout implements OnLongClickListener{
 		name = (TextView) findViewById(R.id.name);
 		cardBox = findViewById(R.id.cardBox);
 		cost = (TextView) findViewById(R.id.cost);
+		debtCost = (TextView) findViewById(R.id.debtCost);
 		countLeft = (TextView) findViewById(R.id.countLeft);
 		embargos = (TextView) findViewById(R.id.embargos);
 		checked = (TextView) findViewById(R.id.checked);
@@ -72,6 +73,13 @@ public class EventView extends FrameLayout implements OnLongClickListener{
 		name.setText(event.displayName, TextView.BufferType.SPANNABLE);
 		cost.setText(" "+event.cost+" ");
 		cost.setVisibility(VISIBLE);
+		if (event.debt > 0) {
+			debtCost.setText(" "+event.debt+" ");
+			debtCost.setVisibility(VISIBLE);
+			if (event.cost==0)
+				cost.setVisibility(GONE);
+		} else
+			debtCost.setVisibility(INVISIBLE);
 		cardBox.setVisibility(VISIBLE);
 		countLeft.setVisibility(INVISIBLE);
 		embargos.setVisibility(INVISIBLE);

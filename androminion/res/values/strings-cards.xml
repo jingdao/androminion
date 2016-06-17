@@ -566,7 +566,7 @@
 	<string name="Encampment_name">Encampment</string>
 	<string name="Encampment_desc">You may reveal a Gold or Plunder from your hand. If you do not, set this aside, and return it to the Supply at the start of Clean-up.</string>
 	<string name="Plunder_name">Plunder</string>
-	<string name="Plunder_desc"></string>
+	<string name="Plunder_desc">+1 Victory token</string>
 	<string name="Patrician_name">Patrician</string>
 	<string name="Patrician_desc">Reveal the top card of your deck. If it costs 5 Coin or more, put it into your hand.</string>
 	<string name="Emporium_name">Emporium</string>
@@ -588,7 +588,7 @@
 	<string name="Gladiator_name">Gladiator</string>
 	<string name="Gladiator_desc">Reveal a card from your hand. The player to your left may reveal a copy from their hand. If they do not, +1 Coin and trash a Gladiator from the supply.</string>
 	<string name="Fortune_name">Fortune</string>
-	<string name="Fortune_desc">When you play this, double your Coin if you have\'nt yet this turn.</string>
+	<string name="Fortune_desc">+1 Buy\nWhen you play this, double your Coin if you have\'nt yet this turn.\nWhen you gain this, gain a Gold per Gladiator you have in play.</string>
 	<string name="Sacrifice_name">Sacrifice</string>
 	<string name="Sacrifice_desc">Trash a card from your hand. If it\'s an... Action card +2 Cards, +2 Actions. Treasure card, +2 Coin. Victory card, +2 Victory tokens.</string>
 	<string name="Temple_name">Temple</string>
@@ -598,7 +598,7 @@
 	<string name="Archive_name">Archive</string>
 	<string name="Archive_desc">Set aside the top 3 cards of your deck face down. Now and at the start of your next two turns, put one into your hand.</string>
 	<string name="Capital_name">Capital</string>
-	<string name="Capital_desc">When you discard this from play, take 6 Debt, and then you may pay off Debt.</string>
+	<string name="Capital_desc">+1 Buy\nWhen you discard this from play, take 6 Debt, and then you may pay off Debt.</string>
 	<string name="Charm_name">Charm</string>
 	<string name="Charm_desc">When you play this, choose one: +1 Buy and +2 Coin; or the next time you buy a card this turn, you may also gain a differently named card with the same cost.</string>
 	<string name="Crown_name">Crown</string>

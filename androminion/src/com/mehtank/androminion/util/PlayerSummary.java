@@ -18,6 +18,7 @@ public class PlayerSummary {
 	public int pt;
 	public int vt;
 	public int gct; // Guilds Coin Tokens
+	public int dt;
 	public boolean md;
 	public boolean mc;
 	public boolean jt;
@@ -28,7 +29,7 @@ public class PlayerSummary {
 		this.name = name;
 	}
 	
-	public void set(String name, int turns, int deckSize, int handSize, int numCards, int pt, int vt, int gct, boolean md, boolean mc, boolean jt, boolean highlight){
+	public void set(String name, int turns, int deckSize, int handSize, int numCards, int pt, int vt, int gct, int dt, boolean md, boolean mc, boolean jt, boolean highlight){
 		this.name = name;
 		this.turns = turns;
 		this.deckSize = deckSize;
@@ -37,6 +38,7 @@ public class PlayerSummary {
 		this.pt = pt;
 		this.vt = vt;
 		this.gct = gct;
+		this.dt = dt;
 		this.md = md;
 		this.mc = mc;
 		this.jt = jt;

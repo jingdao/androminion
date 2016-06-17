@@ -650,6 +650,10 @@ public class Game {
         Object bought = null;
         context.goldAvailable = context.getCoinAvailableForBuy();
         do {
+			if (player.debtTokens > 0 && context.getCoinAvailableForBuy() > 0)
+				player.resolveDebt(context);
+			if (player.debtTokens > 0)
+				break;
             try {
 				bought = player.controlPlayer.doBuy(context);
             } catch (Throwable t) {
@@ -677,6 +681,8 @@ public class Game {
 				}
             }
         } while (context.buys > 0 && bought != null);
+		if (player.debtTokens > 0 && context.getCoinAvailableForBuy() > 0)
+			player.resolveDebt(context);
         context.buyPhase = false;
     }
 
@@ -1238,6 +1244,7 @@ public class Game {
         }
 
         context.gold -= (buy.getCost(context) + context.overpayAmount);
+		player.debtTokens += buy.costDebt();
 
         if (buy.costPotion()) {
         	context.potions--;
@@ -1290,6 +1297,7 @@ public class Game {
         context.buys--;
 		int cost = buy.cost;
 		context.gold -= cost;
+		player.debtTokens += buy.debt;
         buy.isBought(context);
     }
 
@@ -2191,6 +2199,11 @@ public class Game {
                                 player.hand.add(event.card);
                             } else if (r.equals(Cards.illGottenGains) && event.card.equals(Cards.copper)) {
                                 player.hand.add(event.card);
+							} else if (r.equals(Cards.rocks)) {
+								if (context.buyPhase)
+									player.putOnTopOfDeck(event.card);
+								else
+									player.hand.add(event.card);
                             } else {
                                 player.discard(event.card, null, null, commandedDiscard);
                             }
@@ -2322,6 +2335,15 @@ public class Game {
 								drawToHand(targetPlayer, event.card);
 							}
 						}
+					} else if (event.card.equals(Cards.emporium) && context.countActionCardsInPlayThisTurn() >= 5) {
+						player.addVictoryTokens(context,2);
+					} else if (event.card.equals(Cards.rocks)) {
+						context.player.controlPlayer.gainNewCard(Cards.silver,event.card,context);
+					}
+					if (event.card instanceof VictoryCard) {
+						for (Card played:context.player.playedCards)
+							if (played.equals(Cards.groundskeeper))
+								context.player.controlPlayer.addVictoryTokens(context,1);
 					}
 					AbstractCardPile pile = getPile(event.card);
 					if (!pile.isEmpty() && pile.isSupply() && event.card.getCost(context)<=6 && !event.card.costPotion()) {

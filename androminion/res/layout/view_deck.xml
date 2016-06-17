@@ -54,10 +54,22 @@
         android:visibility="invisible" />
 
     <TextView
+        android:id="@+id/debtTokens"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/guildsCoinTokens"
+		android:gravity="center"
+        android:background="@drawable/debt"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:visibility="invisible" />
+
+    <TextView
         android:id="@+id/minusCoinToken"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/guildsCoinTokens"
+        android:layout_toLeftOf="@+id/debtTokens"
         android:layout_alignParentTop="true"
         android:background="@drawable/minuscointoken"
 		android:text="  -  "
