@@ -89,6 +89,8 @@ public class Game {
     public static Random rand = new Random(System.currentTimeMillis());
     public HashMap<String, AbstractCardPile> piles = new HashMap<String, AbstractCardPile>();
     public HashMap<String, Integer> embargos = new HashMap<String, Integer>();
+    public HashMap<String, Integer> tax = new HashMap<String, Integer>();
+    public HashMap<String, Integer> supplyVictoryTokens = new HashMap<String, Integer>();
     public ArrayList<Card> trashPile = new ArrayList<Card>();
     public ArrayList<Card> possessedTrashPile = new ArrayList<Card>();
     public ArrayList<Card> possessedBoughtPile = new ArrayList<Card>();
@@ -274,6 +276,24 @@ public class Game {
                 gameOver = checkGameOver();
 
                 if (!gameOver) {
+					if (player.boughtEvents.contains(Event.donate)) {
+						ArrayList<Card> allCards = new ArrayList<Card>();
+						allCards.addAll(player.hand.toArrayList());
+						allCards.addAll(player.discard.toArrayList());
+						allCards.addAll(player.deck.toArrayList());
+						player.hand.clear();
+						player.discard.clear();
+						player.deck.clear();
+						Card[] cardsToTrash = player.donate_cardsToTrash(context,allCards.toArray(new Card[0]));
+						for (Card card : cardsToTrash) {
+							allCards.remove(card);
+							player.trash(card, Cards.eventCard, context);
+						}
+						player.deck.toArrayList().addAll(allCards);
+						player.shuffleDeck();
+						for (int i = 0; i < 5; i++)
+							drawToHand(player, null, false);
+					}
                     setPlayersTurn(takeAnotherTurn);
                 }
             }
@@ -565,10 +585,14 @@ public class Game {
 			player.hand.add(player.save.remove(0));
 		}
 
+		player.missionTurn = false;
 		for (Event e: player.boughtEvents) {
 			if (e.equals(Event.expedition)) {
 				drawToHand(player,null,false);
 				drawToHand(player,null,false);
+			} else if (e.equals(Event.mission) && consecutiveTurnCounter <= 1) {
+				player.missionTurn = true;
+				takeAnotherTurn = true;
 			}
 		}
 
@@ -1245,6 +1269,10 @@ public class Game {
 
         context.gold -= (buy.getCost(context) + context.overpayAmount);
 		player.debtTokens += buy.costDebt();
+		if (getTax(buy) > 0) {
+			player.debtTokens += getTax(buy);
+			tax.put(buy.getName(),0);
+		}
 
         if (buy.costPotion()) {
         	context.potions--;
@@ -1324,7 +1352,7 @@ public class Game {
         	}
 
             if (validCards.size() > 0) {
-                Card toGain = context.getPlayer().controlPlayer.haggler_cardToObtain(context, cost - 1, potion);
+                Card toGain = context.getPlayer().controlPlayer.haggler_cardToObtain(context, cost - 1, potion,cardBought.costDebt());
         		if(toGain != null) {
                     if (!validCards.contains(toGain)) {
         				Util.playerError(context.getPlayer(), "Invalid card returned from Haggler, ignoring.");
@@ -1675,6 +1703,8 @@ public class Game {
     protected void initCards() {
 		piles.clear();
 		embargos.clear();
+		tax.clear();
+		supplyVictoryTokens.clear();
 		trashPile.clear();
 		eventsList.clear();
 
@@ -2018,6 +2048,21 @@ public class Game {
 		if (piles.containsKey(Cards.baker.getName()))
 		{
 		    bakerInPlay = true;
+		}
+
+		if (eventsList.contains(Event.tax)) {
+			for (String name : piles.keySet()) {
+				AbstractCardPile pile = piles.get(name);
+				if (pile.isSupply()) {
+					Card card = pile.card();
+					if (card.isKnight())
+						addTax(Cards.virtualKnight);
+					else if (card.isRuins())
+						addTax(Cards.virtualRuins);
+					else
+						addTax(card);
+				}
+			}
 		}
 
         boolean oldDebug = debug;
@@ -2470,12 +2515,41 @@ public class Game {
 		return null;
     }
 
+    AbstractCardPile addTax(Card card) {
+        if (isValidEmbargoPile(card)) {
+        	String name = card.getName();
+			tax.put(name, getTax(card) + 1);
+			return piles.get(name);
+			}
+		return null;
+    }
+
+    AbstractCardPile addSupplyVictoryTokens(Card card) {
+        if (isValidEmbargoPile(card)) {
+        	String name = card.getName();
+			supplyVictoryTokens.put(name, getSupplyVictoryTokens(card) + 1);
+			return piles.get(name);
+			}
+		return null;
+    }
+
 	public boolean isValidEmbargoPile(Card card) {
-		return !(card == null || !cardInGame(card) || !Cards.isSupplyCard(card) );
-		}
+//		return !(card == null || !cardInGame(card) || !Cards.isSupplyCard(card) );
+		return !(card == null || !piles.containsKey(card.getName()) || !Cards.isSupplyCard(card) );
+	}
 
     public int getEmbargos(Card card) {
         Integer count = embargos.get(card.getName());
+        return (count == null) ? 0 : count;
+	}
+
+    public int getTax(Card card) {
+        Integer count = tax.get(card.getName());
+        return (count == null) ? 0 : count;
+	}
+
+    public int getSupplyVictoryTokens(Card card) {
+        Integer count = supplyVictoryTokens.get(card.getName());
         return (count == null) ? 0 : count;
 	}
 

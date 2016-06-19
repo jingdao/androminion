@@ -1025,7 +1025,7 @@ public Card masquerade_cardToPass(MoveContext context)
    }
  
    @Override
-   public Card swindler_cardToSwitch(MoveContext context, int cost, boolean potion)
+   public Card swindler_cardToSwitch(MoveContext context, int cost, boolean potion, int debt)
    {
      if (cost == 0 && !potion) {
        return Cards.curse;

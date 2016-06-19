@@ -111,7 +111,7 @@ public class VictoryCardImpl extends CardImpl implements VictoryCard {
                     }
 
                     if(validCard) {
-                        Card card = player.controlPlayer.farmland_cardToObtain((MoveContext) context, cost, potion);
+                        Card card = player.controlPlayer.farmland_cardToObtain((MoveContext) context, cost, potion,cardToTrash.costDebt());
                         if (card != null) {
                             // check cost
                             if (card.getCost(context) != cost || card.costPotion() != potion) {

@@ -52,6 +52,7 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 	private TextView cardDesc;
 	private TextView estateToken,minusCostToken,trashingToken;
 	private TextView plusCardToken,plusActionToken,plusCoinToken,plusBuyToken;
+	private TextView tax,victoryTokens;
 
 	private String viewstyle;
 	private boolean autodownload;
@@ -138,6 +139,9 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 		plusActionToken = (TextView) findViewById(R.id.plusActionToken);
 		plusCoinToken = (TextView) findViewById(R.id.plusCoinToken);
 		plusBuyToken = (TextView) findViewById(R.id.plusBuyToken);
+
+		tax = (TextView) findViewById(R.id.supplyDebtTokens);
+		victoryTokens = (TextView) findViewById(R.id.supplyVictoryTokens);
 
 		state = new CardState(null);
 
@@ -356,6 +360,22 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 		} else {
 			embargos.setVisibility(GONE);
 		}
+	}
+
+	public void setTax(int s) {
+		if (s != 0) {
+			tax.setText(" "+s+" ");
+			tax.setVisibility(VISIBLE);
+		} else
+			tax.setVisibility(GONE);
+	}
+
+	public void setVictoryTokens(int s) {
+		if (s != 0) {
+			victoryTokens.setText(" "+s+" ");
+			victoryTokens.setVisibility(VISIBLE);
+		} else
+			victoryTokens.setVisibility(GONE);
 	}
 
 	public void setSupplyTokens(int id,boolean visible) {

@@ -496,6 +496,8 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 
 	private int[] lastEmbargos;
 	private int[] lastSupplyTokens;
+	private int[] lastTax;
+	private int[] lastVictoryTokens;
 
 	void resetButtons() {
 		CharSequence selectText = select.getText();
@@ -777,10 +779,10 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 	 * @param supplySizes Sizes of piles
 	 * @param embargos number of embargos
 	 */
-	public void setSupplySizes(int[] supplySizes, int[] embargos, int[] supplyTokens) {
-		moneyPile.updateCounts(supplySizes, embargos);
-		vpPile.updateCounts(supplySizes, embargos);
-		supplyPile.updateCounts(supplySizes, embargos, supplyTokens);
+	public void setSupplySizes(int[] supplySizes, int[] embargos, int[] supplyTokens, int[] tax, int[] victoryTokens) {
+		moneyPile.updateCounts(supplySizes, embargos,supplyTokens,tax,victoryTokens);
+		vpPile.updateCounts(supplySizes, embargos,supplyTokens,tax,victoryTokens);
+		supplyPile.updateCounts(supplySizes, embargos, supplyTokens, tax, victoryTokens);
 		prizePile.updateCounts(supplySizes, embargos);
 		nonSupplyPile.updateCounts(supplySizes, embargos);
 	}
@@ -857,7 +859,7 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 	void uncheckAllShowCardsButtons() {
 		for (ToggleButton t : showCardsButtons)
 			t.setChecked(false);
-		setSupplySizes(this.lastSupplySizes, this.lastEmbargos, this.lastSupplyTokens);
+		setSupplySizes(this.lastSupplySizes, this.lastEmbargos, this.lastSupplyTokens, this.lastTax, this.lastVictoryTokens);
 	}
 
 	/**
@@ -950,11 +952,13 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 		this.lastSupplySizes = gs.supplySizes;
 		this.lastEmbargos = gs.embargos;
 		this.lastSupplyTokens = gs.supplyTokens;
+		this.lastTax = gs.tax;
+		this.lastVictoryTokens = gs.supplyVictoryTokens;
 		costs = gs.costs;
         
         supplyPile.updateCardName(gs.ruinsID, gs.ruinsTopCard, gs.ruinsTopCardDesc);
         supplyPile.updateCardName(gs.knightsID, gs.knightsTopCard, gs.knightsTopCardDesc, gs.knightsTopCardCost);
-		setSupplySizes(gs.supplySizes, gs.embargos, gs.supplyTokens);
+		setSupplySizes(gs.supplySizes, gs.embargos, gs.supplyTokens, gs.tax, gs.supplyVictoryTokens);
         setCardCosts(top.findViewById(android.R.id.content));
 	}
 

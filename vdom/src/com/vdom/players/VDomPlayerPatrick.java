@@ -964,7 +964,7 @@ public class VDomPlayerPatrick extends BasePlayer {
 	}
 
 	@Override
-	public Card saboteur_cardToObtain(MoveContext context, int maxCost, boolean potion) {
+	public Card saboteur_cardToObtain(MoveContext context, int maxCost, boolean potion, int debt) {
 		this.log("saboteur_cardToObtain");
 	    return advisorGeneral(context, maxCost, false, true);
 	}
@@ -1089,7 +1089,7 @@ public class VDomPlayerPatrick extends BasePlayer {
 	}
 
 	@Override
-	public Card farmland_cardToObtain(MoveContext context, int exactCost, boolean potion) {
+	public Card farmland_cardToObtain(MoveContext context, int exactCost, boolean potion, int debt) {
 		//TODO test
 		this.log("farmland_cardToObtain");
 	    return this.advisorGeneral(context, exactCost, true, true);
@@ -2311,7 +2311,7 @@ public class VDomPlayerPatrick extends BasePlayer {
 
 
 	@Override
-	public Card haggler_cardToObtain(MoveContext context, int maxCost, boolean potion) {
+	public Card haggler_cardToObtain(MoveContext context, int maxCost, boolean potion, int debt) {
 		this.log("haggler_cardToObtain");
 	    if (maxCost < 0)
 	        return null;

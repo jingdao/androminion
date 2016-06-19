@@ -66,6 +66,7 @@ public class SelectCardOptions implements Serializable {
 	public int potionCost = -1;
 	public int debtCost = 0;
 	public boolean fromPrizes = false;
+	public boolean canBuyCards = true;
 
 	public boolean isAction = false;
 	public boolean isReaction = false;
@@ -102,6 +103,7 @@ public class SelectCardOptions implements Serializable {
 	public SelectCardOptions debtCost(int c) {debtCost = c; return this;}
 	public SelectCardOptions maxCostWithoutPotion() {maxCostWithoutPotion = maxCost + (maxCost < Integer.MAX_VALUE && potionCost > 0 ? 1 : 0); return this;}
 	public SelectCardOptions copperCountInPlay(int c) {copperCountInPlay = c; return this; }
+	public SelectCardOptions buyCardsAllowed(boolean b) {canBuyCards = b; return this;}
 
     public SelectCardOptions isAction() {isAction = true; return this;}
 	public SelectCardOptions isReaction() {isReaction = true; return this;}
@@ -141,6 +143,7 @@ public class SelectCardOptions implements Serializable {
 	}
 	
 	public boolean checkValid(MyCard c, int cost) {
+		if (!canBuyCards) return false;
 		if ((maxCost >= 0) && (cost > maxCost )) return false;
 		if ((minCost >= 0) && (cost < minCost)) return false;
 
@@ -170,6 +173,7 @@ public class SelectCardOptions implements Serializable {
 
 	public boolean checkValid(Card c, int cost) {
 
+		if (!canBuyCards) return false;
 		if ((maxCost >= 0) && (cost > (c.costPotion() ? maxCost : maxCostWithoutPotion))) return false;
 		if ((minCost >= 0) && (cost < minCost)) return false;
 		

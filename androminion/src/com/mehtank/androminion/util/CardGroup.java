@@ -30,6 +30,8 @@ public class CardGroup extends BaseAdapter {
 	int[] supplySizes = null;
 	int[] embargos = null;
 	int[] supplyTokens = null;
+	int[] tax = null;
+	int[] victoryTokens = null;
 	
 	public void updateCounts(int[] supplySizes, int[] embargos) {
 		this.supplySizes = supplySizes;
@@ -37,10 +39,12 @@ public class CardGroup extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 
-	public void updateCounts(int[] supplySizes, int[] embargos, int[] supplyTokens) {
+	public void updateCounts(int[] supplySizes, int[] embargos, int[] supplyTokens, int[] tax, int[] victoryTokens) {
 		this.supplySizes = supplySizes;
 		this.embargos = embargos;
 		this.supplyTokens = supplyTokens;
+		this.tax = tax;
+		this.victoryTokens = victoryTokens;
 		notifyDataSetChanged();
 	}
 
@@ -117,6 +121,10 @@ public class CardGroup extends BaseAdapter {
 			if (supplyTokens != null) {
 				for (int i=0;i<supplyTokens.length;i++)
 					cv.setSupplyTokens(i,supplyTokens[i] == cs.c.id);
+			if (tax != null)
+				cv.setTax(tax[cs.c.id]);
+			if (victoryTokens != null)
+				cv.setVictoryTokens(victoryTokens[cs.c.id]);
 			}
 		} catch (ArrayIndexOutOfBoundsException e) {
 			// TODO See why this is happening?

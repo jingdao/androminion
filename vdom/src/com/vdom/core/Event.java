@@ -136,6 +136,36 @@ public class Event {
 			case Annex:
 				annex(context,currentPlayer);
 				break;
+			case Advance:
+				advance(context,currentPlayer);
+				break;
+			case Delve:
+				delve(context,currentPlayer);
+				break;
+			case Tax:
+				tax(context,currentPlayer);
+				break;
+			case Banquet:
+				banquet(context,currentPlayer);
+				break;
+			case Ritual:
+				ritual(context,currentPlayer);
+				break;
+			case SaltTheEarth:
+				saltTheEarth(context,currentPlayer);
+				break;
+			case Wedding:
+				wedding(context,currentPlayer);
+				break;
+			case Windfall:
+				windfall(context,currentPlayer);
+				break;
+			case Conquest:
+				conquest(context,currentPlayer);
+				break;
+			case Dominate:
+				dominate(context,currentPlayer);
+				break;
 			default:
 				break;
 		}
@@ -547,4 +577,84 @@ public class Event {
 		currentPlayer.gainNewCard(Cards.duchy,Cards.eventCard,context);
 	}
 
+	public void advance(MoveContext context, Player currentPlayer) {
+		boolean hasAction = false;
+		for (Card card : currentPlayer.hand) {
+			if (card instanceof ActionCard) {
+				hasAction = true;
+				break;
+			}
+		}
+		if (!hasAction)
+			return;
+		Card cardToTrash = currentPlayer.controlPlayer.advance_cardToTrash(context);
+		currentPlayer.hand.remove(cardToTrash);
+		currentPlayer.trash(cardToTrash, Cards.eventCard, context);
+        ActionCard cardToObtain = currentPlayer.controlPlayer.advance_actionCardToObtain(context);
+		currentPlayer.gainNewCard(cardToObtain, Cards.eventCard, context);
+	}
+
+	public void delve(MoveContext context, Player currentPlayer) {
+		context.buys++;
+		currentPlayer.gainNewCard(Cards.silver,Cards.eventCard, context);
+	}
+
+	public void tax(MoveContext context, Player currentPlayer) {
+        Card card = currentPlayer.controlPlayer.tax_supplyToTax(context);
+        context.game.addTax(card);
+        context.game.addTax(card);
+	}
+
+	public void banquet(MoveContext context, Player currentPlayer) {
+		currentPlayer.gainNewCard(Cards.copper,Cards.eventCard, context);
+		currentPlayer.gainNewCard(Cards.copper,Cards.eventCard, context);
+        Card cardToObtain = currentPlayer.controlPlayer.banquet_cardToObtain(context);
+		currentPlayer.gainNewCard(cardToObtain, Cards.eventCard, context);
+	}
+
+	public void ritual(MoveContext context, Player currentPlayer) {
+		if(currentPlayer.gainNewCard(Cards.curse,Cards.eventCard, context) && currentPlayer.hand.size() > 0) {
+            Card card = currentPlayer.controlPlayer.ritual_cardToTrash(context);
+            currentPlayer.hand.remove(card);
+            currentPlayer.trash(card, Cards.eventCard, context);
+            currentPlayer.addVictoryTokens(context, card.getCost(context));
+		}
+	}
+
+	public void saltTheEarth(MoveContext context, Player currentPlayer) {
+		currentPlayer.addVictoryTokens(context, 1);
+		Card card = currentPlayer.controlPlayer.saltTheEarth_supplyCardToTrash(context);
+		Card cardToTrash = context.game.takeFromPile(card);
+		currentPlayer.trash(cardToTrash, Cards.eventCard, context);
+	}
+
+	public void wedding(MoveContext context, Player currentPlayer) {
+		currentPlayer.addVictoryTokens(context, 1);
+		currentPlayer.gainNewCard(Cards.gold,Cards.eventCard, context);
+	}
+
+	public void windfall(MoveContext context, Player currentPlayer) {
+		if (currentPlayer.deck.isEmpty() && currentPlayer.discard.isEmpty()) {
+			currentPlayer.gainNewCard(Cards.gold,Cards.eventCard, context);
+			currentPlayer.gainNewCard(Cards.gold,Cards.eventCard, context);
+			currentPlayer.gainNewCard(Cards.gold,Cards.eventCard, context);
+		}
+	}
+
+	public void conquest(MoveContext context, Player currentPlayer) {
+		currentPlayer.gainNewCard(Cards.silver,Cards.eventCard, context);
+		currentPlayer.gainNewCard(Cards.silver,Cards.eventCard, context);
+		int numSilver = 0;
+		for (Card card : context.game.getCardsObtainedByPlayer()) {
+			if (card.equals(Cards.silver))
+				numSilver++;
+		}
+		currentPlayer.addVictoryTokens(context, numSilver);
+	}
+
+	public void dominate(MoveContext context, Player currentPlayer) {
+		if (currentPlayer.gainNewCard(Cards.province,Cards.eventCard,context)) {
+			currentPlayer.addVictoryTokens(context, 9);
+		}
+	}
 }

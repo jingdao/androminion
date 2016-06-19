@@ -32,6 +32,8 @@ public class GameStatus implements Serializable {
 	public boolean[] minusCoinToken;
 	public boolean[] journeyToken;
 	public int[] supplyTokens;
+	public int[] tax;
+	public int[] supplyVictoryTokens;
 	public int cardCostModifier;
 	public int potions;
 	public String ruinsTopCard;
@@ -68,6 +70,8 @@ public class GameStatus implements Serializable {
     public GameStatus setMinusCoinToken(boolean[] is) {minusCoinToken = is; return this;}
     public GameStatus setJourneyToken(boolean[] is) {journeyToken = is; return this;}
 	public GameStatus setSupplyTokens(int[] is) {supplyTokens = is; return this;};
+	public GameStatus setTax(int[] is) {tax = is; return this;};
+	public GameStatus setSupplyVictoryTokens(int[] is) {supplyVictoryTokens = is; return this;};
 	public GameStatus setCardCostModifier(int i) {cardCostModifier = i; return this;}
     public GameStatus setPotions(int i) {potions = i; return this;}
     public GameStatus setTrash(int[] is) {trashPile = is; return this;}

@@ -427,6 +427,8 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     	int[] supplySizes = new int[cardsInPlay.size()];
     	int[] embargos = new int[cardsInPlay.size()];
     	int[] costs = new int[cardsInPlay.size()];
+    	int[] tax = new int[cardsInPlay.size()];
+    	int[] supplyVictoryTokens = new int[cardsInPlay.size()];
         
     	for (int i = 0; i < cardsInPlay.size(); i++) {
             if (!isFinal)
@@ -434,6 +436,8 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
             else
             	supplySizes[i] = player.getMyCardCount(cardsInPlay.get(i));
             embargos[i] = context.getEmbargos(intToCard(i));
+            tax[i] = context.game.getTax(intToCard(i));
+            supplyVictoryTokens[i] = context.game.getSupplyVictoryTokens(intToCard(i));
             costs[i] = intToCard(i).getCost(context);
     	}
 
@@ -512,6 +516,8 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     	  .setSupplySizes(supplySizes)
     	  .setEmbargos(embargos)
 		  .setSupplyTokens(supplyTokensId)
+		  .setTax(tax)
+		  .setSupplyVictoryTokens(supplyVictoryTokens)
     	  .setCosts(costs)
     	  .setHand(cardArrToIntArr(Game.sortCards ? shownHand.sort(new Util.CardHandComparator()) : shownHand.toArray()))
     	  .setPlayedCards(playedArray)
@@ -992,7 +998,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     
 	@Override
     protected Object[] pickCards(MoveContext context, String header, SelectCardOptions sco, int count, boolean exact) {
-        if (sco.allowedCards.size() == 0)
+        if (!context.player.missionTurn && sco.allowedCards.size() == 0)
         	return null;
 
         Event p = new Event(EType.GETCARD)

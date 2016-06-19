@@ -271,14 +271,16 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
             }
         }
         
-        if (sco.getAllowedCardCount() == 0) {
-            // No cards fit the filter, so return early
-            return null;
-        }
-        else if (sco.getAllowedCardCount() == 1 && !sco.isPassable()) {
-            // Only one card available and player can't pass...go ahead and return
-            return intToCard(sco.allowedCards.get(0));
-        }
+		if (!context.player.missionTurn) {
+			if (sco.getAllowedCardCount() == 0) {
+				// No cards fit the filter, so return early
+				return null;
+			}
+			else if (sco.getAllowedCardCount() == 1 && !sco.isPassable()) {
+				// Only one card available and player can't pass...go ahead and return
+				return intToCard(sco.allowedCards.get(0));
+			}
+		}
         
         String minCostString = (sco.minCost <= 0) ? "" : "" + sco.minCost;
         String maxCostString = (sco.maxCost == Integer.MAX_VALUE) ? "" : "" + sco.maxCost + sco.potionString();
@@ -420,7 +422,7 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
 
     @Override
     public Object doBuy(MoveContext context) {
-        SelectCardOptions sco = new SelectCardOptions().isBuy().maxCost(context.getCoinAvailableForBuy()).copperCountInPlay(context.countCardsInPlay(Cards.copper)).potionCost(context.getPotions()).setPassable(getString(R.string.end_turn)).setPickType(PickType.BUY);
+        SelectCardOptions sco = new SelectCardOptions().isBuy().maxCost(context.getCoinAvailableForBuy()).copperCountInPlay(context.countCardsInPlay(Cards.copper)).potionCost(context.getPotions()).buyCardsAllowed(!context.player.missionTurn).setPassable(getString(R.string.end_turn)).setPickType(PickType.BUY);
         return getCardOrEventFromTable(context, getString(R.string.part_buy), sco);
     }
 
@@ -3180,6 +3182,71 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
             options.remove(o);
         } while (cardsToDiscard.size() < 5);
         return cardsToDiscard.toArray(new Card[0]);
+    }
+
+    public Card advance_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_apprentice_cardToTrash(context)) {
+            return super.advance_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().isAction().setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.eventCard), sco);
+    }
+    
+    public ActionCard advance_actionCardToObtain(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_university_actionCardToObtain(context)) {
+            return super.advance_actionCardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().potionCost(0).maxCost(6).isAction().setPassable(getString(R.string.none));
+        return (ActionCard) getFromTable(context, getActionString(ActionType.GAIN, Cards.eventCard), sco);
+    }
+
+    public Card banquet_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_workshop_cardToObtain(context)) {
+            return super.banquet_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().maxCost(5).isNonVictory();
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.eventCard), sco);
+	}
+
+    public Card ritual_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_salvager_cardToTrash(context)) {
+            return super.ritual_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.eventCard), sco);
+    }
+
+	public Card saltTheEarth_supplyCardToTrash(MoveContext context) {
+        if(context.isQuickPlay()) {
+            return super.saltTheEarth_supplyCardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().isVictory();
+        return getFromTable(context, getActionString(ActionType.TRASH, Cards.eventCard), sco);
+	}
+
+    public Card[] donate_cardsToTrash(MoveContext context, Card[] cards) {
+        ArrayList<Card> cardsToTrash = new ArrayList<Card>();
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cards)
+            options.add(Strings.getCardName(c));
+        String none = getString(R.string.none);
+        options.add(none);
+        do {
+            String o = selectString(context,getActionString(ActionType.TRASH, Cards.eventCard), options.toArray(new String[0]));
+			if (o.equals(none))
+				break;
+            cardsToTrash.add(localNameToCard(o, cards));
+            options.remove(o);
+        } while ( true);
+        return cardsToTrash.toArray(new Card[0]);
+    }
+
+    public Card tax_supplyToTax(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_embargo_supplyToEmbargo(context)) {
+            return super.tax_supplyToTax(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().allowEmpty();
+        return getFromTable(context, Event.tax.displayName, sco);
     }
 
 }

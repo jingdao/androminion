@@ -3070,4 +3070,53 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 		return new Card[0];
 	}
 
+	public Card advance_cardToTrash(MoveContext context) {
+		CardList ac = new CardList(controlPlayer, getPlayerName(false));
+		for (Card c : hand) {
+			if (c instanceof ActionCard) {
+				ac.add(c);
+			}
+		}
+		Card card = pickOutCard(ac, getTrashCards());
+		if (card == null) {
+			card = lowestCard(context, ac, false);
+		}
+		return card;
+	}
+
+    public ActionCard advance_actionCardToObtain(MoveContext context) {
+        return (ActionCard) bestCardInPlay(context, 6, false, false, true, false);
+    }
+
+    public Card banquet_cardToObtain(MoveContext context) {
+		return bestCardInPlay(context,5,false,false,false,false);
+	}
+
+    public Card ritual_cardToTrash(MoveContext context) {
+        if (context.getPlayer().getHand().size() == 0) {
+            return null;
+        }
+        return lowestCard(context, context.getPlayer().getHand(), false);
+    }
+
+	public Card saltTheEarth_supplyCardToTrash(MoveContext context) {
+		return Cards.province;
+	}
+
+    public Card[] donate_cardsToTrash(MoveContext context, Card[] cards) {
+		CardList list = new CardList(context.player,"");
+		for (Card card : cards)
+			list.add(card);
+		return pickOutCards(list, 999, getTrashCards());
+	}
+
+    public Card tax_supplyToTax(MoveContext context) {
+        Card card;
+        ArrayList<Card> cardList = new ArrayList<Card> (Arrays.asList(context.getCardsInGame()));
+        do {
+        	card = cardList.remove(rand.nextInt(cardList.size() - 1));
+        } while (!game.isValidEmbargoPile(card));
+        return card;
+    }
+
 }

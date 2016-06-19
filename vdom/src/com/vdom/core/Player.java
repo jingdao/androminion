@@ -32,6 +32,7 @@ public abstract class Player {
     protected int turnCount = 0;
     public int vps;
     public boolean win = false;
+	public boolean missionTurn = false;
     public int pirateShipTreasure;
     
     // The number of coin tokens held by the player
@@ -1629,6 +1630,13 @@ public abstract class Player {
 	public abstract boolean legionary_shouldRevealGold(MoveContext context);
     public abstract Card[] legionary_attack_cardsToKeep(MoveContext context);
     public abstract Card[] annex_cardsToKeepInDiscard(MoveContext context, Card[] cards);
+    public abstract Card advance_cardToTrash(MoveContext context);
+    public abstract ActionCard advance_actionCardToObtain(MoveContext context);
+    public abstract Card banquet_cardToObtain(MoveContext context);
+    public abstract Card ritual_cardToTrash(MoveContext context);
+	public abstract Card saltTheEarth_supplyCardToTrash(MoveContext context);
+	public abstract Card[] donate_cardsToTrash(MoveContext context,Card[] cards);
+    public abstract Card tax_supplyToTax(MoveContext context);
 
 	// ////////////////////////////////////////////
     // Card interactions - Promotional Cards
