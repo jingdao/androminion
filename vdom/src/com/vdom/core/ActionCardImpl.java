@@ -237,13 +237,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         currentPlayer.addVictoryTokens(context, addVictoryTokens);
         int cardsToDraw = addCards;
 
-		Card originCard;
-		if (this.isKnight()) 
-			originCard = Cards.virtualKnight;
-		else if (this.isRuins()) 
-			originCard = Cards.virtualRuins;
-		else 
-			originCard = this.controlCard;
+		Card originCard = game.getOriginCard(this);
 
 		if (currentPlayer.plusActionToken!=null && currentPlayer.plusActionToken.getName().equals(originCard.getName()))
 			context.actions++;
@@ -873,6 +867,18 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		case Legionary:
 			legionary(game,context,currentPlayer);
 			break;
+		case SmallCastle:
+			smallCastle(game,context,currentPlayer);
+			break;
+		case OpulentCastle:
+			opulentCastle(game,context,currentPlayer);
+			break;
+		case Encampment:
+			encampment(game,context,currentPlayer);
+			break;
+		case Gladiator:
+			gladiator(game,context,currentPlayer);
+			break;
         default:
             break;
         }
@@ -1446,15 +1452,15 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
             card = Util.randomCard(currentPlayer.hand);
         }
         Card origCard = card;
-        Card virtCard = card;
+        Card virtCard = game.getOriginCard(card);
         
-        AbstractCardPile pile;
-        if (card.isKnight()) {
-        	virtCard = Cards.virtualKnight;
-        } else if (card.isRuins()) {
-        	virtCard = Cards.virtualRuins;
-        }
-        pile = game.getPile(virtCard);
+//        AbstractCardPile pile;
+//        if (card.isKnight()) {
+//        	virtCard = Cards.virtualKnight;
+//        } else if (card.isRuins()) {
+//        	virtCard = Cards.virtualRuins;
+//        }
+        AbstractCardPile pile = game.getPile(virtCard);
     
         currentPlayer.reveal(origCard, this.controlCard, context);
         //Util.log("Ambassador revealed card:" + origCard.getName());
@@ -1492,7 +1498,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 	                player.attacked(this.controlCard, context);
 	                
 	                
-	                if (pile.getType() == AbstractCardPile.PileType.SingleCardPile || origCard.equals(pile.card()) ) {
+	                if (/*pile.getType() == AbstractCardPile.PileType.SingleCardPile ||*/ origCard.equals(pile.card()) ) {
 	                	player.gainNewCard(virtCard, this.controlCard, new MoveContext(game, player));
 	                }
 	            }
@@ -6468,7 +6474,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		currentPlayer.hand.add(c);
         Player nextPlayer = game.getNextPlayer();
         Card revealedCard = game.draw(nextPlayer);
-		nextPlayer.reveal(revealedCard, this.controlCard, context);
+		nextPlayer.reveal(revealedCard, this.controlCard, new MoveContext(game,nextPlayer));
 		nextPlayer.putOnTopOfDeck(revealedCard);
 		if (c.costPotion()==revealedCard.costPotion() && 
 			(c.getCost(context)==revealedCard.getCost(context) && c.costDebt() > revealedCard.costDebt() ||
@@ -6529,4 +6535,73 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 
 	}
 
+	public void smallCastle(Game game, MoveContext context, Player currentPlayer) {
+		ArrayList<Card> castles = new ArrayList<Card>();
+		castles.add(this);
+		for (Card card : currentPlayer.hand) {
+			if (card.isCastle()) {
+				castles.add(card);
+			}
+		}
+		Card cardToTrash = currentPlayer.controlPlayer.smallCastle_cardToTrash(context,castles.toArray(new Card[0]));
+        if (this.controlCard.equals(cardToTrash)) {
+			if (!this.controlCard.movedToNextTurnPile) {
+				this.controlCard.movedToNextTurnPile = true;
+				currentPlayer.trash(this.controlCard, null, context);
+				currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(this.controlCard));
+				currentPlayer.controlPlayer.gainNewCard(Cards.virtualCastle, this.controlCard, context);
+			}
+        } else {
+            currentPlayer.hand.remove(cardToTrash);
+            currentPlayer.trash(cardToTrash, this.controlCard, context);
+			currentPlayer.controlPlayer.gainNewCard(Cards.virtualCastle, this.controlCard, context);
+		}
+	}
+
+	public void opulentCastle(Game game, MoveContext context, Player currentPlayer) {
+		Card[] cardsToDiscard = currentPlayer.controlPlayer.opulentCastle_cardsToDiscard(context);
+		for (Card card : cardsToDiscard) {
+			currentPlayer.hand.remove(card);
+			currentPlayer.discard(card, this.controlCard, context);
+		}
+		context.addGold += 2 * cardsToDiscard.length;
+	}
+
+	public void encampment(Game game, MoveContext context, Player currentPlayer) {
+		boolean hasGold = currentPlayer.hand.contains(Cards.gold);
+		boolean hasPlunder = currentPlayer.hand.contains(Cards.plunder);
+		if ((hasGold||hasPlunder) && currentPlayer.controlPlayer.encampment_shouldReveal(context)) {
+			if (hasGold)
+				currentPlayer.reveal(Cards.gold, this.controlCard, context);
+			if (hasPlunder)
+				currentPlayer.reveal(Cards.plunder, this.controlCard, context);
+		} else {
+			if (!this.controlCard.movedToNextTurnPile) {
+				this.controlCard.movedToNextTurnPile = true;
+				currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(this.controlCard));
+				currentPlayer.encampments.add(this.controlCard);
+			}
+		}
+
+	}
+
+    public void gladiator(Game game, MoveContext context, Player currentPlayer) {
+        if (currentPlayer.hand.size() == 0) {
+            return;
+        }       
+        Card card = currentPlayer.controlPlayer.gladiator_revealedCard(context);
+        currentPlayer.reveal(card, this.controlCard, context);
+        Player nextPlayer = game.getNextPlayer();
+		if (nextPlayer.hand.contains(card) && nextPlayer.gladiator_shouldReveal(context,card)) {
+			nextPlayer.reveal(card, this.controlCard, new MoveContext(game,nextPlayer));
+		} else {
+			context.addGold += 1;
+			if (game.getPile(Cards.gladiator).card().equals(Cards.gladiator)) {
+				Card cardToTrash = game.takeFromPile(this);
+				currentPlayer.trash(cardToTrash, Cards.gladiator, context);
+			}
+		}
+				
+				
+	}
 }

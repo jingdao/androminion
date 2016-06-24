@@ -42,6 +42,10 @@ public interface Card {
 
 	public boolean isTraveller();
 
+	public boolean isCastle();
+
+	public boolean isGathering();
+
 	public boolean isAttack();
     
     public Integer getId();

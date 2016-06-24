@@ -120,7 +120,7 @@ public abstract class BasePlayer extends Player implements GameEventListener {
     }
 
     protected Card bestCardInPlay(MoveContext context, int maxCost, boolean exactCost, boolean potion) {
-        return bestCardInPlay(context, maxCost, exactCost, potion, false, true, 0);
+        return bestCardInPlay(context, maxCost, exactCost, potion, false, true, maxCost);
     }
     
     protected Card bestCardInPlay(MoveContext context, int maxCost, boolean exactCost, boolean potion,int debt) {
@@ -170,19 +170,22 @@ public abstract class BasePlayer extends Player implements GameEventListener {
         ArrayList<Card> randList = new ArrayList<Card>();
         
         while (cost >= 0) {
-            for (Card card : cardList) {
+            for (Card c: cardList) {
+				Card card = context.game.getPile(c).card();
                 int cardCost = card.getCost(context);
                 if (cardCost == cost && context.getCardsLeftInPile(card) > 0) {
-                    if ((!exactCost && potion) || (card.costPotion() && potion) || (!card.costPotion() && !potion)) {
-                        if ((cardCost <= maxCostWithoutPotion && !card.costPotion()) || (cardCost <= maxCost)) {
-                            if (!isBuy || context.canBuy(card)) {
-                                if (highestCost == 0) {
-                                    highestCost = cardCost;
-                                }
-                            }
-                            randList.add(card);
-                        }
-                    }
+					if (card.costDebt() == debt) {
+						if ((!exactCost && potion) || (card.costPotion() && potion) || (!card.costPotion() && !potion)) {
+							if ((cardCost <= maxCostWithoutPotion && !card.costPotion()) || (cardCost <= maxCost)) {
+								if (!isBuy || context.canBuy(card)) {
+									if (highestCost == 0) {
+										highestCost = cardCost;
+									}
+								}
+								randList.add(card);
+							}
+						}
+					}
                 }
             }
             
@@ -3117,6 +3120,43 @@ public abstract class BasePlayer extends Player implements GameEventListener {
         	card = cardList.remove(rand.nextInt(cardList.size() - 1));
         } while (!game.isValidEmbargoPile(card));
         return card;
+    }
+
+	public Card smallCastle_cardToTrash(MoveContext context,Card[] cards) {
+		return cards[0];
+	}
+
+    public Card[] hauntedCastle_cardsToPutBackOnDeck(MoveContext context) {
+        ArrayList<Card> cards = new ArrayList<Card>();
+        for (int i = 0; i < 2; i++) {
+            cards.add(context.player.getHand().get(i));
+        }
+        return cards.toArray(new Card[0]);
+    }
+
+    public Card[] opulentCastle_cardsToDiscard(MoveContext context) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+        for (Card card : context.getPlayer().getHand()) {
+            if (card instanceof VictoryCard)
+                cardsToDiscard.add(card);
+        }
+        return cardsToDiscard.toArray(new Card[0]);
+	}
+
+	public HuntingGroundsOption sprawlingCastle_chooseOption(MoveContext context) {
+		return HuntingGroundsOption.GainDuchy;
+	}
+
+    public boolean encampment_shouldReveal(MoveContext context) {
+        return true;
+    }
+
+    public boolean gladiator_shouldReveal(MoveContext context,Card card) {
+        return true;
+    }
+
+    public Card gladiator_revealedCard(MoveContext context) {
+		return hand.get(rand.nextInt(hand.size()));
     }
 
 }

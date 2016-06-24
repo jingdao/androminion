@@ -11,7 +11,7 @@ public abstract class AbstractCardPile {
     protected boolean tradeRouteToken = false;
     
 	static enum PileType {
-		RuinsPile, KnightsPile, SingleCardPile
+		RuinsPile, KnightsPile, CastlePile, SplitPile, SingleCardPile
 	}
 	
 	protected PileType type;

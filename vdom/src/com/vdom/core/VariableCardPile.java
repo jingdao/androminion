@@ -9,6 +9,8 @@ import com.vdom.api.Card;
 public class VariableCardPile extends AbstractCardPile {
 	
 	HashMap<String, SingleCardPile> piles;
+	Card top;
+	Card bottom;
 	
 	public VariableCardPile(PileType piletype, int count) {
 		this.type = piletype;
@@ -27,9 +29,31 @@ public class VariableCardPile extends AbstractCardPile {
 			}
 			Collections.shuffle(cards);
 			break;
+		case CastlePile:
+			for (Card c : Cards.castleCards)
+				cards.add(c);
+			if (count > 8) {
+				cards.add(0,Cards.humbleCastle);
+				cards.add(3,Cards.smallCastle);
+				cards.add(6,Cards.opulentCastle);
+				cards.add(10,Cards.kingsCastle);
+			}
+			break;
 		default:
 			break;
 		}
+	}
+
+	public VariableCardPile(Card top, Card bottom) {
+		this.top = top;
+		this.bottom = bottom;
+		this.type = PileType.SplitPile;
+		this.cards = new ArrayList<Card>();
+		this.piles = new HashMap<String, SingleCardPile>();
+		for (int i=0;i<5;i++)
+			cards.add(top.instantiate());
+		for (int i=0;i<5;i++)
+			cards.add(bottom.instantiate());
 	}
 
 	@Override
@@ -40,10 +64,14 @@ public class VariableCardPile extends AbstractCardPile {
 				return Cards.virtualRuins;
 			case KnightsPile:
 				return Cards.virtualKnight;
+			case CastlePile:
+				return Cards.virtualCastle;
 			default:
 				return null;
 			}
 		}
+		if (this.type == PileType.SplitPile)
+			return topCard();
 		if (piles.isEmpty()) {
 			return null;
 		}
@@ -61,7 +89,8 @@ public class VariableCardPile extends AbstractCardPile {
 			ac = (ActionCard) card;
 		} else return;
 		
-		piles.get(card.getName()).addCard(card);
+		if (piles.containsKey(card.getName()))
+			piles.get(card.getName()).addCard(card);
 
 		switch (type) {
 		case KnightsPile:
@@ -73,6 +102,14 @@ public class VariableCardPile extends AbstractCardPile {
 			if (ac.isRuins()) {
 				cards.add(0, card);
 			}
+			break;
+		case CastlePile:
+			if (card.isCastle()) {
+				cards.add(0, card);
+			}
+			break;
+		case SplitPile:
+			cards.add(0,card);
 			break;
 		default:
 			break;

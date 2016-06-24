@@ -40,6 +40,8 @@ public class MyCard implements Serializable {
 	public boolean isLooter   = false;
 	public boolean isReserve  = false;
 	public boolean isTraveller = false;
+	public boolean isCastle = false;
+	public boolean isGathering = false;
 	public boolean isKnight   = false;
 	public boolean isOverpay  = false;
 	
@@ -52,6 +54,8 @@ public class MyCard implements Serializable {
 	public static final int RUINS_PILES = 7;
 	public static final int KNIGHTS_PILES = 8;
 	public static final int EVENTS = 9;
+	public static final int CASTLE_PILES = 10;
+	public static final int SPLIT_PILES = 11;
 
 	public int pile;
 
@@ -165,6 +169,43 @@ public class MyCard implements Serializable {
 		return "Card #" + id + " (" + cost + ") " + name + ": " + desc;
 	}
 	
+	public MyCard clone(){
+		MyCard m = new MyCard(this.id,this.name,this.originalSafeName,this.originalName);
+		m.id = this.id;
+		m.name = this.name;
+		m.expansion = this.expansion;
+		m.originalExpansion = this.originalExpansion;
+		m.desc = this.desc;
+		m.originalSafeName = this.originalSafeName;
+		m.originalName = this.originalName;
+		m.cost = this.cost;
+		m.costDebt = this.costDebt;
+		m.costPotion = this.costPotion;
+		m.vp = this.vp;
+		m.gold = this.gold;
+		m.isVictory = this.isVictory;
+		m.isCurse = this.isCurse;
+		m.isTreasure = this.isTreasure;
+		m.isAction = this.isAction;
+		m.isReaction = this.isReaction;
+		m.isAttack = this.isAttack;
+		m.isDuration = this.isDuration;
+		m.isPrize = this.isPrize;
+		m.isPotion = this.isPotion;
+		m.isBane = this.isBane;
+		m.isShelter = this.isShelter;
+		m.isRuins = this.isRuins;
+		m.isLooter = this.isLooter;
+		m.isReserve = this.isReserve;
+		m.isTraveller = this.isTraveller;
+		m.isCastle = this.isCastle;
+		m.isGathering = this.isGathering;
+		m.isKnight = this.isKnight;
+		m.isOverpay = this.isOverpay;
+		m.pile = this.pile;
+		return m;
+	}
+
 	static public class CardNameComparator implements Comparator<MyCard> {
 		@Override
 		public int compare(MyCard card0, MyCard card1) {

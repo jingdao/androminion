@@ -493,6 +493,16 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 				cardType += " - " + context.getString(R.string.type_traveller);
 			}
             
+			if (c.isCastle)
+			{
+				cardType += " - " + context.getString(R.string.type_castle);
+			}
+            
+			if (c.isGathering)
+			{
+				cardType += " - " + context.getString(R.string.type_gathering);
+			}
+            
             if (c.isShelter)
             {
                 cardType += " - " + context.getString(R.string.type_shelter);

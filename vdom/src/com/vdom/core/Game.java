@@ -687,7 +687,7 @@ public class Game {
             if (bought != null) {
 				if (bought instanceof Card) {
 					Card buy = (Card) bought;
-					if (isValidBuy(context, buy)) {
+					if (isValidBuy(context, context.game.getPile(buy).card())) {
 						context.totalCardsBoughtThisTurn++;
 						GameEvent statusEvent = new GameEvent(GameEvent.Type.Status, (MoveContext) context);
 						broadcastEvent(statusEvent);
@@ -1168,8 +1168,9 @@ public class Game {
 //            return false;
 //        }
 
-        AbstractCardPile thePile = getPile(card);
-        if (thePile == null || thePile.isSupply() == false)
+//        AbstractCardPile thePile = getPile(card);
+        AbstractCardPile thePile = getPile(getOriginCard(card));
+        if (thePile == null || thePile.isSupply() == false || !thePile.card().equals(card))
         {
         	return false;
         }
@@ -1224,7 +1225,7 @@ public class Game {
 			while (player.hand.size() > 0)
 				player.putOnTopOfDeck(player.hand.remove(0));
 		}
-
+		Card originCard = buy;
         Card card = takeFromPileCheckTrader(buy, context);
         if (card != null) {
 	        GameEvent event = new GameEvent(GameEvent.Type.BuyingCard, (MoveContext) context);
@@ -1233,9 +1234,9 @@ public class Game {
 	        broadcastEvent(event);
 
 			// Swap in the real knight
-	        if (buy.equals(Cards.virtualKnight)) {
+//	        if (buy.equals(Cards.virtualKnight)) {
 	        	buy = card;
-	        }
+//	        }
 
         }
 
@@ -1299,14 +1300,6 @@ public class Game {
         		player.gainNewCard(Cards.gold, Cards.hoard, context);
         	}
         }
-
-		Card originCard;
-		if (buy.isKnight()) 
-			originCard = Cards.virtualKnight;
-		else if (buy.isRuins()) 
-			originCard = Cards.virtualRuins;
-		else 
-			originCard = buy.getControlCard();
 
 		if (player.trashingToken!=null && player.trashingToken.getName().equals(originCard.getName())) {
 			Card toTrash = player.controlPlayer.trashingToken_cardToTrash(context);
@@ -1906,8 +1899,13 @@ public class Game {
 			for (Card k : Cards.knightsCards) {
 				kp.addLinkedPile((SingleCardPile) addPile(k, 1, false));
 			}
+		}
 
-
+		if (piles.containsKey(Cards.virtualCastle.getName())) {
+			VariableCardPile kp = (VariableCardPile) this.getPile(Cards.virtualCastle);
+			for (Card k : Cards.castleCards) {
+				kp.addLinkedPile((SingleCardPile) addPile(k, 10, false));
+			}
 		}
 
         chanceForShelters = 0.0;
@@ -2129,7 +2127,6 @@ public class Game {
                 }
 
                 if (event.getType() == GameEvent.Type.CardObtained || event.getType() == GameEvent.Type.BuyingCard) {
-
                     MoveContext context = event.getContext();
                     Player player = context.getPlayer();
 
@@ -2384,6 +2381,49 @@ public class Game {
 						player.addVictoryTokens(context,2);
 					} else if (event.card.equals(Cards.rocks)) {
 						context.player.controlPlayer.gainNewCard(Cards.silver,event.card,context);
+					} else if (event.card.equals(Cards.crumblingCastle)) {
+						player.addVictoryTokens(context,1);
+						player.controlPlayer.gainNewCard(Cards.silver,event.card,context);
+					} else if (event.card.equals(Cards.hauntedCastle) && player==player.controlPlayer) {
+						player.controlPlayer.gainNewCard(Cards.gold,event.card,context);
+                        for(Player targetPlayer : getPlayersInTurnOrder()) {
+                            if(targetPlayer != player && targetPlayer.hand.size()>=5) {
+								targetPlayer.attacked(event.card, context);
+                                MoveContext targetContext = new MoveContext(Game.this, targetPlayer);
+								Card[] cards = targetPlayer.hauntedCastle_cardsToPutBackOnDeck(targetContext);
+								for (int i = cards.length - 1; i >= 0; i--) {
+									targetPlayer.hand.remove(cards[i]);
+									targetPlayer.putOnTopOfDeck(cards[i]);
+								}
+                            }
+                        }
+					} else if (event.card.equals(Cards.sprawlingCastle)) {
+						Player.HuntingGroundsOption option = player.controlPlayer.sprawlingCastle_chooseOption(context);
+						if (option == Player.HuntingGroundsOption.GainDuchy)
+							player.controlPlayer.gainNewCard(Cards.duchy,event.card,context);
+						else {
+							player.controlPlayer.gainNewCard(Cards.estate,event.card,context);
+							player.controlPlayer.gainNewCard(Cards.estate,event.card,context);
+							player.controlPlayer.gainNewCard(Cards.estate,event.card,context);
+						}
+					} else if (event.card.equals(Cards.grandCastle)) {
+						int count=0;
+						for (Card card : player.hand) {
+							context.player.reveal(card, event.card, context);
+							if (card instanceof VictoryCard)
+								count++;
+						}
+						for (Card card : player.playedCards)
+							if (card instanceof VictoryCard)
+								count++;
+						player.addVictoryTokens(context,count);
+					} else if (event.card.equals(Cards.fortune)) {
+						int count=0;
+						for (Card card : player.playedCards)
+							if (card.equals(Cards.gladiator))
+								count++;
+						for (int i=0;i<count;i++)
+							player.controlPlayer.gainNewCard(Cards.gold,event.card,context);
 					}
 					if (event.card instanceof VictoryCard) {
 						for (Card played:context.player.playedCards)
@@ -2563,17 +2603,23 @@ public class Game {
 //    }
 
     protected Card takeFromPile(Card card) {
-		if (card.isKnight()) card = Cards.virtualKnight;
-		if (card.isRuins()) card = Cards.virtualRuins;
-
-		AbstractCardPile pile = getPile(card);
+//		if (card.isKnight()) card = Cards.virtualKnight;
+//		if (card.isRuins()) card = Cards.virtualRuins;
+//		if (card.isCastle()) card = Cards.virtualCastle;
+//		for (int i=0;i<Cards.splitPileTop.size();i++) {
+//			if (Cards.splitPileBottom.get(i).equals(card)) {
+//				card = Cards.splitPileTop.get(i);
+//			}
+//		}
+//
+		AbstractCardPile pile = getPile(getOriginCard(card));
         if (pile == null || pile.getCount() <= 0) {
             return null;
         }
 
         Card thisCard;
     	tradeRouteValue += pile.takeTradeRouteToken();
-    	if (card.equals(Cards.virtualRuins) || card.equals(Cards.virtualKnight)) {
+    	if (card.equals(Cards.virtualRuins) || card.equals(Cards.virtualKnight) || card.equals(Cards.virtualCastle)) {
     		SingleCardPile cp = ((VariableCardPile) pile).getTopLinkedPile();
     		if (cp == null) return null;
     		thisCard = cp.removeCard();
@@ -2581,7 +2627,6 @@ public class Game {
     	} else {
     		thisCard = pile.removeCard();
     	}
-
         return thisCard;
     }
 
@@ -2597,7 +2642,8 @@ public class Game {
     }
 
     public int pileSize(Card card) {
-    	AbstractCardPile pile = getPile(card);
+//    	AbstractCardPile pile = getPile(card);
+    	AbstractCardPile pile = getPile(getOriginCard(card));
         if (pile == null) {
             return -1;
         }
@@ -2643,6 +2689,13 @@ public class Game {
             		cards.add(Cards.virtualRuins);
             	} else if (pile.type.equals(AbstractCardPile.PileType.KnightsPile)) {
             		cards.add(Cards.virtualKnight);
+            	} else if (pile.type.equals(AbstractCardPile.PileType.CastlePile)) {
+            		cards.add(Cards.virtualCastle);
+            	} else if (pile.type.equals(AbstractCardPile.PileType.SplitPile)) {
+					if (pile.card()==null)
+	            		cards.add(((VariableCardPile)pile).bottom);
+					else
+						cards.add(((VariableCardPile)pile).top);
             	} else {
             		cards.add(pile.card());
             	}
@@ -2689,7 +2742,8 @@ public class Game {
     }
 
     public int getCardsLeftInPile(Card card) {
-    	AbstractCardPile pile = getPile(card);
+//    	AbstractCardPile pile = getPile(card);
+    	AbstractCardPile pile = getPile(getOriginCard(card));
         if (pile == null || pile.getCount() < 0) {
             return 0;
         }
@@ -2712,11 +2766,23 @@ public class Game {
     }
 
     protected AbstractCardPile addPile(Card card, int count, boolean isSupply) {
-    	AbstractCardPile pile;
+    	AbstractCardPile pile = null;
     	if (card.equals(Cards.virtualRuins)) {
     		pile = new VariableCardPile(AbstractCardPile.PileType.RuinsPile, Math.max(10, Math.min(50, (numPlayers * 10) - 10)));
     	} else if (card.equals(Cards.virtualKnight)) {
     		pile = new VariableCardPile(AbstractCardPile.PileType.KnightsPile, Math.min(Cards.knightsCards.size(), 10));
+		} else if (card.equals(Cards.virtualCastle)) {
+    		pile = new VariableCardPile(AbstractCardPile.PileType.CastlePile, numPlayers>2 ? 12 : 8);
+		} else if (Cards.splitPileTop.contains(card)) {
+			for (int i=0;i<Cards.splitPileTop.size();i++) {
+				if (Cards.splitPileTop.get(i).equals(card)) {
+					pile = new VariableCardPile(Cards.splitPileTop.get(i),Cards.splitPileBottom.get(i));
+					SingleCardPile bottom = new SingleCardPile(Cards.splitPileBottom.get(i),10);
+					bottom.notInSupply();
+					piles.put(Cards.splitPileBottom.get(i).getName(),bottom);
+					break;
+				}
+			}
     	} else {
     		pile = new SingleCardPile(card, count);
     	}
@@ -2863,6 +2929,19 @@ public class Game {
     	if (p == null) return null;
     	return p.card();
     }
+
+	public Card getOriginCard(Card card) {
+		if (card.isKnight()) 
+			return Cards.virtualKnight;
+		else if (card.isRuins()) 
+			return Cards.virtualRuins;
+		else if (card.isCastle()) 
+			return Cards.virtualCastle;
+		for (int i=0; i < Cards.splitPileTop.size();i++)
+			if (Cards.splitPileBottom.get(i).equals(card))
+				return Cards.splitPileTop.get(i);
+		return card;
+	}
 
     public AbstractCardPile getPile(Card card) {
     	return piles.get(card.getName());

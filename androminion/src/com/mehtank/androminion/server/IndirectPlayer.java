@@ -2763,7 +2763,7 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         if(context.isQuickPlay()) {
             return super.gear_cardsToSetAside(context);
         }
-        SelectCardOptions sco = new SelectCardOptions().setCount(2).setPickType(PickType.SELECT);
+        SelectCardOptions sco = new SelectCardOptions().setCount(2).setPassable(getString(R.string.none)).setPickType(PickType.SELECT);
         return getFromHand(context, getCardName(Cards.gear), sco);
     }
 
@@ -3247,6 +3247,60 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         }
         SelectCardOptions sco = new SelectCardOptions().allowEmpty();
         return getFromTable(context, Event.tax.displayName, sco);
+    }
+
+	public Card smallCastle_cardToTrash(MoveContext context, Card[] cardList) {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cardList)
+            options.add(Strings.getCardName(c));
+        String o = selectString(context, getActionString(ActionType.TRASH,Cards.smallCastle), options.toArray(new String[0]));
+        return (Card) localNameToCard(o, cardList);
+    }
+    
+    public Card[] hauntedCastle_cardsToPutBackOnDeck(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_ghostShip_attack_cardsToPutBackOnDeck(context)) {
+            return super.hauntedCastle_cardsToPutBackOnDeck(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setCount(2).ordered();
+        return getFromHand(context, getString(R.string.ironmonger_option_one), sco);
+    }
+
+    public Card[] opulentCastle_cardsToDiscard(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_warehouse_cardsToDiscard(context)) {
+            return super.opulentCastle_cardsToDiscard(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().isVictory().setPassable(getString(R.string.none)).setPickType(PickType.DISCARD);
+        return getFromHand(context, getActionString(ActionType.DISCARD, Cards.opulentCastle), sco);
+    }
+
+    public HuntingGroundsOption sprawlingCastle_chooseOption(MoveContext context) {
+        LinkedHashMap<String, HuntingGroundsOption> h = new LinkedHashMap<String, HuntingGroundsOption>();   
+        h.put(getString(R.string.hunting_grounds_option_one), HuntingGroundsOption.GainDuchy);
+        h.put(getString(R.string.hunting_grounds_option_two), HuntingGroundsOption.GainEstates);
+        return h.get(selectString(context, Cards.sprawlingCastle, h.keySet().toArray(new String[0])));
+    }
+    
+    public boolean encampment_shouldReveal(MoveContext context) {
+        if(context.isQuickPlay()) {
+            return super.encampment_shouldReveal(context);
+        }
+        return selectBoolean(context, Cards.encampment, getString(R.string.encampment_option), getString(R.string.pass));
+    }
+
+    public boolean gladiator_shouldReveal(MoveContext context,Card card) {
+        if(context.isQuickPlay()) {
+            return super.gladiator_shouldReveal(context,card);
+        }
+        return selectBoolean(context, Cards.gladiator, getActionString(ActionType.REVEAL,card,null), getString(R.string.pass));
+
+    }
+
+    public Card gladiator_revealedCard(MoveContext context) {
+        if(context.isQuickPlay()) {
+            return super.gladiator_revealedCard(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions();
+        return getCardFromHand(context, getActionString(ActionType.REVEAL, Cards.gladiator), sco);
     }
 
 }

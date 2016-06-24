@@ -13,4 +13,6 @@
     <string name="type_shelter">Shelter</string>
     <string name="type_reserve">Reserve</string>
 	<string name="type_traveller">Traveller</string>
+	<string name="type_castle">Castle</string>
+	<string name="type_gathering">Gathering</string>
 </resources>

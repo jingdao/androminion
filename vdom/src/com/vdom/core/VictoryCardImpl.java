@@ -46,6 +46,10 @@ public class VictoryCardImpl extends CardImpl implements VictoryCard {
         	context.player.controlPlayer.gainNewCard(Cards.silver, this, context);
         	context.player.controlPlayer.gainNewCard(Cards.silver, this, context);
         	break;
+		case CrumblingCastle:
+			context.player.addVictoryTokens(context,1);
+			context.player.controlPlayer.gainNewCard(Cards.silver,this,context);
+			break;
         default:
         	break;
     	}

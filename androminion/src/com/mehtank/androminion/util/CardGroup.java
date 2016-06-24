@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 
 import com.mehtank.androminion.ui.CardView;
 import com.mehtank.androminion.ui.CardView.CardState;
+import com.mehtank.androminion.ui.GameTableViews;
 import com.vdom.comms.MyCard;
 
 /**
@@ -143,6 +144,37 @@ public class CardGroup extends BaseAdapter {
 				cs.c.name = s;
 				cs.c.desc = d;
 				if (c >= 0) cs.c.cost = c;
+			}
+		}
+	}
+	public void updateCardName(int index, int copyIndex, String s, String d, int c) {
+		if (index <= 0 || copyIndex <= 0)
+			return;
+		MyCard old = GameTableViews.cardsInPlay.get(index);
+		MyCard m = GameTableViews.cardsInPlay.get(copyIndex).clone();
+		if (s!=null) {
+			for (CardState cs : cards) {
+				if (cs.c.id==index) {
+					cs.c = m;
+					cs.c.id = index;
+					cs.c.name = s;
+					cs.c.desc = d;
+					if (c >= 0) cs.c.cost = c;
+					break;
+				}
+			}
+		} else {
+			for (CardState cs : cards) {
+				if (cs.c.originalName.equals(old.name) || cs.c.id==index) {
+					cs.c = m;
+					cs.c.originalName = old.name;
+					if (s!=null)
+						cs.c.name = s;
+					if (d!=null)
+						cs.c.desc = d;
+					if (c >= 0) cs.c.cost = c;
+					break;
+				}
 			}
 		}
 	}

@@ -628,6 +628,8 @@
 	<string name="GrandCastle_desc">When you gain this, reveal your hand. +1 Victory token per Victory card in your hand and/or in play.</string>
 	<string name="KingsCastle_name">King\'s Castle</string>
 	<string name="KingsCastle_desc">Worth 2 Victory Point per Castle you have.</string>	
+    <string name="VirtualCastle_name">Castles</string>
+    <string name="VirtualCastle_desc"/>
 
     <string name="Envoy_name">Envoy</string>
     <string name="Envoy_desc">Reveal the top 5 cards of your deck. The player to your left chooses one for you to discard. Draw the rest.</string>

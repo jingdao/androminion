@@ -43,6 +43,13 @@ public class GameStatus implements Serializable {
 	public String knightsTopCardDesc;
 	public int knightsTopCardCost;
 	public int knightsID;
+	public String castleTopCard;
+	public String castleTopCardDesc;
+	public int castleTopCardCost;
+	public int castleID = -1;
+	public int virtualCastleID = -1;
+	public int[] splitPileID;
+	public int[] splitPileTopCard;
 
 	public GameStatus setFinal(boolean b) {isFinal = b; return this;}
     public GameStatus setPossessed(boolean b) {isPossessed = b; return this;}

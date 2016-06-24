@@ -23,6 +23,8 @@ public class CardImpl implements Card {
     boolean isOverpay = false;  // can this card be overpaid for?
 	boolean isReserve = false;
 	boolean isTraveller = false;
+	boolean isCastle = false;
+	boolean isGathering = false;
     protected boolean attack = false;
 
     static int maxNameLen;	// across all cards
@@ -60,6 +62,8 @@ public class CardImpl implements Card {
         isOverpay   = builder.isOverpay;
 		isReserve   = builder.isReserve;
 		isTraveller = builder.isTraveller;
+		isCastle = builder.isCastle;
+		isGathering = builder.isGathering;
 		attack = builder.isAttack;
     }
 
@@ -83,6 +87,8 @@ public class CardImpl implements Card {
 		protected boolean isReserve = false;
 		protected boolean isTraveller = false;
 		protected boolean isAttack = false;
+		protected boolean isCastle = false;
+		protected boolean isGathering = false;
 
 
         public Builder(Cards.Type type, int cost) {
@@ -154,6 +160,18 @@ public class CardImpl implements Card {
 			return this;
 		}
 
+		public Builder isCastle()
+		{
+			isCastle = true;
+			return this;
+		}
+
+		public Builder isGathering()
+		{
+			isGathering = true;
+			return this;
+		}
+
         public Builder attack() {
             isAttack = true;
             return this;
@@ -212,6 +230,8 @@ public class CardImpl implements Card {
         c.isOverpay = isOverpay;
 		c.isReserve = isReserve;
 		c.isTraveller = isTraveller;
+		c.isCastle = isCastle;
+		c.isGathering = isGathering;
         c.vp = vp;
     }
 
@@ -240,13 +260,7 @@ public class CardImpl implements Card {
         costModifier -= (buyPhase && this.equals(Cards.peddler)) ? (2 * context.countActionCardsInPlayThisTurn()) : 0;
 		costModifier -= context.countCardsInPlay(Cards.bridgeTroll);
         //costModifier -= (this.isKnight ? (cost - game. (2 * context.countCardsInPlay(Cards.quarry)) : 0;
-		Card originCard;
-		if (this.isKnight()) 
-			originCard = Cards.virtualKnight;
-		else if (this.isRuins()) 
-			originCard = Cards.virtualRuins;
-		else 
-			originCard = this.controlCard;
+		Card originCard = context.game.getOriginCard(this);
 		if (context.player.minusCostToken!=null && context.player.minusCostToken.getName().equals(originCard.getName()))
 			costModifier -= 2;
 
@@ -337,6 +351,14 @@ public class CardImpl implements Card {
 
 	public boolean isTraveller() {
 		return isTraveller;
+	}
+    
+	public boolean isCastle() {
+		return isCastle;
+	}
+    
+	public boolean isGathering() {
+		return isGathering;
 	}
     
     public boolean isAttack() {

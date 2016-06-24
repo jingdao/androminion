@@ -30,6 +30,7 @@ import com.vdom.core.ExitException;
 import com.vdom.core.Game;
 import com.vdom.core.MoveContext;
 import com.vdom.core.Player;
+import com.vdom.core.AbstractCardPile;
 import com.vdom.core.Util;
 
 /**
@@ -171,6 +172,8 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     	card.isOverpay = c.isOverpay();
 		card.isReserve = c.isReserve();
 		card.isTraveller = c.isTraveller();
+		card.isCastle = c.isCastle();
+		card.isGathering = c.isGathering();
     	if (c.equals(Cards.virtualRuins))
     		card.isRuins = true;
     	else
@@ -228,6 +231,12 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 
     	if (Cards.knightsCards.contains(c))
     		card.pile = MyCard.KNIGHTS_PILES;
+
+    	if (Cards.castleCards.contains(c))
+    		card.pile = MyCard.CASTLE_PILES;
+
+		if (Cards.splitPileBottom.contains(c))
+			card.pile = MyCard.SPLIT_PILES;
 
     	if (c.equals(Cards.potion)) card.isPotion = true;
     	if (c.equals(Cards.curse)) {
@@ -505,6 +514,37 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     		playedArray[i] = (cardToInt(c) * (newcard ? 1 : -1));
     	}
     	
+		Card castleCard = Cards.virtualCastle;
+		if (cardToInt(Cards.virtualCastle) >= 0) {
+			castleCard = game.getPile(Cards.virtualCastle).card();
+			costs[cardToInt(Cards.virtualCastle)] = castleCard.getCost(context);
+		}
+		gs.castleTopCard = Strings.getCardName(castleCard);
+		gs.castleTopCardDesc = getFullCardDescription(castleCard);
+		gs.castleTopCardCost = castleCard.getCost(context);
+		gs.castleID = cardToInt(castleCard);
+		gs.virtualCastleID = cardToInt(Cards.virtualCastle);
+
+		ArrayList<Integer> splitPileID = new ArrayList<Integer>();
+		ArrayList<Integer> splitPileTopCard = new ArrayList<Integer>();
+		for (Card topCard : Cards.splitPileTop) {
+			int topID = cardToInt(topCard);
+			if (topID >= 0) {
+				Card current = game.getPile(topCard).card();
+//				costs[topID] = current.getCost(context);
+				if (current != null) {
+					splitPileID.add(topID);
+					splitPileTopCard.add(cardToInt(current));
+				}
+			}
+		}
+		gs.splitPileID = new int[splitPileID.size()];
+		gs.splitPileTopCard = new int[splitPileID.size()];
+		for (int i=0;i<splitPileID.size();i++) {
+			gs.splitPileID[i] = splitPileID.get(i).intValue();
+			gs.splitPileTopCard[i] = splitPileTopCard.get(i).intValue();
+		}
+
     	gs.setTurnStatus(new int[] {context.getActionsLeft(),
     					  context.getBuysLeft(),
                           coinsAvailable,

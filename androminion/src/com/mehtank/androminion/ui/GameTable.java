@@ -550,7 +550,15 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 					CardInfo ci = openedCards.get(i);
 //					if (!isAcceptable(ci.cs.c, ci.parent))
 //						return;
-					cards[i] = ci.cs.c.id;
+					if (ci.cs.c.pile == MyCard.SPLIT_PILES) {
+						for (MyCard m : GameTableViews.cardsInPlay) {
+							if (m.name.equals(ci.cs.c.name)) {
+								cards[i] = m.id;	
+								break;
+							}
+						}
+					} else 
+						cards[i] = ci.cs.c.id;
 				}
 
                 if (sco.getPickType() == PickType.SELECT_WITH_ALL && openedCards.size() == 0 && !select.getText().toString().endsWith("!")) {
@@ -958,6 +966,9 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
         
         supplyPile.updateCardName(gs.ruinsID, gs.ruinsTopCard, gs.ruinsTopCardDesc);
         supplyPile.updateCardName(gs.knightsID, gs.knightsTopCard, gs.knightsTopCardDesc, gs.knightsTopCardCost);
+        supplyPile.updateCardName(gs.virtualCastleID, gs.castleID, gs.castleTopCard, gs.castleTopCardDesc, gs.castleTopCardCost);
+		for (int i=0;i<gs.splitPileID.length;i++)
+			supplyPile.updateCardName(gs.splitPileID[i],gs.splitPileTopCard[i],null,null,-1);
 		setSupplySizes(gs.supplySizes, gs.embargos, gs.supplyTokens, gs.tax, gs.supplyVictoryTokens);
         setCardCosts(top.findViewById(android.R.id.content));
 	}

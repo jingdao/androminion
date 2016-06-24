@@ -15,6 +15,7 @@ import com.vdom.api.DurationCard;
 import com.vdom.api.GameEvent;
 import com.vdom.api.TreasureCard;
 import com.vdom.api.VictoryCard;
+import android.util.Log;
 
 public abstract class Player {
 
@@ -24,6 +25,7 @@ public abstract class Player {
 	public static final String DISTINCT_CARDS = "Distinct Cards";
 	public static final String VICTORY_TOKENS = "Victory Tokens";
 	public static final String DISTANT_LANDS_ON_TAVERN = "Distant Lands";
+	public static final String CASTLES = "Castles";
 
     // Only used by InteractivePlayer currently
     private String name;
@@ -65,6 +67,7 @@ public abstract class Player {
 	protected CardList tavern;
 	protected CardList gear;
 	protected CardList save;
+	protected CardList encampments;
 	public ArrayList<Event> boughtEvents = new ArrayList<Event>();
     public Game game;
     public Player controlPlayer = this;
@@ -234,6 +237,7 @@ public abstract class Player {
 		tavern = new CardList(this,"Tavern");
 		gear = new CardList(this,"Gear");
 		save = new CardList(this,"Save");
+		encampments = new CardList(this,"encampments");
     }
 
     private List<PutBackOption> getPutBackOptions(MoveContext context) {
@@ -382,6 +386,10 @@ public abstract class Player {
 					resolveDebt(context);
 			}
 		}
+
+		for (Card card : encampments)
+			context.game.getPile(Cards.encampment).addCard(card);
+		encampments.clear();
 
         while (!playedCards.isEmpty()) {
     		discard(playedCards.remove(0), null, context, false);
@@ -548,6 +556,9 @@ public abstract class Player {
 		for (Card card: gear) {
 			allCards.add(card);
 		}
+		for (Card card: encampments) {
+			allCards.add(card);
+		}
 		if (estateToken != null)
 			allCards.add(estateToken);
         if (checkLeadCard != null) {
@@ -595,6 +606,12 @@ public abstract class Player {
 					cardCounts.put(card,numDistantLands);
 			}
 		}
+
+		int numCastles=0;
+		for (Card card : this.getAllCards())
+			if (card.isCastle())
+				numCastles++;
+		cardCounts.put(CASTLES, numCastles);
 
 		return cardCounts;
 	}
@@ -711,6 +728,10 @@ public abstract class Player {
 			totals.put(Cards.feodum, counts.get(Cards.feodum) * (Util.getCardCount(getAllCards(), Cards.silver)  / 3));
 		if (counts.containsKey(Cards.distantLands))
 			totals.put(Cards.distantLands, counts.get(DISTANT_LANDS_ON_TAVERN) * 4);
+		if (counts.containsKey(Cards.humbleCastle))
+			totals.put(Cards.humbleCastle, counts.get(Cards.humbleCastle) * counts.get(CASTLES));
+		if (counts.containsKey(Cards.kingsCastle))
+			totals.put(Cards.kingsCastle, counts.get(Cards.kingsCastle) * counts.get(CASTLES) * 2);
 
 		totals.put(Cards.victoryTokens, this.getVictoryTokens());
 
@@ -1637,6 +1658,13 @@ public abstract class Player {
 	public abstract Card saltTheEarth_supplyCardToTrash(MoveContext context);
 	public abstract Card[] donate_cardsToTrash(MoveContext context,Card[] cards);
     public abstract Card tax_supplyToTax(MoveContext context);
+	public abstract Card smallCastle_cardToTrash(MoveContext context,Card[] cards);
+    public abstract Card[] hauntedCastle_cardsToPutBackOnDeck(MoveContext context);
+    public abstract Card[] opulentCastle_cardsToDiscard(MoveContext context);
+    public abstract HuntingGroundsOption sprawlingCastle_chooseOption(MoveContext context);
+	public abstract boolean encampment_shouldReveal(MoveContext context);
+	public abstract boolean gladiator_shouldReveal(MoveContext context,Card card);
+    public abstract Card gladiator_revealedCard(MoveContext context);
 
 	// ////////////////////////////////////////////
     // Card interactions - Promotional Cards
