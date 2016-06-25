@@ -345,5 +345,9 @@
   <string name="teacher_option_four">+1 Buy token</string>
   
   <string name="encampment_option">reveal Gold/Plunder</string>
+  <string name="wild_hunt_option_one">+3 Cards</string>
+  <string name="wild_hunt_option_two">Gain Estate</string>
+  <string name="charm_option_one">+1 Buy, +2 Coin</string>
+  <string name="charm_option_two">Gain a card next buy</string>
   
 </resources>

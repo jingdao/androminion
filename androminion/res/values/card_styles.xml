@@ -88,6 +88,12 @@
         <item name="cardNameBackgroundColor">@color/cardVictory</item>
     </style>
 
+    <style name="CardView.Treasure.Action">
+        <item name="cardBackgroundColor">@color/cardDefaultTextBackgroundColor</item>
+        <item name="cardNameBackgroundColor">@color/cardGold</item>
+        <item name="cardCountColor">@color/cardDefaultTextColor</item>
+    </style>
+
     <style name="CardView.Victory" parent="@style/CardView.InverseText">
         <item name="cardBackgroundColor">@color/cardVictory</item>
     </style>

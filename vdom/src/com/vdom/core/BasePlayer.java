@@ -172,6 +172,8 @@ public abstract class BasePlayer extends Player implements GameEventListener {
         while (cost >= 0) {
             for (Card c: cardList) {
 				Card card = context.game.getPile(c).card();
+				if (!c.equals(card))
+					continue;
                 int cardCost = card.getCost(context);
                 if (cardCost == cost && context.getCardsLeftInPile(card) > 0) {
 					if (card.costDebt() == debt) {
@@ -2731,7 +2733,7 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 	}
 
 	public Card raze_cardToDraw(MoveContext context, Card[] cardList) {
-		return null;
+		return cardList[0];
 	}
 
 	public Card amulet_cardToTrash(MoveContext context) {
@@ -3159,4 +3161,46 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 		return hand.get(rand.nextInt(hand.size()));
     }
 
+    public Card[] temple_cardsToTrash(MoveContext context, Card[] cards) {
+        ArrayList<Card> cardsToTrash = new ArrayList<Card>();
+		ArrayList<Card> trashCards = new ArrayList<Card>(Arrays.asList(getTrashCards()));
+		for (Card c: cards) {
+			if (trashCards.contains(c)) {
+				cardsToTrash.add(c);
+				if (cardsToTrash.size() >= 3)
+					break;
+			}
+		}
+		return cardsToTrash.toArray(new Card[0]);
+	}
+
+	public WildHuntOption wildHunt_chooseOption(MoveContext context) {
+		return WildHuntOption.GainEstate;
+	}
+
+	public Card archive_cardToDraw(MoveContext context, Card[] cardList) {
+		return cardList[0];
+	}
+
+	public CharmOption charm_chooseOption(MoveContext context) {
+		return CharmOption.AddCoin;
+	}
+
+    public Card charm_cardToObtain(MoveContext context, Card[] cardList) {
+		return cardList[rand.nextInt(cardList.length)]; 
+	}
+
+    public ActionCard crown_actionCardToPlay(MoveContext context) {
+        return controlPlayer.kingsCourt_cardToPlay(context);
+    }
+    
+	public TreasureCard crown_treasureCardToPlay(MoveContext context) {
+        for (Card c : context.getPlayer().getHand()) {
+            if(c instanceof TreasureCard) {
+                return (TreasureCard) c;
+            }
+        }
+		return null;
+	}
+	
 }

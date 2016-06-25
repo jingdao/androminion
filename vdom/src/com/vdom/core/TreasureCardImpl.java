@@ -148,7 +148,8 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 			}
 		} else if (equals(Cards.capital)) {
 			context.buys++;
-		}
+		} else if (equals(Cards.charm))
+			charm(game,context,player);
 
         return reevaluateTreasures;
     }
@@ -324,6 +325,44 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 			if (player != currentPlayer && !Util.isDefendedFromAttack(game, player, this.controlCard)) {
 				player.minusCardToken = true;
 			}
+		}
+	}
+
+	public void charm(Game game, MoveContext context, Player currentPlayer) {
+		switch (currentPlayer.charm_chooseOption(context)) {
+			case AddCoin:
+				context.buys++;
+				context.addGold += 2;
+				break;
+			case GainCard:
+				currentPlayer.charmEffect++;
+				break;
+		}
+	}
+
+	public void charmEffect(Game game, MoveContext context, Player currentPlayer, Card cardBought) {
+        int cost = cardBought.getCost(context);
+        boolean potion = cardBought.costPotion();
+		int debt = cardBought.costDebt();
+        ArrayList<Card> validCards = new ArrayList<Card>();
+		for (Card card : game.getCardsInGame()) {
+			if (Cards.isSupplyCard(card) && game.getCardsLeftInPile(card) > 0
+				&& !card.equals(cardBought) && game.getPile(game.getOriginCard(card)).card().equals(card)) {
+				int gainCardCost = card.getCost(context);
+				boolean gainCardPotion = card.costPotion();
+				int gainCardDebt = card.costDebt();
+				if (gainCardCost==cost && gainCardPotion==potion && gainCardDebt==debt)
+					validCards.add(card);
+			}
+		}
+		if (validCards.size() == 0)
+			return;
+		if (validCards.size() == 1)
+			currentPlayer.gainNewCard(validCards.get(0),Cards.charm,context);
+		else {
+			Card toGain = currentPlayer.controlPlayer.charm_cardToObtain(context, validCards.toArray(new Card[0]));
+			if (toGain != null)
+				currentPlayer.gainNewCard(toGain, Cards.charm, context);
 		}
 	}
 

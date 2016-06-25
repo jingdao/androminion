@@ -35,6 +35,8 @@ public abstract class Player {
     public int vps;
     public boolean win = false;
 	public boolean missionTurn = false;
+	public boolean villaGained = false;
+	public int charmEffect = 0;
     public int pirateShipTreasure;
     
     // The number of coin tokens held by the player
@@ -68,6 +70,7 @@ public abstract class Player {
 	protected CardList gear;
 	protected CardList save;
 	protected CardList encampments;
+	public ArrayList<ArrayList<Card>> archive;
 	public ArrayList<Event> boughtEvents = new ArrayList<Event>();
     public Game game;
     public Player controlPlayer = this;
@@ -238,6 +241,7 @@ public abstract class Player {
 		gear = new CardList(this,"Gear");
 		save = new CardList(this,"Save");
 		encampments = new CardList(this,"encampments");
+		archive = new ArrayList<ArrayList<Card>>();
     }
 
     private List<PutBackOption> getPutBackOptions(MoveContext context) {
@@ -558,6 +562,10 @@ public abstract class Player {
 		}
 		for (Card card: encampments) {
 			allCards.add(card);
+		}
+		for (ArrayList<Card> list : archive) {
+			for (Card card : list)
+				allCards.add(card);
 		}
 		if (estateToken != null)
 			allCards.add(estateToken);
@@ -906,6 +914,8 @@ public abstract class Player {
             
             // invoke different actions on gain
             //cardToGain.isGained(context);
+			if (cardToGain.equals(Cards.villa))
+				context.getPlayer().villaGained = true;
             
             return true;
         }
@@ -1143,6 +1153,14 @@ public abstract class Player {
 		PlusAction,
 		PlusCoin,
 		PlusBuy
+	}
+
+	public enum WildHuntOption {
+		AddCards, GainEstate
+	}
+
+	public enum CharmOption {
+		AddCoin, GainCard
 	}
 
     // Context is passed for the player to add a GameEventListener
@@ -1665,6 +1683,13 @@ public abstract class Player {
 	public abstract boolean encampment_shouldReveal(MoveContext context);
 	public abstract boolean gladiator_shouldReveal(MoveContext context,Card card);
     public abstract Card gladiator_revealedCard(MoveContext context);
+    public abstract Card[] temple_cardsToTrash(MoveContext context, Card[] cards);
+    public abstract WildHuntOption wildHunt_chooseOption(MoveContext context);
+	public abstract Card archive_cardToDraw(MoveContext context, Card[] cardList);
+    public abstract CharmOption charm_chooseOption(MoveContext context);
+    public abstract Card charm_cardToObtain(MoveContext context, Card[] cardList);
+	public abstract ActionCard crown_actionCardToPlay(MoveContext context);
+	public abstract TreasureCard crown_treasureCardToPlay(MoveContext context);
 
 	// ////////////////////////////////////////////
     // Card interactions - Promotional Cards

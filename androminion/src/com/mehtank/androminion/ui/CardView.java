@@ -276,6 +276,8 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 			return R.style.CardView_Victory_Action;
 		} else if (c.isTreasure && c.isPotion) {
 			return R.style.CardView_Treasure_Potion;
+		} else if (c.isAction && c.isTreasure) {
+			return R.style.CardView_Treasure_Action;
 		} else if (c.isTreasure) {
 			switch (c.gold) {
 			case 1:

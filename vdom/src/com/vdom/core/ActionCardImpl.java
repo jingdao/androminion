@@ -231,14 +231,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
             context.actions--;
         }
 
-        context.actions += addActions;
-        context.buys += addBuys;
-        context.addGold += addGold;
-        currentPlayer.addVictoryTokens(context, addVictoryTokens);
-        int cardsToDraw = addCards;
-
 		Card originCard = game.getOriginCard(this);
-
 		if (currentPlayer.plusActionToken!=null && currentPlayer.plusActionToken.getName().equals(originCard.getName()))
 			context.actions++;
 		if (currentPlayer.plusBuyToken!=null && currentPlayer.plusBuyToken.getName().equals(originCard.getName()))
@@ -246,17 +239,35 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		if (currentPlayer.plusCoinToken!=null && currentPlayer.plusCoinToken.getName().equals(originCard.getName()))
 			context.addGold++;
 		if (currentPlayer.plusCardToken!=null && currentPlayer.plusCardToken.getName().equals(originCard.getName()))
-			cardsToDraw++;
-
-        while (cardsToDraw > 0) {
-            cardsToDraw--;
             game.drawToHand(currentPlayer, this);
-        }
+
+		boolean enchantressEffect = false;
+        for (Player p : game.getPlayersInTurnOrder())
+            if (p != currentPlayer)
+				for (Card c : p.nextTurnCards)
+					if (c.equals(Cards.enchantress))
+						enchantressEffect = true;
+
+		if (context.actionsPlayedSoFar==1 && enchantressEffect) {
+			if (this instanceof DurationCard)
+				currentPlayer.nextTurnCards.remove(this);
+			context.actions ++;
+			game.drawToHand(currentPlayer,this);
+		} else {
+			context.actions += addActions;
+			context.buys += addBuys;
+			context.addGold += addGold;
+			currentPlayer.addVictoryTokens(context, addVictoryTokens);
+			int cardsToDraw = addCards;
+			while (cardsToDraw > 0) {
+				cardsToDraw--;
+				game.drawToHand(currentPlayer, this);
+			}
+			additionalCardActions(game, context, currentPlayer);
+		}
         
         if (isAttack())
         	attackPlayed(context, game, currentPlayer);
-
-        additionalCardActions(game, context, currentPlayer);
 
         event = new GameEvent(GameEvent.Type.PlayedAction, (MoveContext) context);
         event.card = this;
@@ -878,6 +889,21 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			break;
 		case Gladiator:
 			gladiator(game,context,currentPlayer);
+			break;
+		case FarmersMarket:
+			farmersMarket(game,context,currentPlayer);
+			break;
+		case Temple:
+			temple(game,context,currentPlayer);
+			break;
+		case WildHunt:
+			wildHunt(game,context,currentPlayer);
+			break;
+		case Archive:
+			archive(game,context,currentPlayer);
+			break;
+		case Crown:
+			throneRoomKingsCourt(game,context,currentPlayer);
 			break;
         default:
             break;
@@ -1690,6 +1716,9 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         		break;
 			case Disciple:
         		cardToPlay = (ActionCardImpl) currentPlayer.controlPlayer.disciple_cardToPlay(context);
+        		break;
+			case Crown:
+        		cardToPlay = (ActionCardImpl) currentPlayer.controlPlayer.crown_actionCardToPlay(context);
         		break;
 			default:
 				break;
@@ -4054,6 +4083,9 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			break;
 		case Forum:
 			context.buys++;
+			break;
+		case Villa:
+			context.getPlayer().villaGained = true;
 			break;
         default:
             break;
@@ -6470,6 +6502,8 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 
 	public void chariotRace(Game game, MoveContext context, Player currentPlayer) {
 		Card c = game.draw(currentPlayer);
+		if (c==null)
+			return;
 		currentPlayer.reveal(c, this.controlCard, context);
 		currentPlayer.hand.add(c);
         Player nextPlayer = game.getNextPlayer();
@@ -6573,7 +6607,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		if ((hasGold||hasPlunder) && currentPlayer.controlPlayer.encampment_shouldReveal(context)) {
 			if (hasGold)
 				currentPlayer.reveal(Cards.gold, this.controlCard, context);
-			if (hasPlunder)
+			else if (hasPlunder)
 				currentPlayer.reveal(Cards.plunder, this.controlCard, context);
 		} else {
 			if (!this.controlCard.movedToNextTurnPile) {
@@ -6601,7 +6635,71 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 				currentPlayer.trash(cardToTrash, Cards.gladiator, context);
 			}
 		}
-				
-				
 	}
+
+	public void farmersMarket(Game game, MoveContext context, Player currentPlayer) {
+		int numTokens = game.getSupplyVictoryTokens(this);
+		if (numTokens >= 4) {
+			game.supplyVictoryTokens.put(this.getName(),0);
+			currentPlayer.addVictoryTokens(context,numTokens);
+			if (!this.controlCard.movedToNextTurnPile) {
+				this.controlCard.movedToNextTurnPile = true;
+				currentPlayer.trash(this.controlCard, null, context);
+				currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(this.controlCard));
+			}
+		} else {
+			game.addSupplyVictoryTokens(this);
+			context.addGold += numTokens + 1;
+		}
+	}
+
+	public void temple(Game game, MoveContext context, Player currentPlayer) {
+		HashSet<Card> set = new HashSet<Card>();
+		for (Card card : currentPlayer.hand)
+			set.add(card);
+        Card[] cards = currentPlayer.controlPlayer.temple_cardsToTrash(context,set.toArray(new Card[0]));
+		for (Card card : cards) {
+			currentPlayer.hand.remove(card);
+			currentPlayer.trash(card,this.controlCard,context);
+		}
+		game.addSupplyVictoryTokens(this);
+	}
+
+	public void wildHunt(Game game, MoveContext context, Player currentPlayer) {
+		switch (currentPlayer.wildHunt_chooseOption(context)) {
+			case AddCards:
+				game.drawToHand(currentPlayer, this.controlCard);
+				game.drawToHand(currentPlayer, this.controlCard);
+				game.drawToHand(currentPlayer, this.controlCard);
+				game.addSupplyVictoryTokens(this);
+				break;
+			case GainEstate:
+				if(currentPlayer.gainNewCard(Cards.estate,Cards.wildHunt, context)) {
+					currentPlayer.addVictoryTokens(context,game.getSupplyVictoryTokens(this));
+					game.supplyVictoryTokens.put(this.getName(),0);
+				}
+				break;
+		}
+	}
+
+    public void archive(Game game, MoveContext context, Player currentPlayer) {
+		ArrayList<Card> cardsToSetAside = new ArrayList<Card>();
+		for (int i=0;i<3;i++) {
+            Card card = game.draw(currentPlayer);
+            if (card != null)
+                cardsToSetAside.add(card);
+		}
+		if (cardsToSetAside.size() == 0)
+			return;
+		Card toDraw;
+		if (cardsToSetAside.size() == 1)
+			toDraw = cardsToSetAside.get(0);
+		else
+			toDraw  = currentPlayer.controlPlayer.archive_cardToDraw(context,cardsToSetAside.toArray(new Card[0]));
+		currentPlayer.hand.add(toDraw);
+		cardsToSetAside.remove(toDraw);
+		if (cardsToSetAside.size() > 0)
+			currentPlayer.archive.add(cardsToSetAside);
+    }
+
 }

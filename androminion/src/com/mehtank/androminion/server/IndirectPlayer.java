@@ -3303,4 +3303,72 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return getCardFromHand(context, getActionString(ActionType.REVEAL, Cards.gladiator), sco);
     }
 
+    public Card[] temple_cardsToTrash(MoveContext context, Card[] cards)
+	{
+        ArrayList<Card> cardsToTrash = new ArrayList<Card>();
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cards)
+            options.add(Strings.getCardName(c));
+        String none = getString(R.string.none);
+        options.add(none);
+        do {
+            String o = selectString(context, Cards.temple, options.toArray(new String[0]));
+			if (o.equals(none))
+				break;
+            cardsToTrash.add(localNameToCard(o, cards));
+            options.remove(o);
+        } while (cardsToTrash.size() < 3);
+        return cardsToTrash.toArray(new Card[0]);
+    }
+
+    public WildHuntOption wildHunt_chooseOption(MoveContext context) {
+        LinkedHashMap<String, WildHuntOption> h = new LinkedHashMap<String, WildHuntOption>();
+        h.put(getString(R.string.wild_hunt_option_one), WildHuntOption.AddCards);
+        h.put(getString(R.string.wild_hunt_option_two), WildHuntOption.GainEstate);
+        return h.get(selectString(context, Cards.wildHunt, h.keySet().toArray(new String[0])));
+    }
+    
+    public Card archive_cardToDraw(MoveContext context, Card[] cardList) 
+    {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cardList)
+            options.add(Strings.getCardName(c));
+        String o = selectString(context, R.string.raze_query, Cards.archive, options.toArray(new String[0]));
+        return (Card) localNameToCard(o, cardList);
+    }
+    
+    public CharmOption charm_chooseOption(MoveContext context) {
+        LinkedHashMap<String, CharmOption> h = new LinkedHashMap<String, CharmOption>();
+        h.put(getString(R.string.charm_option_one), CharmOption.AddCoin);
+        h.put(getString(R.string.charm_option_two), CharmOption.GainCard);
+        return h.get(selectString(context, Cards.charm, h.keySet().toArray(new String[0])));
+    }
+    
+    public Card charm_cardToObtain(MoveContext context, Card[] cardList) {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cardList)
+            options.add(Strings.getCardName(c));
+		String none = getString(R.string.none);
+		options.add(none);
+        String o = selectString(context,getActionString(ActionType.GAIN, Cards.charm), options.toArray(new String[0]));
+		if(o.equals(none)) return null;
+        return (Card) localNameToCard(o, cardList);
+    }
+
+    public ActionCard crown_actionCardToPlay(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_throneRoom_cardToPlay(context)) {
+            return super.crown_actionCardToPlay(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().isAction().setPassable(getString(R.string.none)).setPickType(PickType.PLAY);
+        return (ActionCard) getCardFromHand(context, getCardName(Cards.crown), sco);
+    }
+
+    public TreasureCard crown_treasureCardToPlay(MoveContext context) {
+        if(context.isQuickPlay()) {
+            return super.crown_treasureCardToPlay(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().isTreasure().setPassable(getString(R.string.none)).setPickType(PickType.PLAY);
+        return (TreasureCard) getCardFromHand(context, getActionString(ActionType.REVEAL, Cards.crown), sco);
+    }
+    
 }

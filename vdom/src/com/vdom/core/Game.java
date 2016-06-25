@@ -243,24 +243,29 @@ public class Game {
 
                 playerBeginTurn(player, context);
 
-                // /////////////////////////////////
-                // Actions
-                // /////////////////////////////////
-                playerAction(player, context);
+				while (true) {
+					// /////////////////////////////////
+					// Actions
+					// /////////////////////////////////
+					playerAction(player, context);
 
 
-                // /////////////////////////////////
-                // Select Treasure for Buy
-                // /////////////////////////////////
-                playTreasures(player, context);
+					// /////////////////////////////////
+					// Select Treasure for Buy
+					// /////////////////////////////////
+					playTreasures(player, context);
 
-                // Spend Guilds coin tokens if applicable
-                playGuildsTokens(player, context);
+					// Spend Guilds coin tokens if applicable
+					playGuildsTokens(player, context);
 
-                // /////////////////////////////////
-                // Buy Phase
-                // /////////////////////////////////
-                playerBuy(player, context);
+					// /////////////////////////////////
+					// Buy Phase
+					// /////////////////////////////////
+					player.villaGained = false;
+					playerBuy(player, context);
+					if (!player.villaGained)
+						break;
+				}
 
                 if (context.totalCardsBoughtThisTurn == 0) {
                     GameEvent event = new GameEvent(GameEvent.Type.NoBuy, context);
@@ -671,6 +676,8 @@ public class Game {
     }
 
     protected void playerBuy(Player player, MoveContext context) {
+		if (context.buys<=0)
+			return;
         Object bought = null;
         context.goldAvailable = context.getCoinAvailableForBuy();
         do {
@@ -693,7 +700,6 @@ public class Game {
 						broadcastEvent(statusEvent);
 
 						playBuy(context, buy);
-
 					} else {
 						// TODO report?
 						buy = null;
@@ -704,6 +710,13 @@ public class Game {
 					player.controlPlayer.boughtEvents.add(e);
 				}
             }
+
+			if (player.villaGained) {
+				context.addGold += context.gold;
+				context.gold = 0;
+				context.buyPhase = false;
+				return;
+			}
         } while (context.buys > 0 && bought != null);
 		if (player.debtTokens > 0 && context.getCoinAvailableForBuy() > 0)
 			player.resolveDebt(context);
@@ -720,6 +733,7 @@ public class Game {
 
         cardsObtainedLastTurn[playersTurn].clear();
 		player.boughtEvents.clear();
+		player.charmEffect=0;
         if (consecutiveTurnCounter == 1)
         	player.newTurn();
         GameEvent gevent = new GameEvent(GameEvent.Type.TurnBegin, context);
@@ -769,7 +783,7 @@ public class Game {
 		ArrayList<Card> permanentCards = new ArrayList<Card>();
         while (!player.nextTurnCards.isEmpty()) {
         	Card card = player.nextTurnCards.remove(0);
-			if (card.getType() == Cards.Type.Hireling || card.getType() == Cards.Type.Champion) {
+			if (card.getType() == Cards.Type.Hireling || card.getType() == Cards.Type.Champion || card.getType() == Cards.Type.Archive) {
 				permanentCards.add(card);
 				continue;
 			}
@@ -796,6 +810,25 @@ public class Game {
 
 		while (!player.gear.isEmpty()) {
 			player.hand.add(player.gear.remove(0));
+		}
+
+		int i=0;
+		while (i < player.archive.size()) {
+			ArrayList<Card> list = player.archive.get(i);
+			Card toDraw;
+			if (list.size() == 1)
+				toDraw = list.get(0);
+			else
+				toDraw  = player.controlPlayer.archive_cardToDraw(context,list.toArray(new Card[0]));
+			player.hand.add(toDraw);
+			list.remove(toDraw);
+			if (list.size()==0) {
+				player.archive.remove(i);
+				int index = player.nextTurnCards.indexOf(Cards.archive);
+				if (index >= 0)
+					player.playedCards.add(player.nextTurnCards.remove(index));
+			} else
+				i++;
 		}
 
 		ArrayList<Card> calledReserves = new ArrayList<Card>();
@@ -1311,6 +1344,9 @@ public class Game {
 
         buy.isBought(context);
         haggler(context, buy);
+		for (int i=0;i<player.charmEffect;i++)
+			((TreasureCardImpl)Cards.charm).charmEffect(context.game,context,player,buy);
+		player.charmEffect = 0;
     }
 
     void playEvent(MoveContext context, Event buy) {
@@ -1900,7 +1936,6 @@ public class Game {
 				kp.addLinkedPile((SingleCardPile) addPile(k, 1, false));
 			}
 		}
-
 		if (piles.containsKey(Cards.virtualCastle.getName())) {
 			VariableCardPile kp = (VariableCardPile) this.getPile(Cards.virtualCastle);
 			for (Card k : Cards.castleCards) {
@@ -2057,6 +2092,8 @@ public class Game {
 						addTax(Cards.virtualKnight);
 					else if (card.isRuins())
 						addTax(Cards.virtualRuins);
+					else if (card.isCastle())
+						addTax(Cards.virtualCastle);
 					else
 						addTax(card);
 				}
@@ -2225,6 +2262,9 @@ public class Game {
                             player.putOnTopOfDeck(event.card);
                         } else if (event.card.equals(Cards.nomadCamp)) {
                             player.putOnTopOfDeck(event.card);
+						} else if (event.card.equals(Cards.villa)) {
+							player.hand.add(event.card);
+							context.actions++;
                         } else if (event.responsible != null) {
                             Card r = event.responsible;
                             if (r.equals(Cards.bagOfGold) || r.equals(Cards.develop) || r.equals(Cards.bureaucrat) || r.equals(Cards.seaHag) || r.equals(Cards.treasureMap) || r.equals(Cards.tournament) || r.equals(Cards.foolsGold) || r.equals(Cards.graverobber) || r.equals(Cards.armory) || r.equals(Cards.artificer)) {
@@ -2424,6 +2464,9 @@ public class Game {
 								count++;
 						for (int i=0;i<count;i++)
 							player.controlPlayer.gainNewCard(Cards.gold,event.card,context);
+					} else if (event.card.equals(Cards.temple)) {
+						player.addVictoryTokens(context,getSupplyVictoryTokens(event.card));
+						supplyVictoryTokens.put(event.card.getName(),0);
 					}
 					if (event.card instanceof VictoryCard) {
 						for (Card played:context.player.playedCards)
