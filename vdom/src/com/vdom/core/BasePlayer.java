@@ -3203,4 +3203,15 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 		return null;
 	}
 	
+	public Card arena_actionToDiscard(MoveContext context) {
+		for (Card c : context.player.hand) {
+			if (c instanceof ActionCard)
+				return c;
+		}
+		return null;
+	}
+
+	public int mountainPass_amountToBid(MoveContext context) {
+		return 17;
+	}
 }

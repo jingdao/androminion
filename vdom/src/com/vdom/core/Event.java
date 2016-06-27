@@ -7,7 +7,6 @@ import com.vdom.api.GameType;
 import com.vdom.api.Card;
 import com.vdom.api.ActionCard;
 import com.vdom.api.TreasureCard;
-import android.util.Log;
 
 public class Event {
 	public static ArrayList<Event> eventsAdventures = new ArrayList<Event>();
@@ -212,7 +211,7 @@ public class Event {
 		for (Event e: allEvents) eventsMap.put(e.name,e);
 	}	
 
-	static ArrayList<Event> getEventSet(GameType gameType) {
+	static ArrayList<Event> getEventSet(GameType gameType,int num) {
 		ArrayList<Event> candidates;
 		ArrayList<Event> set = new ArrayList<Event>();
 		if (gameType == GameType.GentleIntro) {
@@ -295,13 +294,16 @@ public class Event {
 		Collections.shuffle(candidates);
 		Event e1 = candidates.get(0);
 		Event e2 = candidates.get(1);
-		if (e1.cost < e2.cost || (e1.cost == e2.cost && e1.name.compareTo(e2.name) < 0)) {
+		if (num==2) {
+			if (e1.cost < e2.cost || (e1.cost == e2.cost && e1.name.compareTo(e2.name) < 0)) {
+				set.add(e1);
+				set.add(e2);
+			} else {
+				set.add(e2);
+				set.add(e1);
+			}
+		} else if (num==1)
 			set.add(e1);
-			set.add(e2);
-		} else {
-			set.add(e2);
-			set.add(e1);
-		}
 		return set;
 	}
 
@@ -355,10 +357,19 @@ public class Event {
 			}
 			if (attackCard!=null && attackCard.isAttack()) {
 				currentPlayer.hand.remove(attackCard);
+				currentPlayer.discard(attackCard, Cards.eventCard, null);
 				valid = true;
 			}
 		} else if (option == Player.QuestOption.Curses) {
-			valid = currentPlayer.hand.remove(Cards.curse) && currentPlayer.hand.remove(Cards.curse);
+			int numCurses = 0;
+			for (int i=0;i<2;i++) {
+				int index = currentPlayer.hand.indexOf(Cards.curse);
+				if (index >= 0) {
+					currentPlayer.discard(currentPlayer.hand.remove(index),Cards.eventCard,null);
+					numCurses++;
+				}
+			}
+			valid = numCurses == 2;
 		} else if (option == Player.QuestOption.Cards) {
 			Card[] cards;
 			if (currentPlayer.hand.size() > 6) {

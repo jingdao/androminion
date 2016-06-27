@@ -20,7 +20,6 @@ import com.vdom.core.Player.JesterOption;
 import com.vdom.core.Player.SpiceMerchantOption;
 import com.vdom.core.Player.TournamentOption;
 import com.vdom.core.Player.TrustySteedOption;
-import android.util.Log;
 
 public class ActionCardImpl extends CardImpl implements ActionCard {
 	// template (immutable)
@@ -6654,6 +6653,9 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 	}
 
 	public void temple(Game game, MoveContext context, Player currentPlayer) {
+		game.addSupplyVictoryTokens(this);
+		if (currentPlayer.hand.size()==0)
+			return;
 		HashSet<Card> set = new HashSet<Card>();
 		for (Card card : currentPlayer.hand)
 			set.add(card);
@@ -6662,7 +6664,6 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			currentPlayer.hand.remove(card);
 			currentPlayer.trash(card,this.controlCard,context);
 		}
-		game.addSupplyVictoryTokens(this);
 	}
 
 	public void wildHunt(Game game, MoveContext context, Player currentPlayer) {

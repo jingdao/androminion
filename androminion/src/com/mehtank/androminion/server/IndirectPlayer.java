@@ -25,6 +25,7 @@ import com.vdom.core.MoveContext.PileSelection;
 import com.vdom.core.Player;
 import com.vdom.core.QuickPlayPlayer;
 import com.vdom.core.Event;
+import com.vdom.core.Landmarks;
 /**
  * Class that you can use to play remotely.
  */
@@ -95,6 +96,20 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
     }
 
     public String getActionString(ActionType action, Event cardResponsible, String opponentName) {
+        switch (action) {
+        case DISCARD: return Strings.format(R.string.card_to_discard, cardResponsible.name);
+        case DISCARDFORCARD: return Strings.format(R.string.card_to_discard_for_card, cardResponsible.name);
+        case DISCARDFORCOIN: return Strings.format(R.string.card_to_discard_for_coin, cardResponsible.name);
+        case REVEAL: return Strings.format(R.string.card_to_reveal, cardResponsible.name);
+        case GAIN: return Strings.format(R.string.card_to_gain, cardResponsible.name);
+        case TRASH: return Strings.format(R.string.card_to_trash, cardResponsible.name);
+        case NAMECARD: return Strings.format(R.string.card_to_name, cardResponsible.name);
+        case OPPONENTDISCARD: return Strings.format(R.string.opponent_discard, opponentName, cardResponsible.name);
+        }
+        return null;
+    }
+
+    public String getActionString(ActionType action, Landmarks cardResponsible, String opponentName) {
         switch (action) {
         case DISCARD: return Strings.format(R.string.card_to_discard, cardResponsible.name);
         case DISCARDFORCARD: return Strings.format(R.string.card_to_discard_for_card, cardResponsible.name);
@@ -3369,6 +3384,15 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         }
         SelectCardOptions sco = new SelectCardOptions().isTreasure().setPassable(getString(R.string.none)).setPickType(PickType.PLAY);
         return (TreasureCard) getCardFromHand(context, getActionString(ActionType.REVEAL, Cards.crown), sco);
+    }
+    
+	public Card arena_actionToDiscard(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().isAction().setPassable(getString(R.string.none));
+        return getCardFromHand(context, getActionString(ActionType.DISCARD,Landmarks.arena,""), sco);
+	}
+
+    public int mountainPass_amountToBid(MoveContext context) {
+        return selectInt(context, "Mountain Pass: Bid",40, 0);
     }
     
 }

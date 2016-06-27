@@ -34,6 +34,7 @@ import com.vdom.comms.GameStatus;
 import com.vdom.comms.MyCard;
 import com.vdom.comms.SelectCardOptions;
 import com.vdom.comms.SelectCardOptions.PickType;
+import com.vdom.core.Landmarks;
 
 public class GameTable extends LinearLayout implements OnItemClickListener, OnItemLongClickListener {
 	@SuppressWarnings("unused")
@@ -64,6 +65,7 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 	LinearLayout turnView;
 	View myCardView;
 	EventView selectedEvent;
+	ArrayList<LandmarksView> landmarksView = new ArrayList<LandmarksView>();
 	private static int[] costs = {};
 
 	TextView actionText;
@@ -316,9 +318,12 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 		tr.setVisibility(VISIBLE);
 
 		final ArrayList<com.vdom.core.Event> events = new ArrayList<com.vdom.core.Event>();
+		final ArrayList<Landmarks> landmarks = new ArrayList<Landmarks>();
 		for (MyCard c : cards) {
 			if (c.pile == MyCard.EVENTS) {
 				events.add(com.vdom.core.Event.eventsMap.get(c.name));
+			} else if (c.pile == MyCard.LANDMARKS) {
+				landmarks.add(Landmarks.landmarksMap.get(c.name));
 			} else {
 				addCardToTable(c);
 			}
@@ -382,14 +387,18 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
             nonSupplyPileGV.setNumColumns(4);
         }
 
+		landmarksView.clear();
 		eventsGV.setAdapter(new BaseAdapter(){
 
 			public int getCount() {
-				return events.size();
+				return events.size() + landmarks.size();
 			}
 
 			public Object getItem(int pos) {
-				return events.get(pos);
+				if (pos < events.size())
+					return events.get(pos);
+				else
+					return landmarks.get(pos - events.size());
 			}
 
 			public long getItemId(int pos) {
@@ -397,14 +406,26 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 			}
 
 			public View getView(int pos, View origView, ViewGroup parent) {
-				EventView ev;
-				if(origView == null) {
-					ev = new EventView(top, events.get(pos));
-					ev.mycard = cards[cards.length - events.size() + pos];
+				if (pos < events.size()) {
+					EventView ev;
+					if(origView == null) {
+						ev = new EventView(top, events.get(pos));
+						ev.mycard = cards[cards.length - landmarks.size() - events.size() + pos];
+					} else {
+						ev = (EventView) origView;
+					}
+					return ev;
 				} else {
-					ev = (EventView) origView;
+					LandmarksView lv;
+					if (origView == null) {
+						lv = new LandmarksView(top,landmarks.get(pos - events.size()));
+						if (landmarksView.size() < landmarks.size())
+							landmarksView.add(lv);
+					} else {
+						lv = (LandmarksView) origView;
+					}
+					return lv;
 				}
-				return ev;
 			}
 		});
 
@@ -971,6 +992,10 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 			supplyPile.updateCardName(gs.splitPileID[i],gs.splitPileTopCard[i],null,null,-1);
 		setSupplySizes(gs.supplySizes, gs.embargos, gs.supplyTokens, gs.tax, gs.supplyVictoryTokens);
         setCardCosts(top.findViewById(android.R.id.content));
+
+		for (int i=0;i<landmarksView.size();i++) {
+			landmarksView.get(i).setVictoryTokens(gs.landmarkVictoryTokens[i]);
+		}
 	}
 
 	static int getCardCost(MyCard c) {
@@ -1062,7 +1087,9 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 		if (!canClick)
 			return;
 
-		
+	 	if (view instanceof LandmarksView)
+			return;
+				
 		if (view instanceof EventView) {
 			EventView clickedCard = (EventView) view;
 			if (clickedCard.isChecked) {
@@ -1145,6 +1172,9 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 			return clickedCard.onLongClick(clickedCard);
 		} else if (view instanceof EventView) {
 			EventView clickedCard = (EventView) view;
+			return clickedCard.onLongClick(clickedCard);
+		} else if (view instanceof LandmarksView) {
+			LandmarksView clickedCard = (LandmarksView) view;
 			return clickedCard.onLongClick(clickedCard);
 		}
 		return false;

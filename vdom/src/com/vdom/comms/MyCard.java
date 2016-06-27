@@ -44,6 +44,7 @@ public class MyCard implements Serializable {
 	public boolean isGathering = false;
 	public boolean isKnight   = false;
 	public boolean isOverpay  = false;
+	public boolean isObelisk = false;
 	
 	public static final int SUPPLYPILE = 1;
 	public static final int MONEYPILE = 2;
@@ -56,6 +57,7 @@ public class MyCard implements Serializable {
 	public static final int EVENTS = 9;
 	public static final int CASTLE_PILES = 10;
 	public static final int SPLIT_PILES = 11;
+	public static final int LANDMARKS = 12;
 
 	public int pile;
 

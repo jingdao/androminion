@@ -357,13 +357,9 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 		}
 		if (validCards.size() == 0)
 			return;
-		if (validCards.size() == 1)
-			currentPlayer.gainNewCard(validCards.get(0),Cards.charm,context);
-		else {
-			Card toGain = currentPlayer.controlPlayer.charm_cardToObtain(context, validCards.toArray(new Card[0]));
-			if (toGain != null)
-				currentPlayer.gainNewCard(toGain, Cards.charm, context);
-		}
+		Card toGain = currentPlayer.controlPlayer.charm_cardToObtain(context, validCards.toArray(new Card[0]));
+		if (toGain != null)
+			currentPlayer.gainNewCard(toGain, Cards.charm, context);
 	}
 
 }

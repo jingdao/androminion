@@ -188,10 +188,10 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 			} else {
 				setBackgroundResource(R.drawable.thinborder);
 			}
-		} else {
-			if (c.isBane) {
+		} else if (c.isBane)
 				setBackgroundResource(R.drawable.baneborder);
-		} 
+		else if (c.isObelisk)
+			setBackgroundResource(R.drawable.obeliskborder);
 		else if (c.isShelter)
 		{
 			setBackgroundResource(R.drawable.shelterborder);
@@ -199,7 +199,6 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 		else {
 				setBackgroundResource(R.drawable.cardborder);
 			}
-		}
 
 		name.setText(c.name, TextView.BufferType.SPANNABLE);
 		if(cost != null) {

@@ -95,9 +95,11 @@ public class Game {
     public ArrayList<Card> possessedTrashPile = new ArrayList<Card>();
     public ArrayList<Card> possessedBoughtPile = new ArrayList<Card>();
 	public ArrayList<Event> eventsList = new ArrayList<Event>();
+	public ArrayList<Landmarks> landmarksList = new ArrayList<Landmarks>();
 
     public int tradeRouteValue = 0;
     public Card baneCard = null;
+	public Card obeliskCard = null;
     double chanceForPlatColony = -1;
     double chanceForShelters = 0.0;
 
@@ -253,6 +255,9 @@ public class Game {
 					// /////////////////////////////////
 					// Select Treasure for Buy
 					// /////////////////////////////////
+					if (getLandmarkVictoryTokens(Landmarks.arena) > 0) {
+						Landmarks.arena.applyEffect(this,context,player,null);
+					}
 					playTreasures(player, context);
 
 					// Spend Guilds coin tokens if applicable
@@ -298,6 +303,10 @@ public class Game {
 						player.shuffleDeck();
 						for (int i = 0; i < 5; i++)
 							drawToHand(player, null, false);
+					}
+					if (!Landmarks.mountainPassActive && getCardsObtainedByPlayer().contains(Cards.province)) {
+						Landmarks.mountainPass.applyEffect(this,context,player,null);
+						Landmarks.mountainPassActive = true;
 					}
                     setPlayersTurn(takeAnotherTurn);
                 }
@@ -1347,6 +1356,9 @@ public class Game {
 		for (int i=0;i<player.charmEffect;i++)
 			((TreasureCardImpl)Cards.charm).charmEffect(context.game,context,player,buy);
 		player.charmEffect = 0;
+		if (context.getCoinAvailableForBuy()>=2 && getLandmarkVictoryTokens(Landmarks.basilica) > 0) {
+			Landmarks.basilica.applyEffect(this,context,player,null);
+		}
     }
 
     void playEvent(MoveContext context, Event buy) {
@@ -1554,6 +1566,7 @@ public class Game {
     void initGameBoard() throws ExitException {
         cardSequence = 1;
         baneCard = null;
+		obeliskCard = null;
 
         initGameListener();
 
@@ -1736,6 +1749,7 @@ public class Game {
 		supplyVictoryTokens.clear();
 		trashPile.clear();
 		eventsList.clear();
+		landmarksList.clear();
 
     	boolean platColonyNotPassedIn = false;
     	boolean platColonyPassedIn = false;
@@ -1834,6 +1848,16 @@ public class Game {
 					}
 					if (foundEvent)
 						continue;
+					boolean foundLandmarks = false;
+					for (Landmarks e : Landmarks.allLandmarks) {
+						if (e.name.equalsIgnoreCase(s)) {
+							landmarksList.add(e);
+							foundLandmarks = true;
+							break;
+						}
+					}
+					if (foundLandmarks)
+						continue;
 				}
                 if(card != null && bane) {
                     baneCard = card;
@@ -1927,7 +1951,9 @@ public class Game {
 				//Adding the bane card could probably be done in the CardSet class, but it seems better to call it out explicitly.
 				this.addPile(this.baneCard);
 			}
-			eventsList = Event.getEventSet(gameType);
+
+			landmarksList = Landmarks.getLandmarksSet(gameType, rand.nextInt(3));
+			eventsList = Event.getEventSet(gameType,2 - landmarksList.size());
 		}
 
 		if (piles.containsKey(Cards.virtualKnight.getName())) {
@@ -2098,6 +2124,10 @@ public class Game {
 						addTax(card);
 				}
 			}
+		}
+
+		for (Landmarks landmark : landmarksList) {
+			landmark.setup(this);
 		}
 
         boolean oldDebug = debug;
@@ -2471,7 +2501,34 @@ public class Game {
 					if (event.card instanceof VictoryCard) {
 						for (Card played:context.player.playedCards)
 							if (played.equals(Cards.groundskeeper))
-								context.player.controlPlayer.addVictoryTokens(context,1);
+								player.controlPlayer.addVictoryTokens(context,1);
+						if (getLandmarkVictoryTokens(Landmarks.aqueduct) > 0) {
+							player.controlPlayer.addVictoryTokens(context,getLandmarkVictoryTokens(Landmarks.aqueduct));
+							supplyVictoryTokens.put(Landmarks.aqueduct.name,0);
+						}
+						if (getLandmarkVictoryTokens(Landmarks.battlefield) > 0)
+							Landmarks.battlefield.applyEffect(Game.this,context,player,null);
+					}
+					if (event.card instanceof TreasureCard) {
+						if (getSupplyVictoryTokens(event.card) > 0) {
+							takeSupplyVictoryTokens(event.card.getName(),1);
+							addLandmarkVictoryTokens(Landmarks.aqueduct);
+						}
+					}
+					if (event.card instanceof ActionCard) {
+						if (event.getType() == GameEvent.Type.BuyingCard && getLandmarkVictoryTokens(Landmarks.colonnade) > 0)
+							Landmarks.colonnade.applyEffect(Game.this,context,player,event.card);
+						if (getSupplyVictoryTokens(event.card) > 0 && landmarksList.contains(Landmarks.defiledShrine)) {
+							takeSupplyVictoryTokens(event.card.getName(),1);
+							addLandmarkVictoryTokens(Landmarks.defiledShrine);
+						}
+					}
+					if (event.getType() == GameEvent.Type.BuyingCard && event.card.equals(Cards.curse)) {
+						player.controlPlayer.addVictoryTokens(context,getLandmarkVictoryTokens(Landmarks.defiledShrine));
+						supplyVictoryTokens.put(Landmarks.defiledShrine.name,0);
+					}
+					if (getCardsObtainedByPlayer().size()==2 && getLandmarkVictoryTokens(Landmarks.labyrinth) > 0) {
+						Landmarks.labyrinth.applyEffect(Game.this,context,player,null);
 					}
 					AbstractCardPile pile = getPile(event.card);
 					if (!pile.isEmpty() && pile.isSupply() && event.card.getCost(context)<=6 && !event.card.costPotion()) {
@@ -2636,6 +2693,24 @@ public class Game {
         return (count == null) ? 0 : count;
 	}
 
+    public int getLandmarkVictoryTokens(Landmarks lm) {
+        Integer count = supplyVictoryTokens.get(lm.name);
+        return (count == null) ? 0 : count;
+	}
+
+	public void addLandmarkVictoryTokens(Landmarks lm) {
+        Integer count = supplyVictoryTokens.get(lm.name);
+		if (count==null)
+			supplyVictoryTokens.put(lm.name,1);
+		else
+			supplyVictoryTokens.put(lm.name,count+1);
+	}
+
+	public void takeSupplyVictoryTokens(String name, int num) {
+		Integer count = supplyVictoryTokens.get(name);
+		supplyVictoryTokens.put(name, count - num);
+	}
+
     // Only is valid for cards in play...
 //    protected Card readCard(String name) {
 //        AbstractCardPile pile = piles.get(name);
@@ -2718,6 +2793,10 @@ public class Game {
 
 	public Event[] getEventsInGame() {
 		return eventsList.toArray(new Event[0]);
+	}
+
+	public Landmarks[] getLandmarksInGame() {
+		return landmarksList.toArray(new Landmarks[0]);
 	}
 
     public Card[] getCardsInGame() {

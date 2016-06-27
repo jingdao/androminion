@@ -32,6 +32,7 @@ import com.vdom.core.MoveContext;
 import com.vdom.core.Player;
 import com.vdom.core.AbstractCardPile;
 import com.vdom.core.Util;
+import com.vdom.core.Landmarks;
 
 /**
  * Class that you can use to play remotely.
@@ -330,6 +331,8 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     		} else {
     			mc = makeMyCard(c, index, c.getSafeName().equals(context.game.baneCard.getSafeName()));
     		}
+			if (context.game.obeliskCard!=null && c.getSafeName().equals(context.game.obeliskCard.getSafeName()))
+				mc.isObelisk = true;
     		myCardsInPlayList.add(mc);
 
     		cardNamesInPlay.put(c.getName(), index);
@@ -339,6 +342,11 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 		for (com.vdom.core.Event e : context.game.getEventsInGame()) {
 			mc = new MyCard(index++,e.name,e.name,e.name);
 			mc.pile = MyCard.EVENTS;
+			myCardsInPlayList.add(mc);	
+		}
+		for (Landmarks e : context.game.getLandmarksInGame()) {
+			mc = new MyCard(index++,e.name,e.name,e.name);
+			mc.pile = MyCard.LANDMARKS;
 			myCardsInPlayList.add(mc);	
 		}
     	myCardsInPlay = myCardsInPlayList.toArray(new MyCard[0]);
@@ -378,7 +386,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 	private String getVPOutput(Player player) {
 
 		final Map<Object, Integer> counts = player.getVictoryCardCounts();
-		final Map<Card, Integer> totals = player.getVictoryPointTotals(counts);
+		final Map<Object, Integer> totals = player.getVictoryPointTotals(counts);
 
 		final StringBuilder sb
 			= new StringBuilder()
@@ -398,7 +406,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 
 		// display victory cards from sets
 
-		for(Card card : totals.keySet()) {
+		for(Object card : totals.keySet()) {
 			if(!Cards.nonKingdomCards.contains(card)) {
 				sb.append(this.getCardText(counts, totals, card));
 			}
@@ -414,12 +422,22 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 		return sb.toString();
 	}
 
-	private String getCardText(final Map<Object, Integer> counts, final Map<Card, Integer> totals, final Card card) {
+	private String getCardText(final Map<Object, Integer> counts, final Map<Object, Integer> totals, final Object card) {
+		String name="";
+		int count=0;
+		if (card instanceof Card) {
+			name=((Card)card).getName();
+			count=counts.get(card);
+		}
+		if (card instanceof Landmarks) {
+			name=((Landmarks)card).name;
+			count=1;
+		}
 		final StringBuilder sb = new StringBuilder()
 			.append('\t')
-			.append(card.getName())
+			.append(name)
 			.append(" x")
-			.append(counts.get(card))
+			.append(count)
 			.append(": ")
 			.append(totals.get(card))
 			.append(" ")
@@ -438,6 +456,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     	int[] costs = new int[cardsInPlay.size()];
     	int[] tax = new int[cardsInPlay.size()];
     	int[] supplyVictoryTokens = new int[cardsInPlay.size()];
+		int[] landmarkVictoryTokens = new int[game.getLandmarksInGame().length];
         
     	for (int i = 0; i < cardsInPlay.size(); i++) {
             if (!isFinal)
@@ -545,6 +564,11 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 			gs.splitPileTopCard[i] = splitPileTopCard.get(i).intValue();
 		}
 
+		for (int i=0;i<game.getLandmarksInGame().length;i++) {
+			Landmarks l = game.getLandmarksInGame()[i];
+			landmarkVictoryTokens[i] = game.getLandmarkVictoryTokens(l);
+		}
+
     	gs.setTurnStatus(new int[] {context.getActionsLeft(),
     					  context.getBuysLeft(),
                           coinsAvailable,
@@ -558,6 +582,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 		  .setSupplyTokens(supplyTokensId)
 		  .setTax(tax)
 		  .setSupplyVictoryTokens(supplyVictoryTokens)
+		  .setLandmarkVictoryTokens(landmarkVictoryTokens)
     	  .setCosts(costs)
     	  .setHand(cardArrToIntArr(Game.sortCards ? shownHand.sort(new Util.CardHandComparator()) : shownHand.toArray()))
     	  .setPlayedCards(playedArray)

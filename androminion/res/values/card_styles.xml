@@ -40,6 +40,10 @@
 		<item name="cardBackgroundColor">@color/cardEvent</item>
 	</style>
 
+	<style name="CardView.Landmarks" parent="@style/CardView.InverseText">
+		<item name="cardBackgroundColor">@color/cardVictory</item>
+	</style>
+
     <style name="CardView.Attack">
         <item name="cardTextColor">@color/cardAttack</item>
         <item name="cardCountColor">@color/cardAttack</item>

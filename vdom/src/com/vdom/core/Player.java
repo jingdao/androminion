@@ -15,7 +15,6 @@ import com.vdom.api.DurationCard;
 import com.vdom.api.GameEvent;
 import com.vdom.api.TreasureCard;
 import com.vdom.api.VictoryCard;
-import android.util.Log;
 
 public abstract class Player {
 
@@ -392,8 +391,12 @@ public abstract class Player {
 		}
 
 		for (Card card : encampments)
-			context.game.getPile(Cards.encampment).addCard(card);
+			context.game.getPile(context.game.getOriginCard(card)).addCard(card);
 		encampments.clear();
+
+		if (context.game.getCardsObtainedByPlayer().size()==0 && context.game.getLandmarkVictoryTokens(Landmarks.baths) > 0) {
+			Landmarks.baths.applyEffect(context.game,context,this,null);
+		}
 
         while (!playedCards.isEmpty()) {
     		discard(playedCards.remove(0), null, context, false);
@@ -696,7 +699,7 @@ public abstract class Player {
 		return getVPs(null);
 	}
 
-	public int getVPs(Map<Card, Integer> totals) {
+	public int getVPs(Map<Object, Integer> totals) {
 		if (totals==null) totals = this.getVictoryPointTotals();
 		int vp = 0;
 		for(Integer total : totals.values())
@@ -704,13 +707,13 @@ public abstract class Player {
 		return vp;
 	}
 
-	public Map<Card, Integer> getVictoryPointTotals() {
+	public Map<Object, Integer> getVictoryPointTotals() {
 		return getVictoryPointTotals(null);
 	}
 
-	public Map<Card, Integer> getVictoryPointTotals(Map<Object, Integer> counts) {
+	public Map<Object, Integer> getVictoryPointTotals(Map<Object, Integer> counts) {
 		if (counts == null) counts = this.getVictoryCardCounts();
-		Map<Card, Integer> totals = new HashMap<Card, Integer>();
+		Map<Object, Integer> totals = new HashMap<Object, Integer>();
 
 		for(Map.Entry<Object, Integer> entry : counts.entrySet()) {
 			if(entry.getKey() instanceof VictoryCard) {
@@ -740,6 +743,10 @@ public abstract class Player {
 			totals.put(Cards.humbleCastle, counts.get(Cards.humbleCastle) * counts.get(CASTLES));
 		if (counts.containsKey(Cards.kingsCastle))
 			totals.put(Cards.kingsCastle, counts.get(Cards.kingsCastle) * counts.get(CASTLES) * 2);
+
+		for (Landmarks landmark : game.getLandmarksInGame()) {
+			totals.put(landmark, landmark.getVPs(game,this,getAllCards()));
+		}
 
 		totals.put(Cards.victoryTokens, this.getVictoryTokens());
 
@@ -995,6 +1002,9 @@ public abstract class Player {
             	}
         	}
         }
+
+		if (game.landmarksList.contains(Landmarks.tomb))
+			addVictoryTokens(context,1);
 
     }
 
@@ -1690,6 +1700,8 @@ public abstract class Player {
     public abstract Card charm_cardToObtain(MoveContext context, Card[] cardList);
 	public abstract ActionCard crown_actionCardToPlay(MoveContext context);
 	public abstract TreasureCard crown_treasureCardToPlay(MoveContext context);
+	public abstract Card arena_actionToDiscard(MoveContext context);
+	public abstract int mountainPass_amountToBid(MoveContext context);
 
 	// ////////////////////////////////////////////
     // Card interactions - Promotional Cards

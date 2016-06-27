@@ -65,7 +65,7 @@ public class Cards {
 		// Empires
 		Engineer, CityQuarter, Overlord, RoyalBlacksmith, Encampment, Plunder, Patrician, Emporium, Settlers, BustlingVillage,
 		Catapult, Rocks, ChariotRace, Enchantress, FarmersMarket, Gladiator, Fortune, Sacrifice, Temple, Villa,
-		Archive, Capital, Charm, Crown, Forum, Groundskeeper, Legionary, WildHunt,
+		Archive, Capital, Charm, Crown, Forum, Groundskeeper, Legionary, WildHunt, Landmark,
 		HumbleCastle, CrumblingCastle, SmallCastle, HauntedCastle, OpulentCastle, SprawlingCastle, GrandCastle, KingsCastle,VirtualCastle,	
         // Promo Cards
         Envoy, Governor, WalledVillage,
@@ -410,6 +410,7 @@ public class Cards {
 	public static final Card groundskeeper;
 	public static final Card legionary;
 	public static final Card wildHunt;
+	public static final Card landmarkCard;
 
 	public static final Card humbleCastle;
 	public static final Card crumblingCastle;
@@ -734,6 +735,7 @@ public class Cards {
 		actionCardsEmpires.add(groundskeeper = new ActionCardImpl.Builder(Cards.Type.Groundskeeper,5).addCards(1).addActions(1).description("While this is in play, when you gain a Victory card, +1 Victory token.").expansion("Empires").build());
 		actionCardsEmpires.add(legionary = new ActionCardImpl.Builder(Cards.Type.Legionary,5).addGold(3).attack().description("You may reveal a Gold from your hand. If you do, each other player discards down to 2 cards in hand, then draws a card.").expansion("Empires").build());
 		actionCardsEmpires.add(wildHunt = new ActionCardImpl.Builder(Cards.Type.WildHunt,5).isGathering().description("Choose one: +3 Cards and add 1 Victory token to the Wild Hunt Supply pile; or gain an Estate, and if you do, take the Victory tokens from the pile.").expansion("Empires").build());
+		landmarkCard = new ActionCardImpl.Builder(Cards.Type.Landmark,0).build();
 
 		plunder = new TreasureCardImpl.Builder(Cards.Type.Plunder,5,2).description("+1 Victory token").expansion("Empires").build();
 		emporium = new ActionCardImpl.Builder(Cards.Type.Emporium,5).addCards(1).addActions(1).addGold(1).description("When you gain this, if you have at least 5 Action cards in play, +2 Victory tokens.").expansion("Empires").build();
