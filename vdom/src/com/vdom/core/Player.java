@@ -715,6 +715,14 @@ public abstract class Player {
 		if (counts == null) counts = this.getVictoryCardCounts();
 		Map<Object, Integer> totals = new HashMap<Object, Integer>();
 
+		ArrayList<Object> toRemove = new ArrayList<Object>();
+		for (Object o : counts.keySet()) {
+			if (counts.get(o)==0)
+				toRemove.add(o);
+		}
+		for (Object o : toRemove)
+			counts.remove(o);
+
 		for(Map.Entry<Object, Integer> entry : counts.entrySet()) {
 			if(entry.getKey() instanceof VictoryCard) {
 				VictoryCard victoryCard = (VictoryCard) entry.getKey();

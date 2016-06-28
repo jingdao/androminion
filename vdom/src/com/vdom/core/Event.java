@@ -284,6 +284,61 @@ public class Event {
 			set.add(save);
 			set.add(pathfinding);
 			return set;
+		} else if (gameType == GameType.BasicIntro) {
+			set.add(wedding);
+			return set;
+		} else if (gameType == GameType.AdvancedIntro) {
+			return set;
+		} else if (gameType == GameType.EverythingInModeration) {
+			set.add(windfall);
+			return set;
+		} else if (gameType == GameType.SilverBullets) {
+			set.add(conquest);
+			return set;
+		} else if (gameType == GameType.DeliciousTorture) {
+			set.add(banquet);
+			return set;
+		} else if (gameType == GameType.BuddySystem) {
+			set.add(saltTheEarth);
+			return set;
+		} else if (gameType == GameType.BoxedIn) {
+			set.add(tax);
+			return set;
+		} else if (gameType == GameType.KingOfTheSea) {
+			set.add(delve);
+			return set;
+		} else if (gameType == GameType.Collectors) {
+			return set;
+		} else if (gameType == GameType.BigTime) {
+			set.add(dominate);
+			return set;
+		} else if (gameType == GameType.GildedGates) {
+			return set;
+		} else if (gameType == GameType.Zookeepers) {
+			set.add(annex);
+			return set;
+		} else if (gameType == GameType.SimplePlans) {
+			set.add(donate);
+			return set;
+		} else if (gameType == GameType.Expansion) {
+			return set;
+		} else if (gameType == GameType.TombOfTheRatKing) {
+			set.add(advance);
+			return set;
+		} else if (gameType == GameType.TriumphOfTheBanditKing) {
+			set.add(triumph);
+			return set;
+		} else if (gameType == GameType.TheSquiresRitual) {
+			set.add(ritual);
+			return set;
+		} else if (gameType == GameType.CashFlow) {
+			return set;
+		} else if (gameType == GameType.AreaControl) {
+			set.add(banquet);
+			return set;
+		} else if (gameType == GameType.NoMoneyNoProblems) {
+			set.add(mission);
+			return set;
 		} else if (gameType == GameType.Random)
 			candidates = allEvents;
 		else if (gameType == GameType.RandomAdventures)

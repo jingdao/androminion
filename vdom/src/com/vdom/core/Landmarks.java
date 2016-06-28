@@ -317,7 +317,73 @@ public class Landmarks {
 	static ArrayList<Landmarks> getLandmarksSet(GameType gameType,int num) {
 		ArrayList<Landmarks> candidates;
 		ArrayList<Landmarks> set = new ArrayList<Landmarks>();
-		if (gameType == GameType.Random)
+
+		if (gameType == GameType.BasicIntro) {
+			set.add(tower);
+			return set;
+		} else if (gameType == GameType.AdvancedIntro) {
+			set.add(arena);
+			set.add(triumphalArch);
+			return set;
+		} else if (gameType == GameType.EverythingInModeration) {
+			set.add(orchard);
+			return set;
+		} else if (gameType == GameType.SilverBullets) {
+			set.add(aqueduct);
+			return set;
+		} else if (gameType == GameType.DeliciousTorture) {
+			set.add(arena);
+			return set;
+		} else if (gameType == GameType.BuddySystem) {
+			set.add(wolfDen);
+			return set;
+		} else if (gameType == GameType.BoxedIn) {
+			set.add(wall);
+			return set;
+		} else if (gameType == GameType.KingOfTheSea) {
+			set.add(fountain);
+			return set;
+		} else if (gameType == GameType.Collectors) {
+			set.add(colonnade);
+			set.add(museum);
+			return set;
+		} else if (gameType == GameType.BigTime) {
+			set.add(obelisk);
+			return set;
+		} else if (gameType == GameType.GildedGates) {
+			set.add(basilica);
+			set.add(palace);
+			return set;
+		} else if (gameType == GameType.Zookeepers) {
+			set.add(colonnade);
+			return set;
+		} else if (gameType == GameType.SimplePlans) {
+			set.add(labyrinth);
+			return set;
+		} else if (gameType == GameType.Expansion) {
+			set.add(battlefield);
+			set.add(fountain);
+			return set;
+		} else if (gameType == GameType.TombOfTheRatKing) {
+			set.add(tomb);
+			return set;
+		} else if (gameType == GameType.TriumphOfTheBanditKing) {
+			set.add(defiledShrine);
+			return set;
+		} else if (gameType == GameType.TheSquiresRitual) {
+			set.add(museum);
+			return set;
+		} else if (gameType == GameType.CashFlow) {
+			set.add(baths);
+			set.add(mountainPass);
+			return set;
+		} else if (gameType == GameType.AreaControl) {
+			set.add(keep);
+			return set;
+		} else if (gameType == GameType.NoMoneyNoProblems) {
+			set.add(banditFort);
+			return set;
+		} else if (gameType == GameType.Random)
 			candidates = allLandmarks;
 		else if (gameType == GameType.RandomEmpires)
 			candidates = landmarksEmpires;

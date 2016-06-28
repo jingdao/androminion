@@ -122,10 +122,41 @@ public enum GameType {
 	Spendthrift("Spendthrift (Adv, Guilds)"), QueenOfTan("Queen of Tan (Adv, Guilds)"),
 
 	//Empires
-    RandomEmpires("Random Empires"),
+    RandomEmpires("Random Empires"),BasicIntro("Basic Intro (Emp)"), AdvancedIntro("Advanced Intro (Emp)"),
+
+	//Empires + Base
+	EverythingInModeration("Everything in Moderation (Emp, Base)"), SilverBullets("Silver Bullets (Emp, Base)"),
+
+	//Empires + Intrigue
+	DeliciousTorture("Delicious Torture (Emp, Intr)"), BuddySystem("Buddy System (Emp, Intr)"),
+
+	//Empires + Seaside
+	BoxedIn("Boxed In (Emp, Sea)"), KingOfTheSea("King of the Sea (Emp, Base)"),
+
+	//Empires + Alchemy
+	Collectors("Collectors (Emp, Alch)"), 
+
+	//Empires + Prosperity
+	BigTime("Big Time (Emp, Prsp)"), GildedGates("Gilded Gates (Emp ,Prsp)"),
+
+	//Empires + Cornucopia
+	Zookeepers("Zookeepers (Emp, Corn)"),
+
+	//Empires + Hinterlands
+	SimplePlans("Simple Plans (Emp, Hntr)"), Expansion("Expansion (Emp, Hntr)"),
+
+	//Empires + Dark Ages
+	TombOfTheRatKing("Tomb of the Rat King (Emp, DA)"), TriumphOfTheBanditKing("Triumph of the Bandit King (Emp, DA)"), TheSquiresRitual("The Squire's Ritual (Emp, DA)"),
+
+	//Empires + Guilds
+	CashFlow("Cash Flow (Emp, Guilds)"),
+
+	//Empires + Adventures
+	AreaControl("Area Control (Emp, Adv)"), NoMoneyNoProblems("No Money No Problems (Emp, Adv)"),
 
     // All Cards
-    Random("Random"),
+    Random("Random"), 
+
 
 	// Card set is specified from Dominion Shuffle
 	Specified("Specified");

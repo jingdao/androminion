@@ -1212,7 +1212,7 @@ public class Game {
 
 //        AbstractCardPile thePile = getPile(card);
         AbstractCardPile thePile = getPile(getOriginCard(card));
-        if (thePile == null || thePile.isSupply() == false || !thePile.card().equals(card))
+        if (thePile == null || thePile.isSupply() == false || !card.equals(thePile.card()))
         {
         	return false;
         }

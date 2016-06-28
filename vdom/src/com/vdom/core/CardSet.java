@@ -237,6 +237,27 @@ public class CardSet {
 		CardSetMap.put(GameType.GroovyDecay, new CardSet(new Card[]{Cards.dungeon,Cards.hauntedWoods,Cards.ratcatcher,Cards.raze,Cards.transmogrify,Cards.cultist,Cards.deathCart,Cards.fortress,Cards.virtualKnight,Cards.rats},null));
 		CardSetMap.put(GameType.Spendthrift, new CardSet(new Card[]{Cards.artificer,Cards.gear,Cards.magpie,Cards.miser,Cards.storyteller,Cards.doctor,Cards.masterpiece,Cards.merchantGuild,Cards.soothsayer,Cards.stonemason},null));
 		CardSetMap.put(GameType.QueenOfTan, new CardSet(new Card[]{Cards.coinOfTheRealm,Cards.duplicate,Cards.guide,Cards.ratcatcher,Cards.royalCarriage,Cards.advisor,Cards.butcher,Cards.candlestickMaker,Cards.herald,Cards.journeyman},null));
+
+		CardSetMap.put(GameType.BasicIntro, new CardSet(new Card[]{Cards.virtualCastle,Cards.chariotRace,Cards.cityQuarter,Cards.engineer,Cards.farmersMarket,Cards.forum,Cards.legionary,Cards.patrician,Cards.sacrifice,Cards.villa},null));
+		CardSetMap.put(GameType.AdvancedIntro, new CardSet(new Card[]{Cards.archive,Cards.capital,Cards.catapult,Cards.crown,Cards.enchantress,Cards.gladiator,Cards.groundskeeper,Cards.royalBlacksmith,Cards.settlers,Cards.temple},null));
+		CardSetMap.put(GameType.EverythingInModeration, new CardSet(new Card[]{Cards.enchantress,Cards.forum,Cards.legionary,Cards.overlord,Cards.temple,Cards.cellar,Cards.library,Cards.remodel,Cards.village,Cards.workshop},null));
+		CardSetMap.put(GameType.SilverBullets, new CardSet(new Card[]{Cards.catapult,Cards.charm,Cards.farmersMarket,Cards.groundskeeper,Cards.patrician,Cards.bureaucrat,Cards.gardens,Cards.laboratory,Cards.market,Cards.moneyLender},null));
+		CardSetMap.put(GameType.DeliciousTorture, new CardSet(new Card[]{Cards.virtualCastle,Cards.crown,Cards.enchantress,Cards.sacrifice,Cards.settlers,Cards.baron,Cards.bridge,Cards.harem,Cards.ironworks,Cards.torturer},null));
+		CardSetMap.put(GameType.BuddySystem, new CardSet(new Card[]{Cards.archive,Cards.capital,Cards.catapult,Cards.engineer,Cards.forum,Cards.masquerade,Cards.miningVillage,Cards.nobles,Cards.pawn,Cards.tradingPost},null));
+		CardSetMap.put(GameType.BoxedIn, new CardSet(new Card[]{Cards.virtualCastle,Cards.chariotRace,Cards.encampment,Cards.enchantress,Cards.gladiator,Cards.salvager,Cards.smugglers,Cards.tactician,Cards.warehouse,Cards.wharf},null));
+		CardSetMap.put(GameType.KingOfTheSea, new CardSet(new Card[]{Cards.archive,Cards.farmersMarket,Cards.overlord,Cards.temple,Cards.wildHunt,Cards.explorer,Cards.haven,Cards.nativeVillage,Cards.pirateShip,Cards.seaHag},null));
+		CardSetMap.put(GameType.Collectors, new CardSet(new Card[]{Cards.cityQuarter,Cards.crown,Cards.encampment,Cards.enchantress,Cards.farmersMarket,Cards.apothecary,Cards.apprentice,Cards.herbalist,Cards.transmute,Cards.university},null));
+		CardSetMap.put(GameType.BigTime, new CardSet(new Card[]{Cards.capital,Cards.gladiator,Cards.patrician,Cards.royalBlacksmith,Cards.villa,Cards.bank,Cards.forge,Cards.grandMarket,Cards.loan,Cards.royalSeal},null));
+		CardSetMap.put(GameType.GildedGates, new CardSet(new Card[]{Cards.chariotRace,Cards.cityQuarter,Cards.encampment,Cards.groundskeeper,Cards.wildHunt,Cards.bishop,Cards.monument,Cards.mint,Cards.peddler,Cards.talisman},null));
+		CardSetMap.put(GameType.Zookeepers, new CardSet(new Card[]{Cards.overlord,Cards.sacrifice,Cards.settlers,Cards.villa,Cards.wildHunt,Cards.fairgrounds,Cards.horseTraders,Cards.menagerie,Cards.jester,Cards.tournament},null));
+		CardSetMap.put(GameType.SimplePlans, new CardSet(new Card[]{Cards.catapult,Cards.forum,Cards.patrician,Cards.temple,Cards.villa,Cards.borderVillage,Cards.develop,Cards.haggler,Cards.illGottenGains,Cards.stables},null));
+		CardSetMap.put(GameType.Expansion, new CardSet(new Card[]{Cards.virtualCastle,Cards.charm,Cards.encampment,Cards.engineer,Cards.legionary,Cards.cache,Cards.farmland,Cards.highway,Cards.spiceMerchant,Cards.tunnel},null));
+		CardSetMap.put(GameType.TombOfTheRatKing, new CardSet(new Card[]{Cards.virtualCastle,Cards.chariotRace,Cards.cityQuarter,Cards.legionary,Cards.sacrifice,Cards.deathCart,Cards.fortress,Cards.pillage,Cards.rats,Cards.storeroom},null));
+		CardSetMap.put(GameType.TriumphOfTheBanditKing, new CardSet(new Card[]{Cards.capital,Cards.charm,Cards.engineer,Cards.groundskeeper,Cards.legionary,Cards.banditCamp,Cards.catacombs,Cards.huntingGrounds,Cards.marketSquare,Cards.procession},null));
+		CardSetMap.put(GameType.TheSquiresRitual, new CardSet(new Card[]{Cards.archive,Cards.catapult,Cards.crown,Cards.patrician,Cards.settlers,Cards.feodum,Cards.hermit,Cards.ironmonger,Cards.rogue,Cards.squire},null));
+		CardSetMap.put(GameType.CashFlow, new CardSet(new Card[]{Cards.virtualCastle,Cards.cityQuarter,Cards.engineer,Cards.gladiator,Cards.royalBlacksmith,Cards.baker,Cards.butcher,Cards.doctor,Cards.herald,Cards.soothsayer},null));
+		CardSetMap.put(GameType.AreaControl, new CardSet(new Card[]{Cards.capital,Cards.catapult,Cards.charm,Cards.crown,Cards.farmersMarket,Cards.coinOfTheRealm,Cards.page,Cards.relic,Cards.treasureTrove,Cards.wineMerchant},null));
+		CardSetMap.put(GameType.NoMoneyNoProblems, new CardSet(new Card[]{Cards.archive,Cards.encampment,Cards.royalBlacksmith,Cards.temple,Cards.villa,Cards.dungeon,Cards.duplicate,Cards.hireling,Cards.peasant,Cards.transmogrify},null));
 	}
 
 }
