@@ -209,7 +209,7 @@ public class Landmarks {
 					}
 				}
 				for (String name : distinctCards.keySet())
-					if (!maxCounts.containsKey(name) || distinctCards.get(name) > maxCounts.get(name))
+					if (!maxCounts.containsKey(name) || distinctCards.get(name) >= maxCounts.get(name))
 						count++;
 				return count * 5;
 			case Obelisk:

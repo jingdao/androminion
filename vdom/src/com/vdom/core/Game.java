@@ -304,7 +304,7 @@ public class Game {
 						for (int i = 0; i < 5; i++)
 							drawToHand(player, null, false);
 					}
-					if (!Landmarks.mountainPassActive && getCardsObtainedByPlayer().contains(Cards.province)) {
+					if (landmarksList.contains(Landmarks.mountainPass) && !Landmarks.mountainPassActive && getCardsObtainedByPlayer().contains(Cards.province)) {
 						Landmarks.mountainPass.applyEffect(this,context,player,null);
 						Landmarks.mountainPassActive = true;
 					}

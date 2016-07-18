@@ -131,7 +131,7 @@ public enum GameType {
 	DeliciousTorture("Delicious Torture (Emp, Intr)"), BuddySystem("Buddy System (Emp, Intr)"),
 
 	//Empires + Seaside
-	BoxedIn("Boxed In (Emp, Sea)"), KingOfTheSea("King of the Sea (Emp, Base)"),
+	BoxedIn("Boxed In (Emp, Sea)"), KingOfTheSea("King of the Sea (Emp, Sea)"),
 
 	//Empires + Alchemy
 	Collectors("Collectors (Emp, Alch)"), 
@@ -177,7 +177,8 @@ public enum GameType {
         name = name.replace(" of ", " Of ");
         name = name.replace(" to ", " To ");
         name = name.replace(" and ", " And ");
-        name = name.replace("," , "");
+        name = name.replace(" in "," In ");
+	name = name.replace("," , "");
         name = name.replace("'" , "");
         name = name.replace(" ", "");
         int paren = name.indexOf("(");

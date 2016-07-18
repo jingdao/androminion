@@ -423,7 +423,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 	}
 
 	private String getCardText(final Map<Object, Integer> counts, final Map<Object, Integer> totals, final Object card) {
-		if (!counts.containsKey(card))
+		if (card instanceof Card && !counts.containsKey(card))
 			return "";
 		String name="";
 		int count=0;
