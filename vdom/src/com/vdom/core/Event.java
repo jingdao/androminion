@@ -18,7 +18,9 @@ public class Event {
 		Alms, Borrow, Quest, Save, ScoutingParty, TravellingFair, Bonfire, Expedition, Ferry, Plan,
 		Mission, Pilgrimage, Ball, Raid, Seaway, Trade, LostArts, Training, Inheritance, Pathfinding,
 
-		Triumph, Annex, Donate, Advance, Delve, Tax, Banquet, Ritual, SaltTheEarth, Wedding, Windfall, Conquest, Dominate
+		Triumph, Annex, Donate, Advance, Delve, Tax, Banquet, Ritual, SaltTheEarth, Wedding, Windfall, Conquest, Dominate,
+
+		Summon
 	}
 
 	public static final Event alms;
@@ -55,6 +57,8 @@ public class Event {
 	public static final Event windfall;
 	public static final Event conquest;
 	public static final Event dominate;
+
+	public static final Event summon;
 
 	public Type type;
 	public int cost;
@@ -205,6 +209,8 @@ public class Event {
 		eventsEmpires.add(windfall = new Event(Event.Type.Windfall,5,0,"Empires"));
 		eventsEmpires.add(conquest = new Event(Event.Type.Conquest,6,0,"Empires"));
 		eventsEmpires.add(dominate = new Event(Event.Type.Dominate,14,0,"Empires"));
+
+		allEvents.add(summon = new Event(Event.Type.Summon,5,0,"Promo"));
 
 		for (Event e: eventsAdventures) allEvents.add(e);
 		for (Event e: eventsEmpires) allEvents.add(e);

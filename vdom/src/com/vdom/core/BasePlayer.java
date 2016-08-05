@@ -3171,6 +3171,8 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 					break;
 			}
 		}
+		if (cardsToTrash.size()==0)
+			cardsToTrash.add(cards[0]);
 		return cardsToTrash.toArray(new Card[0]);
 	}
 
@@ -3213,5 +3215,9 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 
 	public int mountainPass_amountToBid(MoveContext context) {
 		return 17;
+	}
+
+	public int stash_positionInDeck(MoveContext context,int deckSize) {
+		return 0;
 	}
 }

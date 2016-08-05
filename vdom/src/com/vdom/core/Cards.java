@@ -68,7 +68,7 @@ public class Cards {
 		Archive, Capital, Charm, Crown, Forum, Groundskeeper, Legionary, WildHunt, Landmark,
 		HumbleCastle, CrumblingCastle, SmallCastle, HauntedCastle, OpulentCastle, SprawlingCastle, GrandCastle, KingsCastle,VirtualCastle,	
         // Promo Cards
-        Envoy, Governor, WalledVillage,
+        Envoy, Governor, WalledVillage, BlackMarket, Stash, Prince,
         // Promo Cards (not yet implemented)
         // BlackMarket, Stash
         // Victory Token card container
@@ -427,6 +427,9 @@ public class Cards {
     public static final Card walledVillage;
     public static final Card governor;
     public static final Card envoy;
+    public static final Card blackMarket;
+    public static final Card stash;
+    public static final Card prince;
 
     static {
         // nonKingdomCards
@@ -793,6 +796,9 @@ public class Cards {
         actionCardsPromo.add(walledVillage = new ActionCardImpl.Builder(Cards.Type.WalledVillage, 4).addCards(1).addActions(2).description("At the start of Clean-up, if you have this and no more than one other Action card in play, you may put this on top of your deck.").expansion("Promo").build());
         actionCardsPromo.add(governor      = new ActionCardImpl.Builder(Cards.Type.Governor, 5).addActions(1).description("Choose one; you get the version in parentheses: Each player gets +1 (+3) Cards; or each player gains a Silver (Gold); or each player may trash a card from his hand and gain a card costing exactly 1 (2) more.").expansion("Promo").build());
         actionCardsPromo.add(envoy         = new ActionCardImpl.Builder(Cards.Type.Envoy, 4).description("Reveal the top 5 cards of your deck. The player to your left chooses one for you to discard. Draw the rest.").expansion("Promo").build());
+        actionCardsPromo.add(blackMarket = new ActionCardImpl.Builder(Cards.Type.BlackMarket, 3).addGold(2).description("").expansion("Promo").build());
+        actionCardsPromo.add(stash = new TreasureCardImpl.Builder(Cards.Type.Stash, 5,2).description("").expansion("Promo").build());
+        actionCardsPromo.add(prince = new ActionCardImpl.Builder(Cards.Type.Prince, 8).description("").expansion("Promo").build());
         
         // Collect all Expansions
         for (Card card : actionCardsBaseGame)    { actionCards.add(card); }

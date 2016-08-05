@@ -784,9 +784,18 @@ public abstract class Player {
 
     public void replenishDeck() {
         shuffleCount++;
+		ArrayList<Card> stashes = new ArrayList<Card>();
         while (discard.size() > 0) {
-            deck.add(discard.remove(Game.rand.nextInt(discard.size())));
+			Card card = discard.remove(Game.rand.nextInt(discard.size()));
+			if (card.equals(Cards.stash))
+				stashes.add(card);
+			else
+				deck.add(card);
         }
+		for (Card card : stashes) {
+			int position = stash_positionInDeck(new MoveContext(game,this),deck.size());
+			deck.add(position,card);
+		}
     }
 
     public void shuffleDeck() {
@@ -1715,26 +1724,20 @@ public abstract class Player {
     // Card interactions - Promotional Cards
     // ////////////////////////////////////////////
 	public abstract boolean walledVillage_backOnDeck(MoveContext context);
-
 	public abstract GovernorOption governor_chooseOption(MoveContext context);
-
     public abstract Card governor_cardToTrash(MoveContext context);
-
     public abstract Card governor_cardToObtain(MoveContext context, int exactCost, boolean potion,int debt);
-
     public abstract Card envoy_cardToDiscard(MoveContext context, Card[] revealedCards);
+	public abstract int stash_positionInDeck(MoveContext context,int deckSize);
 
+	// ////////////////////////////////////////////
+    // Card interactions - Unique Cards
+    // ////////////////////////////////////////////
 	public abstract boolean survivors_shouldDiscardTopCards(MoveContext context, Card[] array);
-
 	public abstract Card[] survivors_cardOrder(MoveContext context, Card[] array);
-
 	public abstract boolean cultist_shouldPlayNext(MoveContext context);
-
 	public abstract Card[] dameAnna_cardsToTrash(MoveContext context);
-
 	public abstract Card knight_cardToTrash(MoveContext context, ArrayList<Card> canTrash);
-
 	public abstract Card[] sirMichael_attack_cardsToKeep(MoveContext context);
-
 	public abstract Card dameNatalie_cardToObtain(MoveContext context);
 }

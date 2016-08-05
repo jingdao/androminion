@@ -3325,13 +3325,14 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         for (Card c : cards)
             options.add(Strings.getCardName(c));
         String none = getString(R.string.none);
-        options.add(none);
         do {
             String o = selectString(context, Cards.temple, options.toArray(new String[0]));
 			if (o.equals(none))
 				break;
             cardsToTrash.add(localNameToCard(o, cards));
             options.remove(o);
+			if (cardsToTrash.size()==1)
+				options.add(none);
         } while (cardsToTrash.size() < 3);
         return cardsToTrash.toArray(new Card[0]);
     }
@@ -3395,4 +3396,7 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return selectInt(context, "Mountain Pass: Bid",40, 0);
     }
     
+	public int stash_positionInDeck(MoveContext context,int deckSize) {
+        return selectInt(context, "Stash: Position in Deck",deckSize, 0);
+	}
 }
