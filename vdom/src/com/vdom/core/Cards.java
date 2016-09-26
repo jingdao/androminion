@@ -67,6 +67,8 @@ public class Cards {
 		Catapult, Rocks, ChariotRace, Enchantress, FarmersMarket, Gladiator, Fortune, Sacrifice, Temple, Villa,
 		Archive, Capital, Charm, Crown, Forum, Groundskeeper, Legionary, WildHunt, Landmark,
 		HumbleCastle, CrumblingCastle, SmallCastle, HauntedCastle, OpulentCastle, SprawlingCastle, GrandCastle, KingsCastle,VirtualCastle,	
+		// Base + Intrigue Update
+		Vassal, Harbinger, Merchant, Poacher, Bandit, Sentry, Artisan, Lurker, Diplomat, Mill, SecretPassage, Courtier, Patrol, Replace,
         // Promo Cards
         Envoy, Governor, WalledVillage, BlackMarket, Stash, Prince,
         // Promo Cards (not yet implemented)
@@ -422,6 +424,23 @@ public class Cards {
 	public static final Card kingsCastle;	
 	public static final Card virtualCastle;	
 
+	//Base + Intrigue Update
+	public static final Card vassal;
+	public static final Card harbinger;
+	public static final Card merchant;
+	public static final Card poacher;
+	public static final Card bandit;
+	public static final Card sentry;
+	public static final Card artisan;
+
+	public static final Card lurker;
+	public static final Card diplomat;
+	public static final Card mill;
+	public static final Card secretPassage;
+	public static final Card courtier;
+	public static final Card patrol;
+	public static final Card replace;
+
     // Promo Cards (Incomplete)
     // TODO:Implement Rest of promo cards
     public static final Card walledVillage;
@@ -761,6 +780,23 @@ public class Cards {
 		castleCards.add(kingsCastle = new VictoryCardImpl.Builder(Cards.Type.KingsCastle,10,0).isCastle().description("Worth 2 Victory Point per Castle you have.").expansion("Empires").build());	
 		actionCardsEmpires.add(virtualCastle = new VictoryCardImpl.Builder(Cards.Type.VirtualCastle,3,0).isCastle().build());
 
+		//Base + Intrigue Update
+		actionCardsBaseGame.add(vassal = new ActionCardImpl.Builder(Cards.Type.Vassal,3).addGold(2).build());
+		actionCardsBaseGame.add(harbinger = new ActionCardImpl.Builder(Cards.Type.Harbinger,3).addCards(1).addActions(1).build());
+		actionCardsBaseGame.add(merchant = new ActionCardImpl.Builder(Cards.Type.Merchant,3).addCards(1).addActions(1).build());
+		actionCardsBaseGame.add(poacher = new ActionCardImpl.Builder(Cards.Type.Poacher,4).addCards(1).addActions(1).addGold(1).build());
+		actionCardsBaseGame.add(bandit = new ActionCardImpl.Builder(Cards.Type.Bandit,5).attack().build());
+		actionCardsBaseGame.add(sentry = new ActionCardImpl.Builder(Cards.Type.Sentry,5).addCards(1).addActions(1).build());
+		actionCardsBaseGame.add(artisan = new ActionCardImpl.Builder(Cards.Type.Artisan,6).build());
+
+		actionCardsIntrigue.add(lurker = new ActionCardImpl.Builder(Cards.Type.Lurker,2).addActions(1).build());
+		actionCardsIntrigue.add(diplomat = new ActionCardImpl.Builder(Cards.Type.Diplomat,4).addCards(2).build());
+		actionCardsIntrigue.add(mill = new ActionVictoryCardImpl.Builder(Cards.Type.Mill,4).addCards(1).addActions(1).vp(1).build());
+		actionCardsIntrigue.add(secretPassage = new ActionCardImpl.Builder(Cards.Type.SecretPassage,4).addCards(2).addActions(1).build());
+		actionCardsIntrigue.add(courtier = new ActionCardImpl.Builder(Cards.Type.Courtier,5).build());
+		actionCardsIntrigue.add(patrol = new ActionCardImpl.Builder(Cards.Type.Patrol,5).addCards(3).build());
+		actionCardsIntrigue.add(replace = new ActionCardImpl.Builder(Cards.Type.Replace,5).build());
+
         // Non-Supply Cards
         nonSupplyCards.add(madman    = new ActionCardImpl.Builder(Cards.Type.Madman, 0).addActions(2).description("Return this to the Madman pile. If you do, +1 Card per card in your hand. (This is not in the supply)").expansion("DarkAges").build());
         nonSupplyCards.add(mercenary = new ActionCardImpl.Builder(Cards.Type.Mercenary, 0).attack().description("You may trash 2 cards from your hand. If you do, +2 cards, +2 coins, and each other player discards down to 3 cards in hand. (This is not in the supply)").expansion("DarkAges").build());
@@ -824,7 +860,7 @@ public class Cards {
     }
     
     public static boolean isReaction(Card c) {
-        if ((c.equals(Cards.moat)) || (c.equals(Cards.secretChamber)) || (c.equals(Cards.watchTower)) || (c.equals(Cards.horseTraders)) || (c.equals(Cards.foolsGold)) || (c.equals(Cards.trader)) || (c.equals(Cards.tunnel)) || (c.equals(Cards.beggar)) || (c.equals(Cards.hovel)) || (c.equals(Cards.marketSquare)) || c.equals(Cards.caravanGuard)) {
+        if ((c.equals(Cards.moat)) || (c.equals(Cards.secretChamber)) || (c.equals(Cards.watchTower)) || (c.equals(Cards.horseTraders)) || (c.equals(Cards.foolsGold)) || (c.equals(Cards.trader)) || (c.equals(Cards.tunnel)) || (c.equals(Cards.beggar)) || (c.equals(Cards.hovel)) || (c.equals(Cards.marketSquare)) || c.equals(Cards.caravanGuard) || c.equals(Cards.diplomat)) {
         	return true;
         }
         return false;

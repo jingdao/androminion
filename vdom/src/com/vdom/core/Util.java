@@ -284,8 +284,12 @@ public class Util {
                 event = new GameEvent(GameEvent.Type.PlayerDefended, context);
                 event.card = reactionCard;
                 game.broadcastEvent(event);
-        	} else if (reactionCard.equals(Cards.caravanGuard)) 
+        	} else if (reactionCard.equals(Cards.caravanGuard)) {
 				doCaravanGuard(context,game,player,reactionCard);
+			} else if (reactionCard.equals(Cards.diplomat)) {
+				doDiplomat(context,game,player,reactionCard);
+			}
+			
         }
 
         return defended;
@@ -401,6 +405,19 @@ public class Util {
 
 	static void doCaravanGuard(MoveContext context, Game game, Player player,Card reactionCard) {
 		((ActionCardImpl)reactionCard).play(game,context,true);
+	}
+
+	static void doDiplomat(MoveContext context, Game game, Player player,Card reactionCard) {
+		if (player.getHand().size() >= 5) {
+            game.drawToHand(player, reactionCard);
+            game.drawToHand(player, reactionCard);
+			Card[] cards= player.controlPlayer.diplomat_cardsToDiscard(context);
+			for (int i = 0; i < cards.length; i++) {
+				player.hand.remove(cards[i]);
+				player.reveal(cards[i], reactionCard, context);
+				player.discard(cards[i], reactionCard, null);
+			}
+		}
 	}
 
     public static ArrayList<Card> copy(CardList cards) {

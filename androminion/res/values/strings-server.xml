@@ -87,6 +87,7 @@
 	<string name="card_to_discard_for_card">discard [%1$s] for cards</string>
 	<string name="card_to_discard_for_coin">discard [%1$s] for coin</string>
 	<string name="card_to_name">name [%1$s]</string>
+	<string name="card_to_play">play [%1$s]</string>
 	<string name="discard">Discard</string>
 	<string name="trash">Trash</string>
 	<string name="keep">Keep</string>
@@ -350,4 +351,9 @@
   <string name="charm_option_one">+1 Buy, +2 Coin</string>
   <string name="charm_option_two">Gain a card next buy</string>
   
+  <string name="courtier_one">+1 Action</string>
+  <string name="courtier_two">+1 Buy</string>
+  <string name="courtier_three">+(3) Coin</string>
+  <string name="courtier_four">Gain a Gold</string>
+
 </resources>

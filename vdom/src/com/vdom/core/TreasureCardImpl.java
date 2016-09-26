@@ -148,8 +148,11 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 			}
 		} else if (equals(Cards.capital)) {
 			context.buys++;
-		} else if (equals(Cards.charm))
+		} else if (equals(Cards.charm)) {
 			charm(game,context,player);
+		} else if (equals(Cards.silver)) {
+			merchant(game,context,player);
+		}
 
         return reevaluateTreasures;
     }
@@ -360,6 +363,14 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 		Card toGain = currentPlayer.controlPlayer.charm_cardToObtain(context, validCards.toArray(new Card[0]));
 		if (toGain != null)
 			currentPlayer.gainNewCard(toGain, Cards.charm, context);
+	}
+
+	public void merchant(Game game, MoveContext context, Player currentPlayer) {
+        int silverPlayed = this.controlCard.numberTimesAlreadyPlayed;
+        silverPlayed += context.countCardsInPlay(Cards.silver);
+		if (silverPlayed == 1)
+			context.gold += context.countCardsInPlay(Cards.merchant);
+
 	}
 
 }

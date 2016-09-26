@@ -904,6 +904,45 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		case Crown:
 			throneRoomKingsCourt(game,context,currentPlayer);
 			break;
+		case Vassal:
+			vassal(game,context,currentPlayer);
+			break;
+		case Harbinger:
+			harbinger(game,context,currentPlayer);
+			break;
+		case Poacher:
+			poacher(game,context,currentPlayer);
+			break;
+		case Bandit:
+			bandit(game,context,currentPlayer);
+			break;
+		case Sentry:
+			sentry(game,context,currentPlayer);
+			break;
+		case Artisan:
+			artisan(game,context,currentPlayer);
+			break;
+		case Lurker:
+			lurker(game,context,currentPlayer);
+			break;
+		case SecretPassage:
+			secretPassage(game,context,currentPlayer);
+			break;
+		case Diplomat:
+			diplomat(game,context,currentPlayer);
+			break;
+		case Mill:
+			mill(game,context,currentPlayer);
+			break;
+		case Courtier:
+			courtier(game,context,currentPlayer);
+			break;
+		case Patrol:
+			patrol(game,context,currentPlayer);
+			break;
+		case Replace:
+			replace(game,context,currentPlayer);
+			break;
         default:
             break;
         }
@@ -6702,5 +6741,262 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		if (cardsToSetAside.size() > 0)
 			currentPlayer.archive.add(cardsToSetAside);
     }
+
+    private void vassal(Game game, MoveContext context, Player currentPlayer) {
+        Card draw = game.draw(currentPlayer);
+        if (draw != null) {
+            currentPlayer.reveal(draw, this.controlCard, context);
+            if (draw instanceof ActionCard && currentPlayer.vassal_shouldPlayAction(context,draw)) {
+                context.freeActionInEffect++;
+                ((ActionCardImpl) draw).play(game, context, false);
+                context.freeActionInEffect--;
+            } else {
+                context.player.discard(draw,this.controlCard,context);
+            }
+        }
+    }
+
+    private void harbinger(Game game, MoveContext context, Player currentPlayer) {
+		HashSet<Card> options = new HashSet<Card>();
+		for (Card c : currentPlayer.discard)
+			options.add(c);
+		if (!options.isEmpty()) {
+			Card toTopdeck = currentPlayer.controlPlayer.harbinger_cardToTopdeck(context, options);
+			if (toTopdeck != null ) {
+				currentPlayer.discard.remove(toTopdeck);
+				currentPlayer.putOnTopOfDeck(toTopdeck);
+			}
+		}
+	}
+
+    private void poacher(Game game, MoveContext context, Player currentPlayer) {
+		if (game.emptyPiles()==0)
+			return;
+        Card[] cards;
+        if (currentPlayer.hand.size() > game.emptyPiles()) {
+            cards = currentPlayer.controlPlayer.poacher_cardsToDiscard(context,game.emptyPiles());
+        } else {
+            cards = currentPlayer.getHand().toArray();
+        }
+        for (int i = 0; i < cards.length; i++) {
+            currentPlayer.hand.remove(cards[i]);
+            currentPlayer.reveal(cards[i], this.controlCard, context);
+            currentPlayer.discard(cards[i], this.controlCard, null);
+        }
+	}
+
+    private void bandit(Game game, MoveContext context, Player currentPlayer) {
+        currentPlayer.gainNewCard(Cards.gold, this.controlCard, context);
+        for (Player targetPlayer : game.getPlayersInTurnOrder()) {
+            if (targetPlayer != currentPlayer && !Util.isDefendedFromAttack(game, targetPlayer, this.controlCard)) {
+                targetPlayer.attacked(this.controlCard, context);
+                MoveContext targetContext = new MoveContext(game, targetPlayer);
+                ArrayList<TreasureCard> treasures = new ArrayList<TreasureCard>();
+
+                List<Card> cardsToDiscard = new ArrayList<Card>();
+                for (int i = 0; i < 2; i++) {
+                    Card card = game.draw(targetPlayer);
+
+                    if (card != null) {
+                        targetPlayer.reveal(card, this.controlCard, targetContext);
+
+                        if (card instanceof TreasureCard && !card.equals(Cards.copper)) {
+                            treasures.add((TreasureCard) card);
+                        } else {
+                        	cardsToDiscard.add(card);
+                        }
+                    }
+                }
+
+                for (Card c: cardsToDiscard) {
+                    targetPlayer.discard(c, this.controlCard, targetContext);
+                }
+
+                TreasureCard cardToTrash = null;
+
+                if (treasures.size() == 1) {
+                    cardToTrash = treasures.get(0);
+                } else if (treasures.size() == 2) {
+                    if (treasures.get(0).equals(treasures.get(1))) {
+                        cardToTrash = treasures.get(0);
+                        targetPlayer.discard(treasures.remove(1), this.controlCard, targetContext);
+                    } else {
+                        cardToTrash = targetPlayer.controlPlayer.bandit_treasureToTrash(context, treasures.toArray(new TreasureCard[] {}));
+                    }
+
+                    for (TreasureCard treasure : treasures) {
+                        if (!treasure.equals(cardToTrash)) {
+                            targetPlayer.discard(treasure, this.controlCard, targetContext);
+                        }
+                    }
+                }
+
+                if (cardToTrash != null) {
+                    targetPlayer.trash(cardToTrash, this.controlCard, targetContext);
+                }
+            }
+        }
+	}
+
+    private void sentry(Game game, MoveContext context, Player currentPlayer) {
+		ArrayList<Card> putback = new ArrayList<Card>();
+		for (int i = 0; i < 2; ++i) {
+            Card card = context.game.draw(context.player);
+           	if (card == null)
+				continue; 
+            Player.SentryOption doo = currentPlayer.sentry_chooseOption(context, card);
+            switch(doo) {
+            case TrashIt:
+                currentPlayer.trash(card, this.controlCard, context);
+                break;
+            case DiscardIt:
+                currentPlayer.discard(card, this.controlCard, context);
+                break;
+            case KeepIt:
+				putback.add(card);
+                break;
+            default:
+                break;
+            }
+        }
+		if (putback.size() > 0) {
+			Card[] orderedCards = currentPlayer.controlPlayer.topOfDeck_orderCards(context, putback.toArray(new Card[0]));
+			for (int i = orderedCards.length - 1; i >= 0; i--) {
+				currentPlayer.putOnTopOfDeck(orderedCards[i], context, true);
+			}
+		}
+	}
+
+    private void artisan(Game game, MoveContext context, Player currentPlayer) {
+		Card card = currentPlayer.controlPlayer.artisan_cardToObtain(context);
+		if (card!=null)
+			currentPlayer.gainNewCard(card, this.controlCard, context);
+        if (currentPlayer.getHand().size() > 0) {
+            card = currentPlayer.controlPlayer.artisan_cardToPutBackOnDeck(context);
+            currentPlayer.putOnTopOfDeck(currentPlayer.hand.remove(currentPlayer.hand.indexOf(card)));
+        }
+	}
+
+    private void lurker(Game game, MoveContext context, Player currentPlayer) {
+		Player.LurkerOption option = currentPlayer.controlPlayer.lurker_chooseOption(context);
+		switch (option) {
+		case GainFromTrash:
+			Card toGain = currentPlayer.controlPlayer.lurker_cardToGainFromTrash(context);
+			if (toGain!=null) {
+				toGain = game.trashPile.remove(game.trashPile.indexOf(toGain));
+				currentPlayer.gainCardAlreadyInPlay(toGain, this.controlCard, context);
+			}
+			break;
+		case TrashActionCard:
+			Card card = currentPlayer.controlPlayer.lurker_cardToTrash(context);
+			Card cardToTrash = context.game.takeFromPile(card);
+			currentPlayer.trash(cardToTrash, Cards.lurker, context);
+			break;
+		}
+	}
+
+    private void secretPassage(Game game, MoveContext context, Player currentPlayer) {
+        if (currentPlayer.getHand().size() > 0) {
+            Card card = currentPlayer.controlPlayer.secretPassage_cardToPutInDeck(context);
+            currentPlayer.hand.remove(card);
+			int position = currentPlayer.controlPlayer.secretPassage_positionInDeck(new MoveContext(game,currentPlayer),currentPlayer.deck.size());
+			currentPlayer.deck.add(position,card);
+        }
+	}
+
+    private void diplomat(Game game, MoveContext context, Player currentPlayer) {
+		if (currentPlayer.getHand().size() <= 5)
+			context.actions += 2;
+	}
+
+    private void mill(Game game, MoveContext context, Player currentPlayer) {
+		if (currentPlayer.hand.size() < 2)
+			return;
+		Card[] toDiscard = currentPlayer.controlPlayer.mill_cardsToDiscard(context);
+		if (toDiscard != null) {
+			for (Card card : toDiscard) {
+				currentPlayer.hand.remove(card);
+				currentPlayer.reveal(card, this.controlCard, context);
+				currentPlayer.discard(card, this.controlCard, context);
+			}
+			context.addGold += 2;
+		}
+	}
+
+    private void courtier(Game game, MoveContext context, Player currentPlayer) {
+        if (currentPlayer.hand.size() == 0)
+            return;
+        Card card = currentPlayer.controlPlayer.courtier_revealedCard(context);
+        currentPlayer.reveal(card, this.controlCard, context);
+		int numTypes=0;
+		if (card instanceof ActionCard) numTypes++;
+		if (card.isLooter()) numTypes++;
+		if (card.isRuins()) numTypes++;
+		if (card.isPrize()) numTypes++;
+		if (Cards.isReaction(card)) numTypes++;
+		if (card instanceof DurationCard) numTypes++;
+		if (card instanceof VictoryCard) numTypes++;
+		if (card instanceof TreasureCard) numTypes++;
+		if (card.isKnight()) numTypes++;
+		if (card.isReserve()) numTypes++;
+		if (card.isTraveller()) numTypes++;
+		if (card.isCastle()) numTypes++;
+		if (card.isGathering()) numTypes++;
+		if (card.isShelter()) numTypes++;
+        Player.CourtierOption[] options = currentPlayer.controlPlayer.courtier_chooseOptions(context,numTypes);
+		for (Player.CourtierOption option : options) {
+			if (option == Player.CourtierOption.AddAction) {
+				context.actions++;
+			} else if (option == Player.CourtierOption.AddBuy) {
+				context.buys++;
+			} else if (option == Player.CourtierOption.GainGold) {
+				currentPlayer.gainNewCard(Cards.gold, this.controlCard, context);
+			} else if (option == Player.CourtierOption.AddGold) {
+				context.addGold+=3;
+			}
+		}
+	}
+
+    private void patrol(Game game, MoveContext context, Player currentPlayer) {
+        ArrayList<Card> cards = new ArrayList<Card>();
+        for (int i = 0; i < 4; i++) {
+            Card card = game.draw(currentPlayer);
+            if (card != null) {
+				currentPlayer.reveal(card, this.controlCard, context);
+				if ((card instanceof VictoryCard) || (card.equals(Cards.curse)))
+                	currentPlayer.hand.add(card);
+				else
+					cards.add(card);
+            }
+        }
+		if (cards.size() > 0) {
+			Card[] orderedCards = currentPlayer.controlPlayer.topOfDeck_orderCards(context, cards.toArray(new Card[0]));
+			for (int i = orderedCards.length - 1; i >= 0; i--) {
+				currentPlayer.putOnTopOfDeck(orderedCards[i], context, true);
+			}
+		}
+	}
+
+    private void replace(Game game, MoveContext context, Player currentPlayer) {
+        if (currentPlayer.getHand().size() > 0) {
+            Card cardToTrash = currentPlayer.controlPlayer.replace_cardToTrash(context);
+            int cost = cardToTrash.getCost(context);
+            boolean potion = cardToTrash.costPotion();
+			currentPlayer.hand.remove(cardToTrash);
+			currentPlayer.trash(cardToTrash, this.controlCard, context);
+            Card card = currentPlayer.controlPlayer.replace_cardToObtain(context, cost+2, potion, cardToTrash.costDebt());
+			if (card!=null) {
+				currentPlayer.gainNewCard(card, this.controlCard, context);
+				if (card instanceof VictoryCard) {
+					for (Player player : game.getPlayersInTurnOrder()) {
+						if (player != currentPlayer && !isDefendedFromAttack(game, player, this.controlCard)) {
+							player.attacked(this.controlCard, context);
+							player.gainNewCard(Cards.curse, this.controlCard, new MoveContext(game, player));
+						}
+					}
+				}
+			}
+        }
+	}
 
 }

@@ -631,6 +631,35 @@
     <string name="VirtualCastle_name">Castles</string>
     <string name="VirtualCastle_desc"/>
 
+	<string name="Vassal_name">Vassal</string>
+	<string name="Vassal_desc">Discard the top card of your deck. If it\'s an Action card, you may play it.</string>
+	<string name="Harbinger_name">Harbinger</string>
+	<string name="Harbinger_desc">Look through your discard pile. You may put a card from it onto your deck.</string>
+	<string name="Merchant_name">Merchant</string>
+	<string name="Merchant_desc">The first time you play a Silver this turn, +1 Coin.</string>
+	<string name="Poacher_name">Poacher</string>
+	<string name="Poacher_desc">Discard a card per empty Supply pile.</string>
+	<string name="Bandit_name">Bandit</string>
+	<string name="Bandit_desc">Gain a Gold. Each other player reveals the top 2 cards of their deck, trashes a revealed Treasure other than Copper, and discards the rest.</string>
+	<string name="Sentry_name">Sentry</string>
+	<string name="Sentry_desc">Look at the top 2 cards of your deck. Trash and/or discard any number of them. Put the rest back on top in any order.</string>
+	<string name="Artisan_name">Artisan</string>
+	<string name="Artisan_desc">Gain a card to your hand costing up to 5 Coin. Put a card from your hand onto your deck.</string>
+	<string name="Lurker_name">Lurker</string>
+	<string name="Lurker_desc">Choose one: Trash an Action card from the Supply; or gain an Action card from the trash.</string>
+	<string name="Diplomat_name">Diplomat</string>
+	<string name="Diplomat_desc">If you have 5 or fewer cards in hand (after drawing), +2 Actions. When another player plays an Attack card, you may first reveal this from a hand of 5 or more cards, to draw 2 cards then discard 3.</string>
+	<string name="Mill_name">Mill</string>
+	<string name="Mill_desc">You may discard 2 cards, for +2 Coin.</string>
+	<string name="SecretPassage_name">Secret Passage</string>
+	<string name="SecretPassage_desc">Take a card from your hand and put it anywhere in your deck.</string>
+	<string name="Courtier_name">Courtier</string>
+	<string name="Courtier_desc">Reveal a card from your hand. For each type it has, choose one: +1 Action; or +1 Buy; or +3 Coin; or gain a Gold. The choices must be different.</string>
+	<string name="Patrol_name">Patrol</string>
+    <string name="Patrol_desc">Reveal the top 4 cards of your deck. Put the Victory cards and Curses into your hand. Put the other cards on top of your deck in any order.</string>
+	<string name="Replace_name">Replace</string>
+	<string name="Replace_desc">Trash a card from your hand. Gain a card costing up to 2 Coin more than it. If the gained card is an Action or Treasure, put it onto your deck; if it\'s a Victory card, each other player gains a Curse.</string>
+
     <string name="Envoy_name">Envoy</string>
     <string name="Envoy_desc">Reveal the top 5 cards of your deck. The player to your left chooses one for you to discard. Draw the rest.</string>
     <string name="Governor_name">Governor</string>

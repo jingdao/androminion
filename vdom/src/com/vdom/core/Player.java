@@ -1190,6 +1190,24 @@ public abstract class Player {
 		AddCoin, GainCard
 	}
 
+	public enum SentryOption {
+	    TrashIt,
+	    DiscardIt,
+	    KeepIt
+	}
+
+	public enum LurkerOption {
+		GainFromTrash,
+		TrashActionCard
+	}
+
+    public static enum CourtierOption {
+        AddAction,
+        AddBuy,
+        AddGold,
+        GainGold
+    }
+
     // Context is passed for the player to add a GameEventListener
     // if they want or to see what cards the game has, etc.
     public void newGame(MoveContext context) {
@@ -1719,6 +1737,28 @@ public abstract class Player {
 	public abstract TreasureCard crown_treasureCardToPlay(MoveContext context);
 	public abstract Card arena_actionToDiscard(MoveContext context);
 	public abstract int mountainPass_amountToBid(MoveContext context);
+
+	// ////////////////////////////////////////////
+    // Card interactions - Base + Intrigue Updates
+    // ////////////////////////////////////////////
+	public abstract boolean vassal_shouldPlayAction(MoveContext context, Card card);
+	public abstract Card harbinger_cardToTopdeck(MoveContext context, HashSet<Card> options);
+    public abstract Card[] poacher_cardsToDiscard(MoveContext context, int num);
+    public abstract TreasureCard bandit_treasureToTrash(MoveContext context, TreasureCard[] treasures);
+    public abstract SentryOption sentry_chooseOption(MoveContext context, Card card);
+    public abstract Card artisan_cardToObtain(MoveContext context);
+    public abstract Card artisan_cardToPutBackOnDeck(MoveContext context);
+    public abstract LurkerOption lurker_chooseOption(MoveContext context);
+	public abstract Card lurker_cardToGainFromTrash(MoveContext context);
+	public abstract Card lurker_cardToTrash(MoveContext context);
+	public abstract Card secretPassage_cardToPutInDeck(MoveContext context);
+	public abstract int secretPassage_positionInDeck(MoveContext context, int deckSize);
+    public abstract Card[] diplomat_cardsToDiscard(MoveContext context);
+	public abstract Card[] mill_cardsToDiscard(MoveContext context);
+    public abstract Card courtier_revealedCard(MoveContext context);
+    public abstract CourtierOption[] courtier_chooseOptions(MoveContext context, int num);
+	public abstract Card replace_cardToTrash(MoveContext context);
+    public abstract Card replace_cardToObtain(MoveContext context, int maxCost, boolean potion,int debt);
 
 	// ////////////////////////////////////////////
     // Card interactions - Promotional Cards

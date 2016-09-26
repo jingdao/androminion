@@ -381,7 +381,8 @@ public abstract class BasePlayer extends Player implements GameEventListener {
                 secretChamberSelected = true;
             } else if (c.equals(Cards.horseTraders) || c.equals(Cards.watchTower) || c.equals(Cards.beggar) || c.equals(Cards.marketSquare) || c.equals(Cards.caravanGuard)) {
                 reactionCards.add(c);
-            }
+            } else if (c.equals(Cards.diplomat) && hand.size() >= 5)
+				reactionCards.add(c);
         }
         return reactionCards.toArray(new Card[0]);
     }
@@ -3220,4 +3221,153 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 	public int stash_positionInDeck(MoveContext context,int deckSize) {
 		return 0;
 	}
+
+	public boolean vassal_shouldPlayAction(MoveContext context, Card card) {
+		return true;
+	}
+
+	public Card harbinger_cardToTopdeck(MoveContext context, HashSet<Card> options) {
+		for (Card target : options)
+			return target;
+		return null;
+	}
+
+    public Card[] poacher_cardsToDiscard(MoveContext context, int num) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+        for (Card card : context.getPlayer().getHand()) {
+            if (shouldDiscard(card))
+                cardsToDiscard.add(card);
+            if (cardsToDiscard.size() == num)
+                break;
+        }
+        if (cardsToDiscard.size() < num) {
+            ArrayList<Card> handCopy = new ArrayList<Card>();
+            for (Card card : context.getPlayer().getHand())
+                handCopy.add(card);
+            for (Card card : cardsToDiscard)
+                handCopy.remove(card);
+            while (cardsToDiscard.size() < num)
+                cardsToDiscard.add(handCopy.remove(0));
+        }
+        return cardsToDiscard.toArray(new Card[0]);
+    }
+
+    public TreasureCard bandit_treasureToTrash(MoveContext context, TreasureCard[] treasures) {
+		return (TreasureCard) lowestCards(context, new ArrayList<Card>(Arrays.asList(treasures)), 1, false)[0];
+	}
+
+ 	public SentryOption sentry_chooseOption(MoveContext context, Card card) {
+		ArrayList<Card> trashCards = new ArrayList<Card>(Arrays.asList(getTrashCards()));
+		if (trashCards.contains(card))
+			return SentryOption.TrashIt;
+		else if (shouldDiscard(card))
+			return SentryOption.DiscardIt;
+		else
+			return SentryOption.KeepIt;
+	}
+
+    public Card artisan_cardToObtain(MoveContext context) {
+        return bestCardInPlay(context, 5);
+	}
+
+    public Card artisan_cardToPutBackOnDeck(MoveContext context) {
+        return context.getPlayer().getHand().get(0);
+	}
+
+    public LurkerOption lurker_chooseOption(MoveContext context) {
+		for (Card c : context.game.trashPile) {
+			if (c instanceof ActionCard)
+				return LurkerOption.GainFromTrash;
+		}
+		return LurkerOption.TrashActionCard;
+	}
+
+	public Card lurker_cardToGainFromTrash(MoveContext context) {
+		for (Card c : context.game.trashPile) {
+			if (c instanceof ActionCard)
+				return c;
+		}
+		return null;
+	}
+
+	public Card lurker_cardToTrash(MoveContext context) {
+        return bestCardInPlay(context, 8, false, false, true, false);
+	}
+
+	public Card secretPassage_cardToPutInDeck(MoveContext context) {
+        return context.getPlayer().getHand().get(0);
+	}
+
+	public int secretPassage_positionInDeck(MoveContext context, int deckSize) {
+		return 0;
+	}
+
+    public Card[] diplomat_cardsToDiscard(MoveContext context) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+        for (Card card : context.getPlayer().getHand()) {
+            if (shouldDiscard(card))
+                cardsToDiscard.add(card);
+            if (cardsToDiscard.size() == 3)
+                break;
+        }
+        if (cardsToDiscard.size() < 3) {
+            ArrayList<Card> handCopy = new ArrayList<Card>();
+            for (Card card : context.getPlayer().getHand())
+                handCopy.add(card);
+            for (Card card : cardsToDiscard)
+                handCopy.remove(card);
+            while (cardsToDiscard.size() < 3)
+                cardsToDiscard.add(handCopy.remove(0));
+        }
+        return cardsToDiscard.toArray(new Card[0]);
+    }
+
+	public Card[] mill_cardsToDiscard(MoveContext context) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+        for (Card card : context.getPlayer().getHand()) {
+            if (shouldDiscard(card))
+                cardsToDiscard.add(card);
+            if (cardsToDiscard.size() == 2)
+                break;
+        }
+        if (cardsToDiscard.size() < 2) {
+            ArrayList<Card> handCopy = new ArrayList<Card>();
+            for (Card card : context.getPlayer().getHand())
+                handCopy.add(card);
+            for (Card card : cardsToDiscard)
+                handCopy.remove(card);
+            while (cardsToDiscard.size() < 2)
+                cardsToDiscard.add(handCopy.remove(0));
+        }
+        return cardsToDiscard.toArray(new Card[0]);
+	}
+
+    public CourtierOption[] courtier_chooseOptions(MoveContext context, int num) {
+		if (num==1)
+			return new CourtierOption[] {CourtierOption.AddGold};
+		else if (num==2)
+        	return new CourtierOption[] { CourtierOption.AddAction, CourtierOption.AddGold };
+		else if (num==3)
+        	return new CourtierOption[] { CourtierOption.AddAction, CourtierOption.AddGold, CourtierOption.GainGold };
+		else if (num==4)
+        	return new CourtierOption[] { CourtierOption.AddAction, CourtierOption.AddGold, CourtierOption.GainGold, CourtierOption.AddBuy };
+		return null;
+	}
+
+    public Card courtier_revealedCard(MoveContext context) {
+		return hand.get(rand.nextInt(hand.size()));
+    }
+
+	public Card replace_cardToTrash(MoveContext context) {
+        Card card = pickOutCard(context.getPlayer().getHand(), getTrashCards());
+    	if (card != null) 
+    		return card;
+        else 
+	        return context.getPlayer().getHand().get(0);
+	}
+
+    public Card replace_cardToObtain(MoveContext context, int maxCost, boolean potion,int debt) {
+        return bestCardInPlay(context, maxCost, false, potion);
+    }
+
 }

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import com.mehtank.androminion.R;
@@ -91,6 +92,7 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         case TRASH: return Strings.format(R.string.card_to_trash, getCardName(cardResponsible));
         case NAMECARD: return Strings.format(R.string.card_to_name, getCardName(cardResponsible));
         case OPPONENTDISCARD: return Strings.format(R.string.opponent_discard, opponentName, getCardName(cardResponsible));
+		case PLAY: return Strings.format(R.string.card_to_play, getCardName(cardResponsible));
         }
         return null;
     }
@@ -1869,7 +1871,7 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         if (reactionCards.size() > 0) {
             ArrayList<String> options = new ArrayList<String>();
             for (Card c : reactionCards)
-                if (lastCard == null || !Game.suppressRedundantReactions || c.getName() != lastCard.getName() || c.equals(Cards.horseTraders) || c.equals(Cards.beggar) || c.equals(Cards.caravanGuard))
+                if (lastCard == null || !Game.suppressRedundantReactions || c.getName() != lastCard.getName() || c.equals(Cards.horseTraders) || c.equals(Cards.beggar) || c.equals(Cards.caravanGuard) || c.equals(Cards.diplomat))
                    options.add(Strings.getCardName(c));
             if (options.size() > 0) {
                 String none = getString(R.string.none);
@@ -3399,4 +3401,162 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
 	public int stash_positionInDeck(MoveContext context,int deckSize) {
         return selectInt(context, "Stash: Position in Deck",deckSize, 0);
 	}
+	
+	public boolean vassal_shouldPlayAction(MoveContext context, Card card) {
+        if(context.isQuickPlay()) {
+            return super.vassal_shouldPlayAction(context,card);
+        }
+        return selectBoolean(context, Cards.vassal, getActionString(ActionType.PLAY,card,""), getString(R.string.pass));
+	}
+
+	public Card harbinger_cardToTopdeck(MoveContext context, HashSet<Card> options) {
+        LinkedHashMap<String, Card> h = new LinkedHashMap<String, Card>();
+		for (Card card : options)
+			h.put(card.getName(),card);
+		h.put("None",null);
+        String choice = selectString(context,Cards.harbinger, h.keySet().toArray(new String[0])); 
+		return h.get(choice);
+	}
+
+    public Card[] poacher_cardsToDiscard(MoveContext context, int num) {
+        if(context.isQuickPlay() && shouldAutoPlay_warehouse_cardsToDiscard(context)) {
+            return super.poacher_cardsToDiscard(context,num);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setCount(num).exactCount().setPickType(PickType.DISCARD);
+        return getFromHand(context, getActionString(ActionType.DISCARD, Cards.poacher), sco);
+    }
+
+    public TreasureCard bandit_treasureToTrash(MoveContext context, TreasureCard[] treasures) {
+        if(context.isQuickPlay() && shouldAutoPlay_thief_treasureToTrash(context, treasures)) {
+            return super.bandit_treasureToTrash(context, treasures);
+        }
+        ArrayList<String> options = new ArrayList<String>();
+        for (TreasureCard c : treasures)
+            options.add(Strings.getCardName(c));
+
+        if (options.size() > 0) {
+            String o = selectString(context, R.string.treasure_to_trash, Cards.bandit, options.toArray(new String[0]));
+            return (TreasureCard) localNameToCard(o, treasures);
+        } else {
+            return null;
+        }
+    }
+
+ 	public SentryOption sentry_chooseOption(MoveContext context, Card card) {
+        LinkedHashMap<String, SentryOption> optionMap = new LinkedHashMap<String, SentryOption>();
+        optionMap.put(getString(R.string.doctor_overpay_option_one),   SentryOption.TrashIt);
+        optionMap.put(getString(R.string.doctor_overpay_option_two),   SentryOption.DiscardIt);
+        optionMap.put(getString(R.string.doctor_overpay_option_three), SentryOption.KeepIt);
+        return optionMap.get(selectString(context, "Sentry revealed " + getCardName(card), optionMap.keySet().toArray(new String[0])));
+	}
+
+    public Card artisan_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_workshop_cardToObtain(context)) {
+            return super.artisan_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().maxCost(5).potionCost(0);
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.artisan), sco);
+	}
+
+    public Card artisan_cardToPutBackOnDeck(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_courtyard_cardToPutBackOnDeck(context)) {
+            return super.artisan_cardToPutBackOnDeck(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions();
+        return getCardFromHand(context, Strings.format(R.string.courtyard_part_top_of_deck, getCardName(Cards.artisan)), sco);
+	}
+
+    public LurkerOption lurker_chooseOption(MoveContext context){
+        LinkedHashMap<String, LurkerOption> h = new LinkedHashMap<String, LurkerOption>();
+        h.put(getString(R.string.graverobber_option_one), LurkerOption.GainFromTrash);
+        h.put(getString(R.string.graverobber_option_two), LurkerOption.TrashActionCard);
+        return h.get(selectString(context, Cards.lurker, h.keySet().toArray(new String[0])));
+	}
+
+	public Card lurker_cardToGainFromTrash(MoveContext context) {
+        LinkedHashMap<String, Card> h = new LinkedHashMap<String, Card>();
+        ArrayList<Card> options = new ArrayList<Card>(); 
+        for (Card c : game.trashPile) {
+            if (c instanceof ActionCard)
+                options.add(c);
+        }
+        if (options.isEmpty())
+            return null;
+        for (Card c : options)
+            h.put(c.getName(), c);
+        return h.get(selectString(context, Cards.lurker, h.keySet().toArray(new String[0])));
+	}
+
+	public Card lurker_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay()) {
+            return super.lurker_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().isAction();
+        return getFromTable(context, getActionString(ActionType.TRASH, Cards.lurker), sco);
+	}
+
+	public Card secretPassage_cardToPutInDeck(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_courtyard_cardToPutBackOnDeck(context)) {
+            return super.secretPassage_cardToPutInDeck(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions();
+        return getCardFromHand(context, Strings.format(R.string.courtyard_part_top_of_deck, getCardName(Cards.secretPassage)), sco);
+	}
+
+	public int secretPassage_positionInDeck(MoveContext context, int deckSize) {
+        return selectInt(context, "Secret Passage: Position in Deck",deckSize, 0);
+	}
+
+    public Card[] diplomat_cardsToDiscard(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_warehouse_cardsToDiscard(context)) {
+            return super.diplomat_cardsToDiscard(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setCount(3).exactCount().setPickType(PickType.DISCARD);
+        return getFromHand(context, getActionString(ActionType.DISCARD, Cards.diplomat), sco);
+    }
+
+    public Card[] mill_cardsToDiscard(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().setCount(2).exactCount().setPassable(getString(R.string.none)).setPickType(PickType.DISCARD);
+        return getFromHand(context, getActionString(ActionType.DISCARD, Cards.mill), sco);
+    }
+
+    public CourtierOption[] courtier_chooseOptions(MoveContext context, int num) {
+        CourtierOption[] os = new CourtierOption[num];
+        LinkedHashMap<String, CourtierOption> h = new LinkedHashMap<String, CourtierOption>();
+        h.put(getString(R.string.courtier_one), CourtierOption.AddAction);
+        h.put(getString(R.string.courtier_two), CourtierOption.AddBuy);
+        h.put(getString(R.string.courtier_three), CourtierOption.AddGold);
+        h.put(getString(R.string.courtier_four), CourtierOption.GainGold);
+		for (int i=0;i<num;i++) {
+			String o1 = selectString(context, Cards.courtier, h.keySet().toArray(new String[0]));
+			os[i] = h.get(o1);
+			h.remove(o1);
+		}
+        return os;
+	}
+
+    public Card courtier_revealedCard(MoveContext context) {
+        if(context.isQuickPlay()) {
+            return super.courtier_revealedCard(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions();
+        return getCardFromHand(context, getActionString(ActionType.REVEAL, Cards.courtier), sco);
+    }
+
+    public Card replace_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_trader_cardToTrash(context)) {
+            return super.replace_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.replace), sco);
+    }
+    
+    public Card replace_cardToObtain(MoveContext context, int maxCost, boolean potion,int debt) {
+        if(context.isQuickPlay() && shouldAutoPlay_remodel_cardToObtain(context, maxCost, potion)) {
+            return super.replace_cardToObtain(context, maxCost, potion,debt);
+        }
+        SelectCardOptions sco = new SelectCardOptions().maxCost(maxCost).potionCost(potion ? 1 : 0).debtCost(debt);
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.replace), sco);
+    }
+
 }

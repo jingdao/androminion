@@ -2297,7 +2297,7 @@ public class Game {
 							context.actions++;
                         } else if (event.responsible != null) {
                             Card r = event.responsible;
-                            if (r.equals(Cards.bagOfGold) || r.equals(Cards.develop) || r.equals(Cards.bureaucrat) || r.equals(Cards.seaHag) || r.equals(Cards.treasureMap) || r.equals(Cards.tournament) || r.equals(Cards.foolsGold) || r.equals(Cards.graverobber) || r.equals(Cards.armory) || r.equals(Cards.artificer)) {
+                            if (r.equals(Cards.bagOfGold) || r.equals(Cards.develop) || r.equals(Cards.bureaucrat) || r.equals(Cards.seaHag) || r.equals(Cards.treasureMap) || r.equals(Cards.tournament) || r.equals(Cards.foolsGold) || r.equals(Cards.graverobber) || r.equals(Cards.armory) || r.equals(Cards.artificer) || (r.equals(Cards.replace) && (event.card instanceof ActionCard || event.card instanceof TreasureCard))) {
                                 player.putOnTopOfDeck(event.card);
                             } else if (r.equals(Cards.beggar)) {
                             	if (event.card.equals(Cards.copper)) {
@@ -2307,7 +2307,7 @@ public class Game {
                             	} else if (event.card.equals(Cards.silver)) {
                             		player.discard.add(event.card);
                             	}
-                            } else if (r.equals(Cards.tradingPost) || r.equals(Cards.mine) || r.equals(Cards.explorer) || r.equals(Cards.torturer) || r.equals(Cards.transmogrify)) {
+                            } else if (r.equals(Cards.tradingPost) || r.equals(Cards.mine) || r.equals(Cards.explorer) || r.equals(Cards.torturer) || r.equals(Cards.transmogrify) || r.equals(Cards.artisan)) {
                                 player.hand.add(event.card);
                             } else if (r.equals(Cards.illGottenGains) && event.card.equals(Cards.copper)) {
                                 player.hand.add(event.card);
