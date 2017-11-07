@@ -19,6 +19,7 @@ public class Cards {
     public static ArrayList<Card> actionCardsGuilds = new ArrayList<Card>();
     public static ArrayList<Card> actionCardsAdventures = new ArrayList<Card>();
     public static ArrayList<Card> actionCardsEmpires = new ArrayList<Card>();
+    public static ArrayList<Card> actionCardsNocturne = new ArrayList<Card>();
     public static ArrayList<Card> actionCardsPromo = new ArrayList<Card>();
     public static ArrayList<Card> actionCards = new ArrayList<Card>();
     public static ArrayList<Card> prizeCards = new ArrayList<Card>();
@@ -69,6 +70,9 @@ public class Cards {
 		HumbleCastle, CrumblingCastle, SmallCastle, HauntedCastle, OpulentCastle, SprawlingCastle, GrandCastle, KingsCastle,VirtualCastle,	
 		// Base + Intrigue Update
 		Vassal, Harbinger, Merchant, Poacher, Bandit, Sentry, Artisan, Lurker, Diplomat, Mill, SecretPassage, Courtier, Patrol, Replace,
+		//Nocturne
+		DevilsWorkshop, Raider, GhostTown, Crypt, Shephard, Pooka, Cemetery, FaithfulHound, BlessedVillage, Idol, Druid, Fool, Werewolf, Skulk, CursedVillage, Leprechaun, Exorcist, Pixie, Vampire, Necromancer,
+		Imp, Pasture, CursedGold, HauntedMirror, Ghost, LuckyCoin, Wish, Goat, Bat, ZombieApprentice, ZombieMason, ZombieSpy, WillOWisp,
         // Promo Cards
         Envoy, Governor, WalledVillage, BlackMarket, Stash, Prince,
         // Promo Cards (not yet implemented)
@@ -441,6 +445,42 @@ public class Cards {
 	public static final Card patrol;
 	public static final Card replace;
 
+	//Nocturne
+	public static final Card devilsWorkshop;
+	public static final Card raider;
+	public static final Card ghostTown;
+	public static final Card crypt;
+	public static final Card shephard;
+	public static final Card pooka;
+	public static final Card cemetery;
+	public static final Card faithfulHound;
+	public static final Card blessedVillage;
+	public static final Card idol;
+	public static final Card druid;
+	public static final Card fool;
+	public static final Card werewolf;
+	public static final Card skulk;
+	public static final Card cursedVillage;
+	public static final Card leprechaun;
+	public static final Card exorcist;
+	public static final Card pixie;
+	public static final Card vampire;
+	public static final Card necromancer;
+
+	public static final Card imp;
+	public static final Card pasture;
+	public static final Card cursedGold;
+	public static final Card hauntedMirror;
+	public static final Card ghost;
+	public static final Card luckyCoin;
+	public static final Card wish;
+	public static final Card goat;
+	public static final Card bat;
+	public static final Card zombieApprentice;
+	public static final Card zombieMason;
+	public static final Card zombieSpy;
+	public static final Card willOWisp;
+
     // Promo Cards (Incomplete)
     // TODO:Implement Rest of promo cards
     public static final Card walledVillage;
@@ -734,6 +774,7 @@ public class Cards {
 		eventCard = new ActionCardImpl.Builder(Cards.Type.Event,0).build();
         inheritedEstate = new ActionVictoryCardImpl.Builder(Cards.Type.Estate, 2).vp(1).expansion("Base").build();
 
+		//Empires
 		actionCardsEmpires.add(engineer = new ActionCardImpl.Builder(Cards.Type.Engineer,0).costDebt(4).description("Gain a card costing up to 4 Coin. You may trash this. If you do, gain a card costing up to 4 Coin.").expansion("Empires").build());
 		actionCardsEmpires.add(cityQuarter = new ActionCardImpl.Builder(Cards.Type.CityQuarter,0).addActions(2).costDebt(8).description("Reveal your hand. +1 Card per Action card revealed.").expansion("Empires").build());
 		actionCardsEmpires.add(overlord = new ActionCardImpl.Builder(Cards.Type.Overlord,0).costDebt(8).description("Play this as if it were an Action card from the supply costing up to 5 Coin. This is that card until it leaves play.").expansion("Empires").build());
@@ -788,6 +829,12 @@ public class Cards {
 		actionCardsBaseGame.add(bandit = new ActionCardImpl.Builder(Cards.Type.Bandit,5).attack().build());
 		actionCardsBaseGame.add(sentry = new ActionCardImpl.Builder(Cards.Type.Sentry,5).addCards(1).addActions(1).build());
 		actionCardsBaseGame.add(artisan = new ActionCardImpl.Builder(Cards.Type.Artisan,6).build());
+		actionCardsBaseGame.remove(Cards.adventurer);
+		actionCardsBaseGame.remove(Cards.spy);
+		actionCardsBaseGame.remove(Cards.thief);
+		actionCardsBaseGame.remove(Cards.feast);
+		actionCardsBaseGame.remove(Cards.chancellor);
+		actionCardsBaseGame.remove(Cards.woodcutter);
 
 		actionCardsIntrigue.add(lurker = new ActionCardImpl.Builder(Cards.Type.Lurker,2).addActions(1).build());
 		actionCardsIntrigue.add(diplomat = new ActionCardImpl.Builder(Cards.Type.Diplomat,4).addCards(2).build());
@@ -796,6 +843,49 @@ public class Cards {
 		actionCardsIntrigue.add(courtier = new ActionCardImpl.Builder(Cards.Type.Courtier,5).build());
 		actionCardsIntrigue.add(patrol = new ActionCardImpl.Builder(Cards.Type.Patrol,5).addCards(3).build());
 		actionCardsIntrigue.add(replace = new ActionCardImpl.Builder(Cards.Type.Replace,5).build());
+		actionCardsIntrigue.remove(Cards.secretChamber);
+		actionCardsIntrigue.remove(Cards.greatHall);
+		actionCardsIntrigue.remove(Cards.coppersmith);
+		actionCardsIntrigue.remove(Cards.scout);
+		actionCardsIntrigue.remove(Cards.saboteur);
+		actionCardsIntrigue.remove(Cards.tribute);
+
+		//Nocturne Cards
+		actionCardsNocturne.add(devilsWorkshop = new ActionCardImpl.Builder(Cards.Type.DevilsWorkshop,4).expansion("Nocturne").build());
+		actionCardsNocturne.add(raider = new ActionDurationCardImpl.Builder(Cards.Type.Raider,6).addGoldNextTurn(3).attack().expansion("Nocturne").build());
+		actionCardsNocturne.add(ghostTown = new ActionDurationCardImpl.Builder(Cards.Type.GhostTown,3).addActionsNextTurn(1).addCardsNextTurn(1).expansion("Nocturne").build());
+		actionCardsNocturne.add(crypt = new ActionDurationCardImpl.Builder(Cards.Type.Crypt,5).expansion("Nocturne").build());
+		actionCardsNocturne.add(shephard = new ActionCardImpl.Builder(Cards.Type.Shephard,4).addActions(1).expansion("Nocturne").build());
+		actionCardsNocturne.add(pooka = new ActionCardImpl.Builder(Cards.Type.Pooka,5).expansion("Nocturne").build());
+		actionCardsNocturne.add(cemetery = new VictoryCardImpl.Builder(Cards.Type.Cemetery,4,2).expansion("Nocturne").build());
+		actionCardsNocturne.add(faithfulHound = new ActionCardImpl.Builder(Cards.Type.FaithfulHound,2).addCards(2).expansion("Nocturne").build());
+		actionCardsNocturne.add(blessedVillage = new ActionCardImpl.Builder(Cards.Type.BlessedVillage,4).addActions(2).addCards(1).expansion("Nocturne").build());
+		actionCardsNocturne.add(idol = new TreasureCardImpl.Builder(Cards.Type.Idol,5,2).attack().expansion("Nocturne").build());
+		actionCardsNocturne.add(druid = new ActionCardImpl.Builder(Cards.Type.Druid,2).addBuys(1).expansion("Nocturne").build());
+		actionCardsNocturne.add(fool = new ActionCardImpl.Builder(Cards.Type.Fool,3).expansion("Nocturne").build());
+		actionCardsNocturne.add(werewolf = new ActionCardImpl.Builder(Cards.Type.Werewolf,5).attack().expansion("Nocturne").build());
+		actionCardsNocturne.add(skulk = new ActionCardImpl.Builder(Cards.Type.Skulk,4).addBuys(1).attack().expansion("Nocturne").build());
+		actionCardsNocturne.add(cursedVillage = new ActionCardImpl.Builder(Cards.Type.CursedVillage,5).addActions(2).expansion("Nocturne").build());
+		actionCardsNocturne.add(leprechaun = new ActionCardImpl.Builder(Cards.Type.Leprechaun,3).expansion("Nocturne").build());
+		actionCardsNocturne.add(exorcist = new ActionCardImpl.Builder(Cards.Type.Exorcist,4).expansion("Nocturne").build());
+		actionCardsNocturne.add(pixie = new ActionCardImpl.Builder(Cards.Type.Pixie,2).addActions(1).addCards(1).expansion("Nocturne").build());
+		actionCardsNocturne.add(vampire = new ActionCardImpl.Builder(Cards.Type.Vampire,5).attack().expansion("Nocturne").build());
+		actionCardsNocturne.add(necromancer = new ActionCardImpl.Builder(Cards.Type.Necromancer,4).expansion("Nocturne").build());
+
+		nonSupplyCards.add(imp = new ActionCardImpl.Builder(Cards.Type.Imp,2).addCards(2).expansion("Nocturne").build());
+		nonSupplyCards.add(ghost = new ActionDurationCardImpl.Builder(Cards.Type.Ghost,4).expansion("Nocturne").build());
+		nonSupplyCards.add(wish = new ActionCardImpl.Builder(Cards.Type.Wish,0).addActions(1).expansion("Nocturne").build());
+		nonSupplyCards.add(bat = new ActionCardImpl.Builder(Cards.Type.Bat,2).expansion("Nocturne").build());
+		nonSupplyCards.add(zombieApprentice = new ActionCardImpl.Builder(Cards.Type.ZombieApprentice,3).expansion("Nocturne").build());
+		nonSupplyCards.add(zombieMason = new ActionCardImpl.Builder(Cards.Type.ZombieMason,3).expansion("Nocturne").build());
+		nonSupplyCards.add(zombieSpy = new ActionCardImpl.Builder(Cards.Type.ZombieSpy,3).addActions(1).addCards(1).expansion("Nocturne").build());
+		nonSupplyCards.add(willOWisp = new ActionCardImpl.Builder(Cards.Type.WillOWisp,0).addActions(1).addCards(1).expansion("Nocturne").build());
+
+		nonKingdomCards.add(hauntedMirror = new TreasureCardImpl.Builder(Cards.Type.HauntedMirror,0,1).expansion("Nocturne").build());
+		nonKingdomCards.add(goat = new TreasureCardImpl.Builder(Cards.Type.Goat,2,1).expansion("Nocturne").build());
+		nonKingdomCards.add(pasture = new TreasureVictoryCardImpl.Builder(Cards.Type.Pasture,2,1,0).expansion("Nocturne").build());
+		nonKingdomCards.add(cursedGold = new TreasureCardImpl.Builder(Cards.Type.CursedGold,4,3).expansion("Nocturne").build());
+		nonKingdomCards.add(luckyCoin = new TreasureCardImpl.Builder(Cards.Type.LuckyCoin,4,1).expansion("Nocturne").build());
 
         // Non-Supply Cards
         nonSupplyCards.add(madman    = new ActionCardImpl.Builder(Cards.Type.Madman, 0).addActions(2).description("Return this to the Madman pile. If you do, +1 Card per card in your hand. (This is not in the supply)").expansion("DarkAges").build());
@@ -860,7 +950,7 @@ public class Cards {
     }
     
     public static boolean isReaction(Card c) {
-        if ((c.equals(Cards.moat)) || (c.equals(Cards.secretChamber)) || (c.equals(Cards.watchTower)) || (c.equals(Cards.horseTraders)) || (c.equals(Cards.foolsGold)) || (c.equals(Cards.trader)) || (c.equals(Cards.tunnel)) || (c.equals(Cards.beggar)) || (c.equals(Cards.hovel)) || (c.equals(Cards.marketSquare)) || c.equals(Cards.caravanGuard) || c.equals(Cards.diplomat)) {
+        if ((c.equals(Cards.moat)) || (c.equals(Cards.secretChamber)) || (c.equals(Cards.watchTower)) || (c.equals(Cards.horseTraders)) || (c.equals(Cards.foolsGold)) || (c.equals(Cards.trader)) || (c.equals(Cards.tunnel)) || (c.equals(Cards.beggar)) || (c.equals(Cards.hovel)) || (c.equals(Cards.marketSquare)) || c.equals(Cards.caravanGuard) || c.equals(Cards.diplomat) || c.equals(Cards.faithfulHound)) {
         	return true;
         }
         return false;

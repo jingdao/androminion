@@ -154,6 +154,9 @@ public enum GameType {
 	//Empires + Adventures
 	AreaControl("Area Control (Emp, Adv)"), NoMoneyNoProblems("No Money No Problems (Emp, Adv)"),
 
+	//Nocturne
+	RandomNocturne("Random Nocturne"),
+
     // All Cards
     Random("Random"), 
 
