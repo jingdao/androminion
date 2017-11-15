@@ -192,6 +192,8 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 				setBackgroundResource(R.drawable.baneborder);
 		else if (c.isObelisk)
 			setBackgroundResource(R.drawable.obeliskborder);
+		else if (c.isNight)
+			setBackgroundResource(R.drawable.nightborder);
 		else if (c.isShelter)
 		{
 			setBackgroundResource(R.drawable.shelterborder);
@@ -263,6 +265,8 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 			return R.style.CardView_Reaction;
 		} else if (c.isDuration) {
 			return R.style.CardView_Duration;
+		} else if (c.isNight) {
+			return R.style.CardView_Night;
 		} else if (c.isRuins) {
 			return R.style.CardView_Ruins;
 		} else if (c.isVictory && c.isAttack) { 
@@ -504,12 +508,21 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 				cardType += " - " + context.getString(R.string.type_gathering);
 			}
             
+			if (c.isNight)
+			{
+				cardType += " - " + context.getString(R.string.type_night);
+			}
+            
             if (c.isShelter)
             {
                 cardType += " - " + context.getString(R.string.type_shelter);
             }
         }
-        else if (c.isTreasure)
+		else if (c.isNight) {
+            cardType += context.getString(R.string.type_night);
+            if (c.isAttack) cardType += " - " + context.getString(R.string.type_attack);
+            if (c.isDuration) cardType += " - " + context.getString(R.string.type_duration);
+		} else if (c.isTreasure)
         {
             cardType += context.getString(R.string.type_treasure);
             

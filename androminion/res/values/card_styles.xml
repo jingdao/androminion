@@ -44,6 +44,10 @@
 		<item name="cardBackgroundColor">@color/cardVictory</item>
 	</style>
 
+	<style name="CardView.Night">
+		<item name="cardBackgroundColor">@color/cardNight</item>
+	</style>
+
     <style name="CardView.Attack">
         <item name="cardTextColor">@color/cardAttack</item>
         <item name="cardCountColor">@color/cardAttack</item>

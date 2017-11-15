@@ -77,6 +77,10 @@
 	<string name="select_up_to_x_nontreasures_from_hand">Pick up to %1$s non-treasure cards from your hand to %2$s</string>
 	<string name="select_exactly_x_nontreasures_from_hand">Pick exactly %1$s non-treasure cards from your hand to %2$s</string>
 	
+	<string name="select_one_night_from_hand">Pick a Night card from your hand to %1$s</string>
+	<string name="select_up_to_x_night_from_hand">Pick up to %1$s Night cards from your hand to %2$s</string>
+	<string name="select_exactly_x_night_from_hand">Pick exactly %1$s Night cards from your hand to %2$s</string>
+	
 	<string name="reaction_query">Select reaction card to reveal</string>
 	<string name="bane_option_one">Reveal Bane card (%1$s)</string>
 	

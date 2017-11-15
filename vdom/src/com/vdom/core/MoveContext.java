@@ -38,6 +38,7 @@ public class MoveContext {
     public int victoryCardsBoughtThisTurn = 0;
     public int totalCardsBoughtThisTurn = 0;
     public boolean buyPhase = false;
+    public boolean nightPhase = false;
     public ArrayList<Card> cantBuy = new ArrayList<Card>();
     public int beggarSilverIsOnTop = 0;
 	public boolean hasDoubledCoin = false;

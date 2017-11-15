@@ -42,6 +42,7 @@ public class MyCard implements Serializable {
 	public boolean isTraveller = false;
 	public boolean isCastle = false;
 	public boolean isGathering = false;
+	public boolean isNight = false;
 	public boolean isKnight   = false;
 	public boolean isOverpay  = false;
 	public boolean isObelisk = false;
@@ -202,6 +203,7 @@ public class MyCard implements Serializable {
 		m.isTraveller = this.isTraveller;
 		m.isCastle = this.isCastle;
 		m.isGathering = this.isGathering;
+		m.isNight = this.isNight;
 		m.isKnight = this.isKnight;
 		m.isOverpay = this.isOverpay;
 		m.pile = this.pile;

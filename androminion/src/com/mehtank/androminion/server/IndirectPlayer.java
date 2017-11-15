@@ -158,7 +158,7 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
       
       if (sco.allowedCards.size() == 0)
           return null;
-      else if (sco.allowedCards.size() == 1 || (sco.isAction && Collections.frequency(sco.allowedCards, sco.allowedCards.get(0)) == sco.allowedCards.size()))
+      else if (sco.allowedCards.size() == 1 || sco.isNight || (sco.isAction && Collections.frequency(sco.allowedCards, sco.allowedCards.get(0)) == sco.allowedCards.size()))
           sco.defaultCardSelected = sco.allowedCards.get(0);
 
       String str = "";
@@ -190,6 +190,13 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
               str = Strings.format(R.string.select_exactly_x_nontreasures_from_hand, "" + sco.count, header);
           else
               str = Strings.format(R.string.select_up_to_x_nontreasures_from_hand, "" + sco.count, header);
+      } else if (sco.isNight) {
+          if(sco.count == 1)
+              str = Strings.format(R.string.select_one_night_from_hand, header);
+          else if(sco.exactCount)
+              str = Strings.format(R.string.select_exactly_x_night_from_hand, "" + sco.count, header);
+          else
+              str = Strings.format(R.string.select_up_to_x_night_from_hand, "" + sco.count, header);
       } else {
           if(sco.count == 1)
               str = Strings.format(R.string.select_one_card_from_hand, header);
@@ -426,15 +433,54 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return cards;
     }
     
+    private Card[] doNight(MoveContext context, boolean singleCard) {
+        int actionCount = 0;
+        Card actionCard = null;
+        for (Card card : (context.player.isPossessed()) ? context.player.getHand() : getHand()) {
+            if (card.isNight()) {
+                actionCount++;
+                actionCard = card;
+            }
+        }
+        if (actionCount == 0)
+            return null;
+
+        SelectCardOptions sco = new SelectCardOptions().isNight().setPassable(getString(R.string.none));
+        if (singleCard) 
+        	sco.setCount(1).setPickType(PickType.PLAY);
+        else 
+        	sco.setCount(actionCount).ordered().setPickType(PickType.PLAY_IN_ORDER);
+        
+        Card[] cards = getFromHand(context, getString(R.string.part_play), sco);
+        	
+        if (cards == null)
+            return null;
+        // Hack that tells us that "Play the only one card" was selected
+        else if (actionCount == 1 && cards.length == 0) {
+            cards = new Card[1];
+            cards[0] = actionCard;
+        	}
+        return cards;
+    }
+    
     @Override
     public Card doAction(MoveContext context) {
     	Card[] cards = doAction(context, true);
     	return (cards == null ? null : cards[0]); 
     }
 
+    public Card doNight(MoveContext context) {
+    	Card[] cards = doNight(context, true);
+    	return (cards == null ? null : cards[0]); 
+    }
+
     @Override
     public Card[] actionCardsToPlayInOrder(MoveContext context) {
         return doAction(context, false);
+    }
+
+    public Card[] nightCardsToPlayInOrder(MoveContext context) {
+        return doNight(context, false);
     }
 
     @Override
@@ -3557,6 +3603,30 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         }
         SelectCardOptions sco = new SelectCardOptions().maxCost(maxCost).potionCost(potion ? 1 : 0).debtCost(debt);
         return getFromTable(context, getActionString(ActionType.GAIN, Cards.replace), sco);
+    }
+
+    public Card devilsWorkshop_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_workshop_cardToObtain(context)) {
+            return super.devilsWorkshop_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().maxCost(4).potionCost(0);
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.devilsWorkshop), sco);
+    }
+
+    public Card vampire_cardToObtain(MoveContext context, Card[] cardList) {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cardList)
+            options.add(Strings.getCardName(c));
+        String o = selectString(context,getActionString(ActionType.GAIN, Cards.vampire), options.toArray(new String[0]));
+        return (Card) localNameToCard(o, cardList);
+    }
+
+    public Card[] bat_cardsToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_chapel_cardsToTrash(context)) {
+            return super.trade_cardsToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setCount(2).setPassable(getString(R.string.none)).setPickType(PickType.TRASH);
+        return getFromHand(context, getActionString(ActionType.TRASH, Cards.bat), sco);
     }
 
 }

@@ -851,10 +851,10 @@ public class Cards {
 		actionCardsIntrigue.remove(Cards.tribute);
 
 		//Nocturne Cards
-		actionCardsNocturne.add(devilsWorkshop = new ActionCardImpl.Builder(Cards.Type.DevilsWorkshop,4).expansion("Nocturne").build());
-		actionCardsNocturne.add(raider = new ActionDurationCardImpl.Builder(Cards.Type.Raider,6).addGoldNextTurn(3).attack().expansion("Nocturne").build());
-		actionCardsNocturne.add(ghostTown = new ActionDurationCardImpl.Builder(Cards.Type.GhostTown,3).addActionsNextTurn(1).addCardsNextTurn(1).expansion("Nocturne").build());
-		actionCardsNocturne.add(crypt = new ActionDurationCardImpl.Builder(Cards.Type.Crypt,5).expansion("Nocturne").build());
+		actionCardsNocturne.add(devilsWorkshop = new NightCardImpl.Builder(Cards.Type.DevilsWorkshop,4).expansion("Nocturne").build());
+		actionCardsNocturne.add(raider = new NightDurationCardImpl.Builder(Cards.Type.Raider,6).addGoldNextTurn(3).attack().expansion("Nocturne").build());
+		actionCardsNocturne.add(ghostTown = new NightDurationCardImpl.Builder(Cards.Type.GhostTown,3).addActionsNextTurn(1).addCardsNextTurn(1).expansion("Nocturne").build());
+		actionCardsNocturne.add(crypt = new NightDurationCardImpl.Builder(Cards.Type.Crypt,5).expansion("Nocturne").build());
 		actionCardsNocturne.add(shephard = new ActionCardImpl.Builder(Cards.Type.Shephard,4).addActions(1).expansion("Nocturne").build());
 		actionCardsNocturne.add(pooka = new ActionCardImpl.Builder(Cards.Type.Pooka,5).expansion("Nocturne").build());
 		actionCardsNocturne.add(cemetery = new VictoryCardImpl.Builder(Cards.Type.Cemetery,4,2).expansion("Nocturne").build());
@@ -863,19 +863,19 @@ public class Cards {
 		actionCardsNocturne.add(idol = new TreasureCardImpl.Builder(Cards.Type.Idol,5,2).attack().expansion("Nocturne").build());
 		actionCardsNocturne.add(druid = new ActionCardImpl.Builder(Cards.Type.Druid,2).addBuys(1).expansion("Nocturne").build());
 		actionCardsNocturne.add(fool = new ActionCardImpl.Builder(Cards.Type.Fool,3).expansion("Nocturne").build());
-		actionCardsNocturne.add(werewolf = new ActionCardImpl.Builder(Cards.Type.Werewolf,5).attack().expansion("Nocturne").build());
+		actionCardsNocturne.add(werewolf = new ActionCardImpl.Builder(Cards.Type.Werewolf,5).attack().isNight().expansion("Nocturne").build());
 		actionCardsNocturne.add(skulk = new ActionCardImpl.Builder(Cards.Type.Skulk,4).addBuys(1).attack().expansion("Nocturne").build());
 		actionCardsNocturne.add(cursedVillage = new ActionCardImpl.Builder(Cards.Type.CursedVillage,5).addActions(2).expansion("Nocturne").build());
 		actionCardsNocturne.add(leprechaun = new ActionCardImpl.Builder(Cards.Type.Leprechaun,3).expansion("Nocturne").build());
-		actionCardsNocturne.add(exorcist = new ActionCardImpl.Builder(Cards.Type.Exorcist,4).expansion("Nocturne").build());
+		actionCardsNocturne.add(exorcist = new NightCardImpl.Builder(Cards.Type.Exorcist,4).expansion("Nocturne").build());
 		actionCardsNocturne.add(pixie = new ActionCardImpl.Builder(Cards.Type.Pixie,2).addActions(1).addCards(1).expansion("Nocturne").build());
-		actionCardsNocturne.add(vampire = new ActionCardImpl.Builder(Cards.Type.Vampire,5).attack().expansion("Nocturne").build());
+		actionCardsNocturne.add(vampire = new NightCardImpl.Builder(Cards.Type.Vampire,5).attack().expansion("Nocturne").build());
 		actionCardsNocturne.add(necromancer = new ActionCardImpl.Builder(Cards.Type.Necromancer,4).expansion("Nocturne").build());
 
 		nonSupplyCards.add(imp = new ActionCardImpl.Builder(Cards.Type.Imp,2).addCards(2).expansion("Nocturne").build());
-		nonSupplyCards.add(ghost = new ActionDurationCardImpl.Builder(Cards.Type.Ghost,4).expansion("Nocturne").build());
+		nonSupplyCards.add(ghost = new NightDurationCardImpl.Builder(Cards.Type.Ghost,4).expansion("Nocturne").build());
 		nonSupplyCards.add(wish = new ActionCardImpl.Builder(Cards.Type.Wish,0).addActions(1).expansion("Nocturne").build());
-		nonSupplyCards.add(bat = new ActionCardImpl.Builder(Cards.Type.Bat,2).expansion("Nocturne").build());
+		nonSupplyCards.add(bat = new NightCardImpl.Builder(Cards.Type.Bat,2).expansion("Nocturne").build());
 		nonSupplyCards.add(zombieApprentice = new ActionCardImpl.Builder(Cards.Type.ZombieApprentice,3).expansion("Nocturne").build());
 		nonSupplyCards.add(zombieMason = new ActionCardImpl.Builder(Cards.Type.ZombieMason,3).expansion("Nocturne").build());
 		nonSupplyCards.add(zombieSpy = new ActionCardImpl.Builder(Cards.Type.ZombieSpy,3).addActions(1).addCards(1).expansion("Nocturne").build());

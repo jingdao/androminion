@@ -272,6 +272,8 @@ public class Game {
 						break;
 				}
 
+				nightPhase(player, context);
+
                 if (context.totalCardsBoughtThisTurn == 0) {
                     GameEvent event = new GameEvent(GameEvent.Type.NoBuy, context);
                     broadcastEvent(event);
@@ -730,6 +732,40 @@ public class Game {
 		if (player.debtTokens > 0 && context.getCoinAvailableForBuy() > 0)
 			player.resolveDebt(context);
         context.buyPhase = false;
+    }
+
+    protected void nightPhase(Player player, MoveContext context) {
+		context.nightPhase = true;
+        Card selected = null;
+        do {
+            selected = null;
+            ArrayList<Card> nightCards = null;
+            if (!actionChains || player.controlPlayer.isAi()) {
+                selected = player.controlPlayer.doNight(context);
+                if (selected != null) {
+                    nightCards = new ArrayList<Card>();
+                    nightCards.add(selected);
+                }
+            } else {
+                Card[] cs = player.controlPlayer.nightCardsToPlayInOrder(context);
+                if (cs != null && cs.length != 0) {
+                    nightCards = new ArrayList<Card>();
+                    for (int i = 0; i < cs.length; i++) {
+                        nightCards.add(cs[i]);
+                    }
+                }
+            }
+
+            while (nightCards != null && !nightCards.isEmpty()) {
+                selected = nightCards.remove(0);
+				GameEvent event = new GameEvent(GameEvent.Type.Status, (MoveContext) context);
+				broadcastEvent(event);
+				if (selected instanceof NightCardImpl)
+					((NightCardImpl) selected).play(this, (MoveContext) context, true);
+				else
+					((ActionCardImpl) selected).play(this, (MoveContext) context, true);
+            }
+        } while (selected != null);
     }
 
     protected void playerBeginTurn(Player player, MoveContext context) {
@@ -2107,6 +2143,14 @@ public class Game {
 		if (piles.containsKey(Cards.baker.getName()))
 		{
 		    bakerInPlay = true;
+		}
+
+		if (piles.containsKey(Cards.devilsWorkshop.getName())) {
+			addPile(Cards.imp, 13, false);
+		}
+
+		if (piles.containsKey(Cards.vampire.getName())) {
+			addPile(Cards.bat, 10, false);
 		}
 
 		if (eventsList.contains(Event.tax)) {

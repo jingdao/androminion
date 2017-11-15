@@ -25,6 +25,7 @@ public class CardImpl implements Card {
 	boolean isTraveller = false;
 	boolean isCastle = false;
 	boolean isGathering = false;
+	boolean isNight = false;
     protected boolean attack = false;
 
     static int maxNameLen;	// across all cards
@@ -64,6 +65,7 @@ public class CardImpl implements Card {
 		isTraveller = builder.isTraveller;
 		isCastle = builder.isCastle;
 		isGathering = builder.isGathering;
+		isNight = builder.isNight;
 		attack = builder.isAttack;
     }
 
@@ -89,6 +91,7 @@ public class CardImpl implements Card {
 		protected boolean isAttack = false;
 		protected boolean isCastle = false;
 		protected boolean isGathering = false;
+		protected boolean isNight = false;
 
 
         public Builder(Cards.Type type, int cost) {
@@ -172,6 +175,12 @@ public class CardImpl implements Card {
 			return this;
 		}
 
+		public Builder isNight()
+		{
+			isNight = true;
+			return this;
+		}
+
         public Builder attack() {
             isAttack = true;
             return this;
@@ -232,6 +241,7 @@ public class CardImpl implements Card {
 		c.isTraveller = isTraveller;
 		c.isCastle = isCastle;
 		c.isGathering = isGathering;
+		c.isNight = isNight;
         c.vp = vp;
     }
 
@@ -359,6 +369,10 @@ public class CardImpl implements Card {
     
 	public boolean isGathering() {
 		return isGathering;
+	}
+    
+	public boolean isNight() {
+		return isNight;
 	}
     
     public boolean isAttack() {

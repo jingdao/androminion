@@ -46,6 +46,8 @@ public interface Card {
 
 	public boolean isGathering();
 
+	public boolean isNight();
+
 	public boolean isAttack();
     
     public Integer getId();

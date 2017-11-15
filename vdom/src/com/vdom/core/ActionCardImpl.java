@@ -943,6 +943,9 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		case Replace:
 			replace(game,context,currentPlayer);
 			break;
+		case Werewolf:
+			werewolf(game,context,currentPlayer);
+			break;
         default:
             break;
         }
@@ -6942,6 +6945,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		if (card.isTraveller()) numTypes++;
 		if (card.isCastle()) numTypes++;
 		if (card.isGathering()) numTypes++;
+		if (card.isNight()) numTypes++;
 		if (card.isShelter()) numTypes++;
         Player.CourtierOption[] options = currentPlayer.controlPlayer.courtier_chooseOptions(context,numTypes);
 		for (Player.CourtierOption option : options) {
@@ -6999,4 +7003,12 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         }
 	}
 
+    private void werewolf(Game game, MoveContext context, Player currentPlayer) {
+		if (context.nightPhase) {
+		} else {
+			game.drawToHand(currentPlayer, this.controlCard);
+			game.drawToHand(currentPlayer, this.controlCard);
+			game.drawToHand(currentPlayer, this.controlCard);
+		}
+	}
 }

@@ -19,5 +19,6 @@
     <color name="cardRuins">#806F49</color>
 	<color name="cardReserve">#D4B368</color>
 	<color name="cardEvent">#909080</color>
+	<color name="cardNight">#707070</color>
 
 </resources>

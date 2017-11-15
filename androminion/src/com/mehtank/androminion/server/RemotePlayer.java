@@ -175,6 +175,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 		card.isTraveller = c.isTraveller();
 		card.isCastle = c.isCastle();
 		card.isGathering = c.isGathering();
+		card.isNight = c.isNight();
     	if (c.equals(Cards.virtualRuins))
     		card.isRuins = true;
     	else
@@ -203,7 +204,9 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 			c.equals(Cards.disciple) ||
 			c.equals(Cards.hero) ||
 			c.equals(Cards.teacher) ||
-			c.equals(Cards.champion))
+			c.equals(Cards.champion) ||
+			c.equals(Cards.imp) ||
+			c.equals(Cards.bat))
         {
             card.pile = MyCard.NON_SUPPLY_PILE;
         }
@@ -255,10 +258,10 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     	if (c instanceof ActionCard) {
     		ActionCard ac = (ActionCard) c;
     		card.isAction = true;
-    		if (c instanceof DurationCard) {
-    			card.isDuration = true;
-    		} 
     	}
+		if (c instanceof DurationCard) {
+			card.isDuration = true;
+		} 
 		if (c.isAttack() || c.equals(Cards.virtualKnight)) 
 			card.isAttack = true;
         if (Cards.isReaction(c)) 

@@ -1248,7 +1248,11 @@ public abstract class Player {
 
     public abstract Card doAction(MoveContext context);
 
+    public abstract Card doNight(MoveContext context);
+
     public abstract Card[] actionCardsToPlayInOrder(MoveContext context);
+
+    public abstract Card[] nightCardsToPlayInOrder(MoveContext context);
 
     public abstract Object doBuy(MoveContext context);
 
@@ -1759,6 +1763,13 @@ public abstract class Player {
     public abstract CourtierOption[] courtier_chooseOptions(MoveContext context, int num);
 	public abstract Card replace_cardToTrash(MoveContext context);
     public abstract Card replace_cardToObtain(MoveContext context, int maxCost, boolean potion,int debt);
+
+	// ////////////////////////////////////////////
+    // Card interactions - Nocturnes Expansion
+    // ////////////////////////////////////////////
+	public abstract Card devilsWorkshop_cardToObtain(MoveContext context);
+    public abstract Card vampire_cardToObtain(MoveContext context, Card[] cardList);
+	public abstract Card[] bat_cardsToTrash(MoveContext context);
 
 	// ////////////////////////////////////////////
     // Card interactions - Promotional Cards

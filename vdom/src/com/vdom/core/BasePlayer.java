@@ -77,6 +77,18 @@ public abstract class BasePlayer extends Player implements GameEventListener {
         return null;
     }
 
+    public Card[] nightCardsToPlayInOrder(MoveContext context) {
+        return null;
+    }
+
+    public Card doNight(MoveContext context) {
+		for (Card card : hand) {
+			if (card.isNight())
+				return card;
+		}
+		return null;
+    }
+
     @Override
     public abstract Card doAction(MoveContext context);
     
@@ -3369,5 +3381,17 @@ public abstract class BasePlayer extends Player implements GameEventListener {
     public Card replace_cardToObtain(MoveContext context, int maxCost, boolean potion,int debt) {
         return bestCardInPlay(context, maxCost, false, potion);
     }
+
+	public Card devilsWorkshop_cardToObtain(MoveContext context) {
+        return bestCardInPlay(context, 4);
+	}
+
+    public Card vampire_cardToObtain(MoveContext context, Card[] cardList) {
+		return cardList[rand.nextInt(cardList.length)]; 
+	}
+
+	public Card[] bat_cardsToTrash(MoveContext context) {
+		return pickOutCards(context.getPlayer().getHand(), 2, getTrashCards());
+	}
 
 }

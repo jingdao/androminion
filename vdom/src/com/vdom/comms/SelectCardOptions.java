@@ -76,6 +76,7 @@ public class SelectCardOptions implements Serializable {
 	public boolean isNonVictory = false;
 	public boolean isAttack = false;
 	public boolean isNonShelter = false;
+	public boolean isNight = false;
 	public String passString = null;
 	public String header = null;
 	public ArrayList<Integer> allowedCards = new ArrayList<Integer>();
@@ -112,6 +113,7 @@ public class SelectCardOptions implements Serializable {
 	public SelectCardOptions isVictory() {isVictory = true; return this;}
 	public SelectCardOptions isNonVictory() {isNonVictory = true; return this;}
 	public SelectCardOptions isAttack() {isAttack = true; return this;}
+    public SelectCardOptions isNight() {isNight = true; return this;}
 
 	public SelectCardOptions allowedCards(int[] is) {
 		for (int i : is)
@@ -156,6 +158,7 @@ public class SelectCardOptions implements Serializable {
 		if (isAttack && !c.isAttack) return false;
 		if (isNonShelter && c.isShelter) return false;
 		if (isReaction && !c.isReaction) return false;
+		if (isNight && !c.isNight) return false;
 		if (fromPrizes && !c.isPrize) return false; 
 		if (fromTable && !fromPrizes && c.isPrize) return false; 
 		//if (fromPrizes && !c.isPrize && !fromTable) return false; 
@@ -191,6 +194,7 @@ public class SelectCardOptions implements Serializable {
 	    if (c.equals(Cards.grandMarket) && copperCountInPlay > 0) return false;
 		if (isNonShelter && c.isShelter()) return false;
 		if (isAction && ! (c instanceof ActionCard)) return false;
+		if (isNight && !c.isNight()) return false;
 		if (isAttack && ! c.isAttack()) return false;
 		if (isBuyPhase && !Cards.isSupplyCard(c)) return false; 
 

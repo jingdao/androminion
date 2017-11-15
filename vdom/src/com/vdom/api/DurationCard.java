@@ -1,6 +1,6 @@
 package com.vdom.api;
 
-public interface DurationCard extends ActionCard {
+public interface DurationCard extends Card{
 
     public int getAddActionsNextTurn();
 
