@@ -828,7 +828,7 @@ public class Game {
 		ArrayList<Card> permanentCards = new ArrayList<Card>();
         while (!player.nextTurnCards.isEmpty()) {
         	Card card = player.nextTurnCards.remove(0);
-			if (card.getType() == Cards.Type.Hireling || card.getType() == Cards.Type.Champion || card.getType() == Cards.Type.Archive) {
+			if (card.getType() == Cards.Type.Hireling || card.getType() == Cards.Type.Champion || card.getType() == Cards.Type.Archive || card.getType() == Cards.Type.Crypt) {
 				permanentCards.add(card);
 				continue;
 			}
@@ -870,6 +870,24 @@ public class Game {
 			if (list.size()==0) {
 				player.archive.remove(i);
 				int index = player.nextTurnCards.indexOf(Cards.archive);
+				if (index >= 0)
+					player.playedCards.add(player.nextTurnCards.remove(index));
+			} else
+				i++;
+		}
+		i=0;
+		while (i < player.crypt.size()) {
+			ArrayList<Card> list = player.crypt.get(i);
+			Card toDraw;
+			if (list.size() == 1)
+				toDraw = list.get(0);
+			else
+				toDraw  = player.controlPlayer.crypt_cardToDraw(context,list.toArray(new Card[0]));
+			player.hand.add(toDraw);
+			list.remove(toDraw);
+			if (list.size()==0) {
+				player.crypt.remove(i);
+				int index = player.nextTurnCards.indexOf(Cards.crypt);
 				if (index >= 0)
 					player.playedCards.add(player.nextTurnCards.remove(index));
 			} else

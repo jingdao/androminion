@@ -158,7 +158,7 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
       
       if (sco.allowedCards.size() == 0)
           return null;
-      else if (sco.allowedCards.size() == 1 || sco.isNight || (sco.isAction && Collections.frequency(sco.allowedCards, sco.allowedCards.get(0)) == sco.allowedCards.size()))
+      else if (sco.allowedCards.size() == 1  || ((sco.isAction || sco.isNight) && Collections.frequency(sco.allowedCards, sco.allowedCards.get(0)) == sco.allowedCards.size()))
           sco.defaultCardSelected = sco.allowedCards.get(0);
 
       String str = "";
@@ -3629,4 +3629,40 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return getFromHand(context, getActionString(ActionType.TRASH, Cards.bat), sco);
     }
 
+	public Card raider_discard_chooseOption(MoveContext context, Card[] cardList) {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cardList) {
+            options.add(Strings.getCardName(c));
+        }
+		String o = selectString(context, getActionString(ActionType.DISCARD, Cards.raider, context.attackedPlayer.getPlayerName()), options.toArray(new String[0]));
+		return (Card) localNameToCard(o, cardList);
+	}
+
+	public Card[] crypt_cardsToSetAside(MoveContext context, Card[] cardList) {
+		ArrayList<Card> choices = new ArrayList<Card>(Arrays.asList(cardList));
+		Collections.sort(choices, new CardCostComparator());
+        ArrayList<Card> cardsToSetAside = new ArrayList<Card>();
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : choices)
+            options.add(Strings.getCardName(c));
+        String none = getString(R.string.none);
+        options.add(none);
+        do {
+            String o = selectString(context, Cards.crypt, options.toArray(new String[0]));
+			if (o.equals(none))
+				break;
+            cardsToSetAside.add(localNameToCard(o, cardList));
+            options.remove(o);
+        } while (true);
+        return cardsToSetAside.toArray(new Card[0]);
+	}
+
+    public Card crypt_cardToDraw(MoveContext context, Card[] cardList) {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cardList)
+            options.add(Strings.getCardName(c));
+        String o = selectString(context, R.string.raze_query, Cards.crypt, options.toArray(new String[0]));
+        return (Card) localNameToCard(o, cardList);
+    }
+    
 }

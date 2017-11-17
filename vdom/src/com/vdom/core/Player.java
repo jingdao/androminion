@@ -70,6 +70,7 @@ public abstract class Player {
 	protected CardList save;
 	protected CardList encampments;
 	public ArrayList<ArrayList<Card>> archive;
+	public ArrayList<ArrayList<Card>> crypt;
 	public ArrayList<Event> boughtEvents = new ArrayList<Event>();
     public Game game;
     public Player controlPlayer = this;
@@ -241,6 +242,7 @@ public abstract class Player {
 		save = new CardList(this,"Save");
 		encampments = new CardList(this,"encampments");
 		archive = new ArrayList<ArrayList<Card>>();
+		crypt = new ArrayList<ArrayList<Card>>();
     }
 
     private List<PutBackOption> getPutBackOptions(MoveContext context) {
@@ -567,6 +569,10 @@ public abstract class Player {
 			allCards.add(card);
 		}
 		for (ArrayList<Card> list : archive) {
+			for (Card card : list)
+				allCards.add(card);
+		}
+		for (ArrayList<Card> list : crypt) {
 			for (Card card : list)
 				allCards.add(card);
 		}
@@ -1770,6 +1776,9 @@ public abstract class Player {
 	public abstract Card devilsWorkshop_cardToObtain(MoveContext context);
     public abstract Card vampire_cardToObtain(MoveContext context, Card[] cardList);
 	public abstract Card[] bat_cardsToTrash(MoveContext context);
+	public abstract Card raider_discard_chooseOption(MoveContext context, Card[] cardList);
+	public abstract Card[] crypt_cardsToSetAside(MoveContext context, Card[] cardList);
+	public abstract Card crypt_cardToDraw(MoveContext context, Card[] cardList);
 
 	// ////////////////////////////////////////////
     // Card interactions - Promotional Cards

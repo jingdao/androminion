@@ -3394,4 +3394,16 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 		return pickOutCards(context.getPlayer().getHand(), 2, getTrashCards());
 	}
 
+	public Card raider_discard_chooseOption(MoveContext context, Card[] cardList) {
+		return cardList[0];
+	}
+
+	public Card[] crypt_cardsToSetAside(MoveContext context, Card[] cardList) {
+		return cardList;
+	}
+
+	public Card crypt_cardToDraw(MoveContext context, Card[] cardList) {
+		return cardList[0];
+	}
+
 }

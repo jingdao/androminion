@@ -136,6 +136,46 @@ public class NightCardImpl extends CardImpl {
 					currentPlayer.gainNewCard(Cards.vampire, this.controlCard, context);
 				}
 			}
+		} else if (this.equals(Cards.raider)) {
+			for (Player player : game.getPlayersInTurnOrder()) {
+				if (player != currentPlayer && !Util.isDefendedFromAttack(game, player, this.controlCard)) {
+					player.attacked(this.controlCard, context);
+					MoveContext playerContext = new MoveContext(game, player);
+					ArrayList<Card> options = new ArrayList<Card>();
+					for (Card card : player.hand) {
+						if (currentPlayer.playedCards.contains(card)) {
+							options.add(card);
+						}
+					}
+					if (options.size()==0) {
+						for (int i = 0; i < player.hand.size(); i++) {
+							Card card = player.hand.get(i);
+							player.reveal(card, this.controlCard, playerContext);
+						}
+					} else {
+						Card toDiscard;
+						if (options.size()==1)
+							toDiscard = options.get(0);
+						else
+							toDiscard = player.controlPlayer.raider_discard_chooseOption(context, options.toArray(new Card[0]));
+						player.hand.remove(toDiscard);
+						player.discard(toDiscard, this.controlCard, playerContext);
+					}
+				}
+			}
+		} else if (this.equals(Cards.crypt)) {
+			ArrayList<Card> options = new ArrayList<Card>();
+			for (Card card : currentPlayer.playedCards) {
+				if (card instanceof TreasureCard) {
+					options.add(card);
+				}
+			}
+			Card[] cardsToSetAside = currentPlayer.controlPlayer.crypt_cardsToSetAside(context, options.toArray(new Card[0]));
+			for (Card card : cardsToSetAside) {
+				currentPlayer.playedCards.remove(card);
+			}
+			ArrayList<Card> cardsList = new ArrayList<Card>(Arrays.asList(cardsToSetAside));
+			currentPlayer.crypt.add(cardsList);
 		}
     }
 }
