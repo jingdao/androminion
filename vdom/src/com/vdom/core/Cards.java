@@ -72,7 +72,8 @@ public class Cards {
 		Vassal, Harbinger, Merchant, Poacher, Bandit, Sentry, Artisan, Lurker, Diplomat, Mill, SecretPassage, Courtier, Patrol, Replace,
 		//Nocturne
 		DevilsWorkshop, Raider, GhostTown, Crypt, Shephard, Pooka, Cemetery, FaithfulHound, BlessedVillage, Idol, Druid, Fool, Werewolf, Skulk, CursedVillage, Leprechaun, Exorcist, Pixie, Vampire, Necromancer,
-		Imp, Pasture, CursedGold, HauntedMirror, Ghost, LuckyCoin, Wish, Goat, Bat, ZombieApprentice, ZombieMason, ZombieSpy, WillOWisp,
+		Imp, Pasture, CursedGold, HauntedMirror, Ghost, LuckyCoin, Wish, Goat, Bat, ZombieApprentice, ZombieMason, ZombieSpy, WillOWisp, MagicLamp, Pouch, SecretCave, Tracker,
+		Guardian, Monastery, Changeling, NightWatchman, Bard, Conclave, Cobbler, DenOfSin, SacredGrove, Tormentor, TragicHero,
         // Promo Cards
         Envoy, Governor, WalledVillage, BlackMarket, Stash, Prince,
         // Promo Cards (not yet implemented)
@@ -466,6 +467,19 @@ public class Cards {
 	public static final Card pixie;
 	public static final Card vampire;
 	public static final Card necromancer;
+	public static final Card secretCave;
+	public static final Card tracker;
+	public static final Card guardian;
+	public static final Card monastery;
+	public static final Card changeling;
+	public static final Card nightWatchman;
+	public static final Card bard;
+	public static final Card conclave;
+	public static final Card cobbler;
+	public static final Card denOfSin;
+	public static final Card sacredGrove;
+	public static final Card tormentor;
+	public static final Card tragicHero;
 
 	public static final Card imp;
 	public static final Card pasture;
@@ -480,6 +494,8 @@ public class Cards {
 	public static final Card zombieMason;
 	public static final Card zombieSpy;
 	public static final Card willOWisp;
+	public static final Card magicLamp;
+	public static final Card pouch;
 
     // Promo Cards (Incomplete)
     // TODO:Implement Rest of promo cards
@@ -859,33 +875,48 @@ public class Cards {
 		actionCardsNocturne.add(pooka = new ActionCardImpl.Builder(Cards.Type.Pooka,5).expansion("Nocturne").build());
 		actionCardsNocturne.add(cemetery = new VictoryCardImpl.Builder(Cards.Type.Cemetery,4,2).expansion("Nocturne").build());
 		actionCardsNocturne.add(faithfulHound = new ActionCardImpl.Builder(Cards.Type.FaithfulHound,2).addCards(2).expansion("Nocturne").build());
-		actionCardsNocturne.add(blessedVillage = new ActionCardImpl.Builder(Cards.Type.BlessedVillage,4).addActions(2).addCards(1).expansion("Nocturne").build());
-		actionCardsNocturne.add(idol = new TreasureCardImpl.Builder(Cards.Type.Idol,5,2).attack().expansion("Nocturne").build());
-		actionCardsNocturne.add(druid = new ActionCardImpl.Builder(Cards.Type.Druid,2).addBuys(1).expansion("Nocturne").build());
-		actionCardsNocturne.add(fool = new ActionCardImpl.Builder(Cards.Type.Fool,3).expansion("Nocturne").build());
-		actionCardsNocturne.add(werewolf = new ActionCardImpl.Builder(Cards.Type.Werewolf,5).attack().isNight().expansion("Nocturne").build());
-		actionCardsNocturne.add(skulk = new ActionCardImpl.Builder(Cards.Type.Skulk,4).addBuys(1).attack().expansion("Nocturne").build());
-		actionCardsNocturne.add(cursedVillage = new ActionCardImpl.Builder(Cards.Type.CursedVillage,5).addActions(2).expansion("Nocturne").build());
-		actionCardsNocturne.add(leprechaun = new ActionCardImpl.Builder(Cards.Type.Leprechaun,3).expansion("Nocturne").build());
+		actionCardsNocturne.add(blessedVillage = new ActionCardImpl.Builder(Cards.Type.BlessedVillage,4).addActions(2).addCards(1).isFate().expansion("Nocturne").build());
+		actionCardsNocturne.add(idol = new TreasureCardImpl.Builder(Cards.Type.Idol,5,2).attack().isFate().expansion("Nocturne").build());
+		actionCardsNocturne.add(druid = new ActionCardImpl.Builder(Cards.Type.Druid,2).addBuys(1).isFate().expansion("Nocturne").build());
+		actionCardsNocturne.add(fool = new ActionCardImpl.Builder(Cards.Type.Fool,3).isFate().expansion("Nocturne").build());
+		actionCardsNocturne.add(werewolf = new ActionCardImpl.Builder(Cards.Type.Werewolf,5).attack().isDoom().isNight().expansion("Nocturne").build());
+		actionCardsNocturne.add(skulk = new ActionCardImpl.Builder(Cards.Type.Skulk,4).addBuys(1).attack().isDoom().expansion("Nocturne").build());
+		actionCardsNocturne.add(cursedVillage = new ActionCardImpl.Builder(Cards.Type.CursedVillage,5).addActions(2).isDoom().expansion("Nocturne").build());
+		actionCardsNocturne.add(leprechaun = new ActionCardImpl.Builder(Cards.Type.Leprechaun,3).isDoom().expansion("Nocturne").build());
 		actionCardsNocturne.add(exorcist = new NightCardImpl.Builder(Cards.Type.Exorcist,4).expansion("Nocturne").build());
-		actionCardsNocturne.add(pixie = new ActionCardImpl.Builder(Cards.Type.Pixie,2).addActions(1).addCards(1).expansion("Nocturne").build());
-		actionCardsNocturne.add(vampire = new NightCardImpl.Builder(Cards.Type.Vampire,5).attack().expansion("Nocturne").build());
+		actionCardsNocturne.add(pixie = new ActionCardImpl.Builder(Cards.Type.Pixie,2).addActions(1).addCards(1).isFate().expansion("Nocturne").build());
+		actionCardsNocturne.add(vampire = new NightCardImpl.Builder(Cards.Type.Vampire,5).attack().isDoom().expansion("Nocturne").build());
 		actionCardsNocturne.add(necromancer = new ActionCardImpl.Builder(Cards.Type.Necromancer,4).expansion("Nocturne").build());
+		actionCardsNocturne.add(secretCave = new ActionDurationCardImpl.Builder(Cards.Type.SecretCave,3).addGoldNextTurn(3).addActions(1).addCards(1).expansion("Nocturne").build());
+		actionCardsNocturne.add(tracker = new ActionCardImpl.Builder(Cards.Type.Tracker,2).addBuys(1).isFate().expansion("Nocturne").build());
+		actionCardsNocturne.add(guardian = new NightDurationCardImpl.Builder(Cards.Type.Guardian,2).addGoldNextTurn(1).expansion("Nocturne").build());
+		actionCardsNocturne.add(monastery = new NightCardImpl.Builder(Cards.Type.Monastery,2).expansion("Nocturne").build());
+		actionCardsNocturne.add(changeling = new NightCardImpl.Builder(Cards.Type.Changeling,3).expansion("Nocturne").build());
+		actionCardsNocturne.add(nightWatchman = new NightCardImpl.Builder(Cards.Type.NightWatchman,3).expansion("Nocturne").build());
+		actionCardsNocturne.add(bard = new ActionCardImpl.Builder(Cards.Type.Bard,4).addGold(2).isFate().expansion("Nocturne").build());
+		actionCardsNocturne.add(conclave = new ActionCardImpl.Builder(Cards.Type.Conclave,4).addGold(2).expansion("Nocturne").build());
+		actionCardsNocturne.add(cobbler = new NightDurationCardImpl.Builder(Cards.Type.Cobbler,5).expansion("Nocturne").build());
+		actionCardsNocturne.add(denOfSin = new NightDurationCardImpl.Builder(Cards.Type.DenOfSin,5).addCardsNextTurn(2).expansion("Nocturne").build());
+		actionCardsNocturne.add(sacredGrove = new ActionCardImpl.Builder(Cards.Type.SacredGrove,5).addBuys(1).addGold(3).isFate().expansion("Nocturne").build());
+		actionCardsNocturne.add(tormentor = new ActionCardImpl.Builder(Cards.Type.Tormentor,5).addGold(2).isDoom().expansion("Nocturne").build());
+		actionCardsNocturne.add(tragicHero = new ActionCardImpl.Builder(Cards.Type.TragicHero,5).addBuys(1).addCards(3).expansion("Nocturne").build());
 
-		nonSupplyCards.add(imp = new ActionCardImpl.Builder(Cards.Type.Imp,2).addCards(2).expansion("Nocturne").build());
-		nonSupplyCards.add(ghost = new NightDurationCardImpl.Builder(Cards.Type.Ghost,4).expansion("Nocturne").build());
+		nonSupplyCards.add(imp = new ActionCardImpl.Builder(Cards.Type.Imp,2).addCards(2).isSpirit().expansion("Nocturne").build());
+		nonSupplyCards.add(ghost = new NightDurationCardImpl.Builder(Cards.Type.Ghost,4).isSpirit().expansion("Nocturne").build());
 		nonSupplyCards.add(wish = new ActionCardImpl.Builder(Cards.Type.Wish,0).addActions(1).expansion("Nocturne").build());
 		nonSupplyCards.add(bat = new NightCardImpl.Builder(Cards.Type.Bat,2).expansion("Nocturne").build());
 		nonSupplyCards.add(zombieApprentice = new ActionCardImpl.Builder(Cards.Type.ZombieApprentice,3).expansion("Nocturne").build());
 		nonSupplyCards.add(zombieMason = new ActionCardImpl.Builder(Cards.Type.ZombieMason,3).expansion("Nocturne").build());
 		nonSupplyCards.add(zombieSpy = new ActionCardImpl.Builder(Cards.Type.ZombieSpy,3).addActions(1).addCards(1).expansion("Nocturne").build());
-		nonSupplyCards.add(willOWisp = new ActionCardImpl.Builder(Cards.Type.WillOWisp,0).addActions(1).addCards(1).expansion("Nocturne").build());
+		nonSupplyCards.add(willOWisp = new ActionCardImpl.Builder(Cards.Type.WillOWisp,0).addActions(1).addCards(1).isSpirit().expansion("Nocturne").build());
 
-		nonKingdomCards.add(hauntedMirror = new TreasureCardImpl.Builder(Cards.Type.HauntedMirror,0,1).expansion("Nocturne").build());
-		nonKingdomCards.add(goat = new TreasureCardImpl.Builder(Cards.Type.Goat,2,1).expansion("Nocturne").build());
-		nonKingdomCards.add(pasture = new TreasureVictoryCardImpl.Builder(Cards.Type.Pasture,2,1,0).expansion("Nocturne").build());
-		nonKingdomCards.add(cursedGold = new TreasureCardImpl.Builder(Cards.Type.CursedGold,4,3).expansion("Nocturne").build());
-		nonKingdomCards.add(luckyCoin = new TreasureCardImpl.Builder(Cards.Type.LuckyCoin,4,1).expansion("Nocturne").build());
+		nonKingdomCards.add(hauntedMirror = new TreasureCardImpl.Builder(Cards.Type.HauntedMirror,0,1).isHeirloom().expansion("Nocturne").build());
+		nonKingdomCards.add(magicLamp = new TreasureCardImpl.Builder(Cards.Type.MagicLamp,0,1).isHeirloom().expansion("Nocturne").build());
+		nonKingdomCards.add(goat = new TreasureCardImpl.Builder(Cards.Type.Goat,2,1).isHeirloom().expansion("Nocturne").build());
+		nonKingdomCards.add(pouch = new TreasureCardImpl.Builder(Cards.Type.Pouch,2,1).isHeirloom().expansion("Nocturne").build());
+		nonKingdomCards.add(pasture = new TreasureVictoryCardImpl.Builder(Cards.Type.Pasture,2,1,0).isHeirloom().expansion("Nocturne").build());
+		nonKingdomCards.add(cursedGold = new TreasureCardImpl.Builder(Cards.Type.CursedGold,4,3).isHeirloom().expansion("Nocturne").build());
+		nonKingdomCards.add(luckyCoin = new TreasureCardImpl.Builder(Cards.Type.LuckyCoin,4,1).isHeirloom().expansion("Nocturne").build());
 
         // Non-Supply Cards
         nonSupplyCards.add(madman    = new ActionCardImpl.Builder(Cards.Type.Madman, 0).addActions(2).description("Return this to the Madman pile. If you do, +1 Card per card in your hand. (This is not in the supply)").expansion("DarkAges").build());

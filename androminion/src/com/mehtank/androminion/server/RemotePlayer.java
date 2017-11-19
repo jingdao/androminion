@@ -33,6 +33,7 @@ import com.vdom.core.Player;
 import com.vdom.core.AbstractCardPile;
 import com.vdom.core.Util;
 import com.vdom.core.Landmarks;
+import com.vdom.core.NightCardImpl;
 
 /**
  * Class that you can use to play remotely.
@@ -154,6 +155,18 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
             if (ac.getAddVictoryTokens() > 1) ret = Strings.format(R.string.card_victory_tokens_multiple, "" + ac.getAddVictoryTokens()) + "\n" + ret;
             else if (ac.getAddVictoryTokens() > 0) ret = Strings.format(R.string.card_victory_token_single, "" + ac.getAddVictoryTokens()) + "\n" + ret;
     	}
+		if (c instanceof NightCardImpl) {
+			if (c instanceof DurationCard) {
+    			DurationCard dc = (DurationCard) c;
+        		if (dc.getAddGoldNextTurn() > 0) ret = Strings.format(R.string.coin_next_turn, "" + dc.getAddGoldNextTurn()) + "\n" + ret;
+        		if (dc.getAddBuysNextTurn() > 1) ret = Strings.format(R.string.buys_next_turn_multiple, "" + dc.getAddBuysNextTurn()) + "\n" + ret;
+        		else if (dc.getAddBuysNextTurn() > 0) ret = Strings.format(R.string.buy_next_turn_single, "" + dc.getAddBuysNextTurn()) + "\n" + ret;
+        		if (dc.getAddActionsNextTurn() > 1) ret =  Strings.format(R.string.actions_next_turn_multiple, "" + dc.getAddActionsNextTurn()) + "\n" + ret;
+        		else if (dc.getAddActionsNextTurn() > 0) ret =  Strings.format(R.string.action_next_turn_single, "" + dc.getAddActionsNextTurn()) + "\n" + ret;
+        		if (dc.getAddCardsNextTurn() > 1) ret = Strings.format(R.string.cards_next_turn_multiple, "" + dc.getAddCardsNextTurn()) + "\n" + ret;
+        		else if (dc.getAddCardsNextTurn() > 0) ret = Strings.format(R.string.card_next_turn_single, "" + dc.getAddCardsNextTurn()) + "\n" + ret;
+			}
+		}
 		return ret;
 	}
 
@@ -176,6 +189,10 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 		card.isCastle = c.isCastle();
 		card.isGathering = c.isGathering();
 		card.isNight = c.isNight();
+		card.isHeirloom = c.isHeirloom();
+		card.isFate = c.isFate();
+		card.isDoom = c.isDoom();
+		card.isSpirit = c.isSpirit();
     	if (c.equals(Cards.virtualRuins))
     		card.isRuins = true;
     	else
@@ -206,6 +223,9 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 			c.equals(Cards.teacher) ||
 			c.equals(Cards.champion) ||
 			c.equals(Cards.imp) ||
+			c.equals(Cards.willOWisp) ||
+			c.equals(Cards.ghost) ||
+			c.equals(Cards.wish) ||
 			c.equals(Cards.bat))
         {
             card.pile = MyCard.NON_SUPPLY_PILE;
@@ -217,6 +237,8 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
         {
             card.pile = MyCard.SHELTER_PILES;
         }
+
+		if (c.isHeirloom()) card.pile = MyCard.HEIRLOOM_PILES;
 
     	if ((c.equals(Cards.copper)) ||
     	   (c.equals(Cards.silver)) ||
@@ -410,7 +432,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 		// display victory cards from sets
 
 		for(Object card : totals.keySet()) {
-			if(!Cards.nonKingdomCards.contains(card)) {
+			if(!Cards.nonKingdomCards.contains(card) || card.equals(Cards.pasture)) {
 				sb.append(this.getCardText(counts, totals, card));
 			}
 		}

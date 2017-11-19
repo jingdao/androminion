@@ -138,12 +138,12 @@ public class NightCardImpl extends CardImpl {
 			}
 		} else if (this.equals(Cards.raider)) {
 			for (Player player : game.getPlayersInTurnOrder()) {
-				if (player != currentPlayer && !Util.isDefendedFromAttack(game, player, this.controlCard)) {
+				if (player != currentPlayer && player.getHand().size()>=5 && !Util.isDefendedFromAttack(game, player, this.controlCard)) {
 					player.attacked(this.controlCard, context);
 					MoveContext playerContext = new MoveContext(game, player);
 					ArrayList<Card> options = new ArrayList<Card>();
 					for (Card card : player.hand) {
-						if (currentPlayer.playedCards.contains(card)) {
+						if (currentPlayer.playedCards.contains(card) || currentPlayer.nextTurnCards.contains(card)) {
 							options.add(card);
 						}
 					}
@@ -176,6 +176,55 @@ public class NightCardImpl extends CardImpl {
 			}
 			ArrayList<Card> cardsList = new ArrayList<Card>(Arrays.asList(cardsToSetAside));
 			currentPlayer.crypt.add(cardsList);
+		} else if (this.equals(Cards.monastery)) {
+			int numObtained = game.cardsObtainedLastTurn[game.playersTurn].size();
+			for (int i=0;i<numObtained;i++) {
+				Player.MonasteryOption option = currentPlayer.controlPlayer.monastery_chooseOption(context);
+				Card toTrash;
+				switch (option) {
+					case TrashFromHand:
+						toTrash = currentPlayer.controlPlayer.monastery_cardToTrash(context);
+						if (toTrash != null) {
+							currentPlayer.hand.remove(toTrash);
+							currentPlayer.trash(toTrash, this.controlCard, context);
+						}
+						break;
+					case TrashCopper:
+						if (currentPlayer.playedCards.contains(Cards.copper)) {
+							toTrash = currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(Cards.copper));
+							currentPlayer.trash(toTrash, this.controlCard, context);
+						}
+						break;
+					case None:
+						return;
+				}
+			}
+		} else if (this.equals(Cards.nightWatchman)) {
+			ArrayList<Card> topOfTheDeck = new ArrayList<Card>();
+			for (int i = 0; i < 5; i++) {
+				Card card = context.game.draw(currentPlayer);
+				if (card != null) {
+					topOfTheDeck.add(card);
+				}
+			}
+			if (topOfTheDeck.size() > 0) {
+				Card[] cardsToDiscard = currentPlayer.controlPlayer.nightWatchman_cardsFromTopOfDeckToDiscard(context, topOfTheDeck.toArray(new Card[topOfTheDeck.size()]));
+				for(Card toDiscard : cardsToDiscard) {
+					topOfTheDeck.remove(toDiscard);
+					currentPlayer.discard(toDiscard, Cards.nightWatchman, null);
+				}
+				if (topOfTheDeck.size() > 0) {
+					Card[] order;
+					if(topOfTheDeck.size() == 1) {
+						order = topOfTheDeck.toArray(new Card[topOfTheDeck.size()]);
+					} else {
+						order = currentPlayer.controlPlayer.nightWatchman_cardOrder(context, topOfTheDeck.toArray(new Card[topOfTheDeck.size()]));
+					}
+					for (int i = order.length - 1; i >= 0; i--) {
+						currentPlayer.putOnTopOfDeck(order[i]);
+					}
+				}
+			}
 		}
     }
 }

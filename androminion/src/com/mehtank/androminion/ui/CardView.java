@@ -513,6 +513,21 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 				cardType += " - " + context.getString(R.string.type_night);
 			}
             
+			if (c.isFate)
+			{
+				cardType += " - " + context.getString(R.string.type_fate);
+			}
+            
+			if (c.isDoom)
+			{
+				cardType += " - " + context.getString(R.string.type_doom);
+			}
+            
+			if (c.isSpirit)
+			{
+				cardType += " - " + context.getString(R.string.type_spirit);
+			}
+            
             if (c.isShelter)
             {
                 cardType += " - " + context.getString(R.string.type_shelter);
@@ -540,6 +555,11 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
             {
                 cardType += " - " + context.getString(R.string.type_prize);
             }
+
+			if (c.isHeirloom)
+			{
+				cardType += " - " + context.getString(R.string.type_heirloom);
+			}
         }
         else if (c.isVictory)
         {

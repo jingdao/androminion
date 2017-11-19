@@ -3406,4 +3406,61 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 		return cardList[0];
 	}
 
+    public Card goat_cardToTrash(MoveContext context) {
+        return pickOutCard(context.getPlayer().getHand(), getTrashCards());
+    }
+
+    public Card hauntedMirror_cardToDiscard(MoveContext context) {
+        for (Card card : context.getPlayer().getHand()) {
+			if (card instanceof ActionCard)
+				return card;
+        }
+		return null;
+    }
+
+    public MonasteryOption monastery_chooseOption(MoveContext context) {
+		if (context.getPlayer().playedCards.contains(Cards.copper))
+			return MonasteryOption.TrashCopper;
+		else
+			return MonasteryOption.TrashFromHand;
+	}
+
+    public Card monastery_cardToTrash(MoveContext context) {
+        return pickOutCard(context.getPlayer().getHand(), getTrashCards());
+    }
+
+    public Card[] nightWatchman_cardsFromTopOfDeckToDiscard(MoveContext context, Card[] cards) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+        for(Card card : cards) {
+            if(isTrashCard(card) || isOnlyVictory(card)) {
+                cardsToDiscard.add(card);
+            }
+        }
+        return cardsToDiscard.toArray(new Card[0]);
+    }
+
+    public Card[] nightWatchman_cardOrder(MoveContext context, Card[] cards) {
+        return cards;
+    }
+    
+	public Card[] secretCave_cardsToDiscard(MoveContext context) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+        for (Card card : context.getPlayer().getHand()) {
+            if (shouldDiscard(card))
+                cardsToDiscard.add(card);
+            if (cardsToDiscard.size() == 3)
+                break;
+        }
+        if (cardsToDiscard.size() < 3) {
+            ArrayList<Card> handCopy = new ArrayList<Card>();
+            for (Card card : context.getPlayer().getHand())
+                handCopy.add(card);
+            for (Card card : cardsToDiscard)
+                handCopy.remove(card);
+            while (cardsToDiscard.size() < 3)
+                cardsToDiscard.add(handCopy.remove(0));
+        }
+        return cardsToDiscard.toArray(new Card[0]);
+	}
+
 }

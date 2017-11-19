@@ -7,6 +7,7 @@ import com.vdom.api.Card;
 import com.vdom.api.GameEvent;
 import com.vdom.api.TreasureCard;
 import com.vdom.api.VictoryCard;
+import com.vdom.api.ActionCard;
 
 public class TreasureCardImpl extends CardImpl implements TreasureCard {
     int value;
@@ -152,6 +153,16 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 			charm(game,context,player);
 		} else if (equals(Cards.silver)) {
 			merchant(game,context,player);
+		} else if (equals(Cards.goat)) {
+			goat(game,context,player);
+		} else if (equals(Cards.pouch)) {
+			pouch(game,context,player);
+		} else if (equals(Cards.cursedGold)) {
+			cursedGold(game,context,player);
+		} else if (equals(Cards.luckyCoin)) {
+			luckyCoin(game,context,player);
+		} else if (equals(Cards.magicLamp)) {
+			magicLamp(game,context,player);
 		}
 
         return reevaluateTreasures;
@@ -301,9 +312,11 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
     
 	public void isTrashed(MoveContext context) {
 		switch (this.controlCard.behaveAsCard().getType()) {
-		case Rocks:
-			context.player.controlPlayer.gainNewCard(Cards.silver,this,context);
-			break;
+			case Rocks:
+				context.player.controlPlayer.gainNewCard(Cards.silver,this,context);
+				break;
+			case HauntedMirror:
+				hauntedMirror(context.game, context, context.player);
 		}
 	}
 
@@ -372,5 +385,71 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 			context.gold += context.countCardsInPlay(Cards.merchant);
 
 	}
+
+	public void goat(Game game, MoveContext context, Player currentPlayer) {
+        Card toTrash = currentPlayer.controlPlayer.goat_cardToTrash(context);
+        if (toTrash != null) {
+			currentPlayer.hand.remove(toTrash);
+			currentPlayer.trash(toTrash, this.controlCard, context);
+        }
+	}
+
+	public void pouch(Game game, MoveContext context, Player currentPlayer) {
+        context.buys++;
+	}
+
+	public void cursedGold(Game game, MoveContext context, Player currentPlayer) {
+        currentPlayer.gainNewCard(Cards.curse, this.controlCard, context);
+	}
+
+	public void luckyCoin(Game game, MoveContext context, Player currentPlayer) {
+        currentPlayer.gainNewCard(Cards.silver, this.controlCard, context);
+	}
+
+	public void hauntedMirror(Game game, MoveContext context, Player currentPlayer) {
+		boolean hasAction = false;
+		for (Card card : currentPlayer.hand) {
+			if (card instanceof ActionCard) {
+				hasAction = true;
+				break;
+			}
+		}
+		if (!hasAction)
+			return;
+		Card cardToDiscard = currentPlayer.controlPlayer.hauntedMirror_cardToDiscard(context);
+		if (cardToDiscard != null) {
+            currentPlayer.hand.remove(cardToDiscard);
+            currentPlayer.reveal(cardToDiscard, this.controlCard, context);
+            currentPlayer.discard(cardToDiscard, this.controlCard, null);
+			currentPlayer.gainNewCard(Cards.ghost, this.controlCard, context);
+		}
+	}
+
+	public void magicLamp(Game game, MoveContext context, Player currentPlayer) {
+        HashSet<String> cardNames = new HashSet<String>();
+		for (Card card : currentPlayer.playedCards) {
+			if (cardNames.contains(card.getName()))
+				cardNames.remove(card.getName());
+			else
+				cardNames.add(card.getName());
+		}
+		for (Card card : currentPlayer.nextTurnCards) {
+			if (cardNames.contains(card.getName()))
+				cardNames.remove(card.getName());
+			else
+				cardNames.add(card.getName());
+		}
+		if (cardNames.size() >= 6) {
+			if (!this.controlCard.movedToNextTurnPile) {
+				this.controlCard.movedToNextTurnPile = true;
+				currentPlayer.trash(this.controlCard, null, context);
+				currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(this.controlCard));
+				currentPlayer.gainNewCard(Cards.wish, this.controlCard, context);
+				currentPlayer.gainNewCard(Cards.wish, this.controlCard, context);
+				currentPlayer.gainNewCard(Cards.wish, this.controlCard, context);
+			}
+		}
+	}
+
 
 }

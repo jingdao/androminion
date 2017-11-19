@@ -69,6 +69,7 @@ public abstract class Player {
 	protected CardList gear;
 	protected CardList save;
 	protected CardList encampments;
+	protected CardList faithfulHound;
 	public ArrayList<ArrayList<Card>> archive;
 	public ArrayList<ArrayList<Card>> crypt;
 	public ArrayList<Event> boughtEvents = new ArrayList<Event>();
@@ -240,7 +241,8 @@ public abstract class Player {
 		tavern = new CardList(this,"Tavern");
 		gear = new CardList(this,"Gear");
 		save = new CardList(this,"Save");
-		encampments = new CardList(this,"encampments");
+		encampments = new CardList(this,"Encampments");
+		faithfulHound = new CardList(this,"Faithful Hound");
 		archive = new ArrayList<ArrayList<Card>>();
 		crypt = new ArrayList<ArrayList<Card>>();
     }
@@ -757,6 +759,8 @@ public abstract class Player {
 			totals.put(Cards.humbleCastle, counts.get(Cards.humbleCastle) * counts.get(CASTLES));
 		if (counts.containsKey(Cards.kingsCastle))
 			totals.put(Cards.kingsCastle, counts.get(Cards.kingsCastle) * counts.get(CASTLES) * 2);
+		if(counts.containsKey(Cards.pasture))
+			totals.put(Cards.pasture, counts.get(Cards.pasture) * counts.get(Cards.estate));
 
 		for (Landmarks landmark : game.getLandmarksInGame()) {
 			totals.put(landmark, landmark.getVPs(game,this,getAllCards()));
@@ -908,6 +912,8 @@ public abstract class Player {
 				sourcePile.addCard(card);
 				controlPlayer.gainNewCard(target,card,context);
 			} else discard.add(card);
+		} else if (commandedDiscard && card.equals(Cards.faithfulHound)) {
+			faithfulHound.add(card);
 		} else
 	    {
 	    	discard.add(card);
@@ -1213,6 +1219,12 @@ public abstract class Player {
         AddGold,
         GainGold
     }
+
+	public static enum MonasteryOption {
+		TrashFromHand,
+		TrashCopper,
+		None
+	}
 
     // Context is passed for the player to add a GameEventListener
     // if they want or to see what cards the game has, etc.
@@ -1779,6 +1791,14 @@ public abstract class Player {
 	public abstract Card raider_discard_chooseOption(MoveContext context, Card[] cardList);
 	public abstract Card[] crypt_cardsToSetAside(MoveContext context, Card[] cardList);
 	public abstract Card crypt_cardToDraw(MoveContext context, Card[] cardList);
+    public abstract Card goat_cardToTrash(MoveContext context);
+    public abstract Card hauntedMirror_cardToDiscard(MoveContext context);
+    public abstract MonasteryOption monastery_chooseOption(MoveContext context);
+    public abstract Card monastery_cardToTrash(MoveContext context);
+    public abstract Card[] nightWatchman_cardsFromTopOfDeckToDiscard(MoveContext context, Card[] cards);
+    public abstract Card[] nightWatchman_cardOrder(MoveContext context, Card[] cards);
+	public abstract Card[] secretCave_cardsToDiscard(MoveContext context);
+
 
 	// ////////////////////////////////////////////
     // Card interactions - Promotional Cards

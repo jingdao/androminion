@@ -26,6 +26,10 @@ public class CardImpl implements Card {
 	boolean isCastle = false;
 	boolean isGathering = false;
 	boolean isNight = false;
+	boolean isHeirloom = false;
+	boolean isFate = false;
+	boolean isDoom = false;
+	boolean isSpirit = false;
     protected boolean attack = false;
 
     static int maxNameLen;	// across all cards
@@ -66,6 +70,10 @@ public class CardImpl implements Card {
 		isCastle = builder.isCastle;
 		isGathering = builder.isGathering;
 		isNight = builder.isNight;
+		isHeirloom = builder.isHeirloom;
+		isFate = builder.isFate;
+		isDoom = builder.isDoom;
+		isSpirit = builder.isSpirit;
 		attack = builder.isAttack;
     }
 
@@ -92,6 +100,10 @@ public class CardImpl implements Card {
 		protected boolean isCastle = false;
 		protected boolean isGathering = false;
 		protected boolean isNight = false;
+		protected boolean isHeirloom = false;
+		protected boolean isFate = false;
+		protected boolean isDoom = false;
+		protected boolean isSpirit = false;
 
 
         public Builder(Cards.Type type, int cost) {
@@ -181,6 +193,30 @@ public class CardImpl implements Card {
 			return this;
 		}
 
+		public Builder isHeirloom()
+		{
+			isHeirloom = true;
+			return this;
+		}
+
+		public Builder isFate()
+		{
+			isFate = true;
+			return this;
+		}
+
+		public Builder isDoom()
+		{
+			isDoom = true;
+			return this;
+		}
+
+		public Builder isSpirit()
+		{
+			isSpirit = true;
+			return this;
+		}
+
         public Builder attack() {
             isAttack = true;
             return this;
@@ -242,6 +278,10 @@ public class CardImpl implements Card {
 		c.isCastle = isCastle;
 		c.isGathering = isGathering;
 		c.isNight = isNight;
+		c.isHeirloom = isHeirloom;
+		c.isFate = isFate;
+		c.isDoom = isDoom;
+		c.isSpirit = isSpirit;
         c.vp = vp;
     }
 
@@ -373,6 +413,22 @@ public class CardImpl implements Card {
     
 	public boolean isNight() {
 		return isNight;
+	}
+    
+	public boolean isHeirloom() {
+		return isHeirloom;
+	}
+    
+	public boolean isFate() {
+		return isFate;
+	}
+    
+	public boolean isDoom() {
+		return isDoom;
+	}
+    
+	public boolean isSpirit() {
+		return isSpirit;
 	}
     
     public boolean isAttack() {

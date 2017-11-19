@@ -3665,4 +3665,81 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return (Card) localNameToCard(o, cardList);
     }
     
+    public Card goat_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_masquerade_cardToTrash(context)) {
+            return super.goat_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPassable(getString(R.string.none)).setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.goat), sco);
+    }
+
+    public Card hauntedMirror_cardToDiscard(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_warehouse_cardsToDiscard(context)) {
+            return super.hauntedMirror_cardToDiscard(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().isAction().setPassable(getString(R.string.none)).setPickType(PickType.DISCARD);
+        return getCardFromHand(context, getActionString(ActionType.DISCARD, Cards.hauntedMirror), sco);
+    }
+
+    public MonasteryOption monastery_chooseOption(MoveContext context){
+        LinkedHashMap<String, MonasteryOption> h = new LinkedHashMap<String, MonasteryOption>();
+        h.put(getString(R.string.monastery_option_one), MonasteryOption.TrashFromHand);
+        h.put(getString(R.string.monastery_option_two), MonasteryOption.TrashCopper);
+        h.put(getString(R.string.none), MonasteryOption.None);
+        return h.get(selectString(context, Cards.monastery, h.keySet().toArray(new String[0])));
+	}
+
+    public Card monastery_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_masquerade_cardToTrash(context)) {
+            return super.monastery_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPassable(getString(R.string.none)).setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.monastery), sco);
+    }
+
+    public Card[] nightWatchman_cardsFromTopOfDeckToDiscard(MoveContext context, Card[] cards) {
+        if(context.isQuickPlay() && shouldAutoPlay_cartographer_cardsFromTopOfDeckToDiscard(context, cards)) {
+            return super.nightWatchman_cardsFromTopOfDeckToDiscard(context, cards);
+        }
+
+        if(cards == null || cards.length == 0) {
+            return cards;
+        }
+
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cards)
+            options.add(Strings.getCardName(c));
+        String none = getString(R.string.none);
+        options.add(none);
+
+        do {
+            String o = selectString(context, R.string.Cartographer_query, Cards.nightWatchman, options.toArray(new String[0]));
+            if (o.equals(none)) {
+                break;
+            }
+            cardsToDiscard.add(localNameToCard(o, cards));
+            options.remove(o);
+        } while (options.size() > 1);
+
+        return cardsToDiscard.toArray(new Card[0]);
+    }
+
+    public Card[] nightWatchman_cardOrder(MoveContext context, Card[] cards) {
+        if(context.isQuickPlay() && shouldAutoPlay_cartographer_cardOrder(context, cards)) {
+            return super.nightWatchman_cardOrder(context, cards);
+        }
+        ArrayList<Card> orderedCards = new ArrayList<Card>();
+        int[] order = orderCards(context, cardArrToIntArr(cards));
+        for (int i : order)
+            orderedCards.add(cards[i]);
+        return orderedCards.toArray(new Card[0]);
+    }
+
+    public Card[] secretCave_cardsToDiscard(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().setCount(3).exactCount().setPassable(getString(R.string.none)).setPickType(PickType.DISCARD);
+        return getFromHand(context, getActionString(ActionType.DISCARD, Cards.secretCave), sco);
+    }
+
 }

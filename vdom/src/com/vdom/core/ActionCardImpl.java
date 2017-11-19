@@ -248,8 +248,10 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 						enchantressEffect = true;
 
 		if (context.actionsPlayedSoFar==1 && enchantressEffect) {
-			if (this instanceof DurationCard)
+			if (this instanceof DurationCard) {
 				currentPlayer.nextTurnCards.remove(this);
+				currentPlayer.playedCards.add(this);
+			}
 			context.actions ++;
 			game.drawToHand(currentPlayer,this);
 		} else {
@@ -945,6 +947,9 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			break;
 		case Werewolf:
 			werewolf(game,context,currentPlayer);
+			break;
+		case SecretCave:
+			secretCave(game,context,currentPlayer);
 			break;
         default:
             break;
@@ -6946,6 +6951,10 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		if (card.isCastle()) numTypes++;
 		if (card.isGathering()) numTypes++;
 		if (card.isNight()) numTypes++;
+		if (card.isHeirloom()) numTypes++;
+		if (card.isFate()) numTypes++;
+		if (card.isDoom()) numTypes++;
+		if (card.isSpirit()) numTypes++;
 		if (card.isShelter()) numTypes++;
         Player.CourtierOption[] options = currentPlayer.controlPlayer.courtier_chooseOptions(context,numTypes);
 		for (Player.CourtierOption option : options) {
@@ -7011,4 +7020,23 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			game.drawToHand(currentPlayer, this.controlCard);
 		}
 	}
+
+    private void secretCave(Game game, MoveContext context, Player currentPlayer) {
+		Card[] toDiscard = currentPlayer.controlPlayer.secretCave_cardsToDiscard(context);
+		if (toDiscard != null) {
+			for (Card card : toDiscard) {
+				currentPlayer.hand.remove(card);
+				currentPlayer.reveal(card, this.controlCard, context);
+				currentPlayer.discard(card, this.controlCard, context);
+			}
+			if (toDiscard.length != 3) {
+				currentPlayer.nextTurnCards.remove(this);
+				currentPlayer.playedCards.add(this);
+			}
+		} else {
+			currentPlayer.nextTurnCards.remove(this);
+			currentPlayer.playedCards.add(this);
+		}
+	}
+
 }

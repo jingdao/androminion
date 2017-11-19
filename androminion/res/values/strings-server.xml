@@ -360,4 +360,6 @@
   <string name="courtier_three">+(3) Coin</string>
   <string name="courtier_four">Gain a Gold</string>
 
+  <string name="monastery_option_one">Trash a card from your hand</string>
+  <string name="monastery_option_two">Trash a Copper from play</string>
 </resources>

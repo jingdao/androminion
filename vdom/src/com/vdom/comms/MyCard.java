@@ -43,6 +43,10 @@ public class MyCard implements Serializable {
 	public boolean isCastle = false;
 	public boolean isGathering = false;
 	public boolean isNight = false;
+	public boolean isHeirloom = false;
+	public boolean isFate = false;
+	public boolean isDoom = false;
+	public boolean isSpirit = false;
 	public boolean isKnight   = false;
 	public boolean isOverpay  = false;
 	public boolean isObelisk = false;
@@ -59,6 +63,7 @@ public class MyCard implements Serializable {
 	public static final int CASTLE_PILES = 10;
 	public static final int SPLIT_PILES = 11;
 	public static final int LANDMARKS = 12;
+	public static final int HEIRLOOM_PILES = 13;
 
 	public int pile;
 
@@ -204,6 +209,10 @@ public class MyCard implements Serializable {
 		m.isCastle = this.isCastle;
 		m.isGathering = this.isGathering;
 		m.isNight = this.isNight;
+		m.isHeirloom = this.isHeirloom;
+		m.isFate = this.isFate;
+		m.isDoom = this.isDoom;
+		m.isSpirit = this.isSpirit;
 		m.isKnight = this.isKnight;
 		m.isOverpay = this.isOverpay;
 		m.pile = this.pile;

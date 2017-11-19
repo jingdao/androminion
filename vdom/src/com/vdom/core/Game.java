@@ -601,6 +601,12 @@ public class Game {
 			player.hand.add(player.save.remove(0));
 		}
 
+		for (Player p : getPlayersInTurnOrder()) {
+			while (!p.faithfulHound.isEmpty()) {
+				p.hand.add(p.faithfulHound.remove(0));
+			}
+		}
+
 		player.missionTurn = false;
 		for (Event e: player.boughtEvents) {
 			if (e.equals(Event.expedition)) {
@@ -1742,13 +1748,41 @@ public class Game {
         for (int i = 0; i < numPlayers; i++) {
             player = players[i];
 
-            player.discard(takeFromPile(Cards.copper), null, null);
-            player.discard(takeFromPile(Cards.copper), null, null);
-            player.discard(takeFromPile(Cards.copper), null, null);
-            player.discard(takeFromPile(Cards.copper), null, null);
-            player.discard(takeFromPile(Cards.copper), null, null);
-            player.discard(takeFromPile(Cards.copper), null, null);
-            player.discard(takeFromPile(Cards.copper), null, null);
+			int numCoppers = 7;
+			if (piles.containsKey(Cards.cemetery.getName())) {
+            	player.discard(takeFromPile(Cards.hauntedMirror), null, null);
+				numCoppers--;
+			}
+			if (piles.containsKey(Cards.secretCave.getName())) {
+            	player.discard(takeFromPile(Cards.magicLamp), null, null);
+				numCoppers--;
+			}
+			if (piles.containsKey(Cards.pixie.getName())) {
+            	player.discard(takeFromPile(Cards.goat), null, null);
+				numCoppers--;
+			}
+			if (piles.containsKey(Cards.shephard.getName())) {
+            	player.discard(takeFromPile(Cards.pasture), null, null);
+				numCoppers--;
+			}
+			if (piles.containsKey(Cards.tracker.getName())) {
+            	player.discard(takeFromPile(Cards.pouch), null, null);
+				numCoppers--;
+			}
+			if (piles.containsKey(Cards.pooka.getName())) {
+            	player.discard(takeFromPile(Cards.cursedGold), null, null);
+				numCoppers--;
+			}
+			if (piles.containsKey(Cards.fool.getName())) {
+            	player.discard(takeFromPile(Cards.luckyCoin), null, null);
+				numCoppers--;
+			}
+			for (int j=0;j<7;j++) {
+				if (j < numCoppers)
+					player.discard(takeFromPile(Cards.copper), null, null);
+				else
+					takeFromPile(Cards.copper);
+			}
 
             if (sheltersInPlay)
             {
@@ -2066,7 +2100,13 @@ public class Game {
         		addPile(Cards.overgrownEstate, numPlayers, false);
         		addPile(Cards.hovel, numPlayers, false);
         }
-
+		addPile(Cards.hauntedMirror, numPlayers, false);
+		addPile(Cards.magicLamp, numPlayers, false);
+		addPile(Cards.goat, numPlayers, false);
+		addPile(Cards.pasture, numPlayers, false);
+		addPile(Cards.pouch, numPlayers, false);
+		addPile(Cards.cursedGold, numPlayers, false);
+		addPile(Cards.luckyCoin, numPlayers, false);
 
         // Check for PlatColony
         boolean addPlatColony = false;
@@ -2163,8 +2203,22 @@ public class Game {
 		    bakerInPlay = true;
 		}
 
-		if (piles.containsKey(Cards.devilsWorkshop.getName())) {
+        for (AbstractCardPile pile : piles.values()) {
+        	if (pile.card() instanceof ActionCard && ((ActionCard)pile.card()).isFate()) {
+				addPile(Cards.willOWisp, 12, false);
+				break;
+            }
+        }
+		if (piles.containsKey(Cards.devilsWorkshop.getName()) || piles.containsKey(Cards.exorcist.getName())) {
 			addPile(Cards.imp, 13, false);
+		}
+
+		if (piles.containsKey(Cards.cemetery.getName()) || piles.containsKey(Cards.exorcist.getName())) {
+			addPile(Cards.ghost, 6, false);
+		}
+
+		if (piles.containsKey(Cards.leprechaun.getName()) || piles.containsKey(Cards.secretCave.getName())) {
+			addPile(Cards.wish, 12, false);
 		}
 
 		if (piles.containsKey(Cards.vampire.getName())) {
@@ -2357,6 +2411,8 @@ public class Game {
 						} else if (event.card.equals(Cards.villa)) {
 							player.hand.add(event.card);
 							context.actions++;
+						} else if (event.card.equals(Cards.ghostTown) || event.card.equals(Cards.guardian) || event.card.equals(Cards.nightWatchman) || event.card.equals(Cards.denOfSin)) {
+							player.hand.add(event.card);
                         } else if (event.responsible != null) {
                             Card r = event.responsible;
                             if (r.equals(Cards.bagOfGold) || r.equals(Cards.develop) || r.equals(Cards.bureaucrat) || r.equals(Cards.seaHag) || r.equals(Cards.treasureMap) || r.equals(Cards.tournament) || r.equals(Cards.foolsGold) || r.equals(Cards.graverobber) || r.equals(Cards.armory) || r.equals(Cards.artificer) || (r.equals(Cards.replace) && (event.card instanceof ActionCard || event.card instanceof TreasureCard))) {

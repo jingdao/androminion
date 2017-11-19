@@ -48,6 +48,14 @@ public interface Card {
 
 	public boolean isNight();
 
+	public boolean isHeirloom();
+
+	public boolean isFate();
+
+	public boolean isDoom();
+
+	public boolean isSpirit();
+
 	public boolean isAttack();
     
     public Integer getId();
