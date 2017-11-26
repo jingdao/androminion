@@ -47,6 +47,7 @@ public class MyCard implements Serializable {
 	public boolean isFate = false;
 	public boolean isDoom = false;
 	public boolean isSpirit = false;
+	public boolean isZombie = false;
 	public boolean isKnight   = false;
 	public boolean isOverpay  = false;
 	public boolean isObelisk = false;
@@ -63,7 +64,10 @@ public class MyCard implements Serializable {
 	public static final int CASTLE_PILES = 10;
 	public static final int SPLIT_PILES = 11;
 	public static final int LANDMARKS = 12;
-	public static final int HEIRLOOM_PILES = 13;
+	public static final int VIRTUAL_PILES = 13;
+
+	public static final MyCard BOONS = new MyCard(-1,"Boons","","");
+	public static final MyCard HEXES = new MyCard(-1,"Hexes","","");
 
 	public int pile;
 
@@ -213,6 +217,7 @@ public class MyCard implements Serializable {
 		m.isFate = this.isFate;
 		m.isDoom = this.isDoom;
 		m.isSpirit = this.isSpirit;
+		m.isZombie = this.isZombie;
 		m.isKnight = this.isKnight;
 		m.isOverpay = this.isOverpay;
 		m.pile = this.pile;

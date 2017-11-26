@@ -20,4 +20,5 @@
 	<string name="type_fate">Fate</string>
 	<string name="type_doom">Doom</string>
 	<string name="type_spirit">Spirit</string>
+	<string name="type_zombie">Zombie</string>
 </resources>

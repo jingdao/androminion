@@ -52,6 +52,8 @@ public abstract class Player {
 	public Card minusCostToken = null;
 	public Card trashingToken = null;
 	public Card estateToken = null;
+	public boolean riversgift = false;
+	public Boons savedBoon = null;
     
     private Card checkLeadCard;
     private int victoryTokens;
@@ -72,6 +74,7 @@ public abstract class Player {
 	protected CardList faithfulHound;
 	public ArrayList<ArrayList<Card>> archive;
 	public ArrayList<ArrayList<Card>> crypt;
+	public ArrayList<ActionCard> ghost;
 	public ArrayList<Event> boughtEvents = new ArrayList<Event>();
     public Game game;
     public Player controlPlayer = this;
@@ -245,6 +248,7 @@ public abstract class Player {
 		faithfulHound = new CardList(this,"Faithful Hound");
 		archive = new ArrayList<ArrayList<Card>>();
 		crypt = new ArrayList<ArrayList<Card>>();
+		ghost = new ArrayList<ActionCard>();
     }
 
     private List<PutBackOption> getPutBackOptions(MoveContext context) {
@@ -401,6 +405,8 @@ public abstract class Player {
 		if (context.game.getCardsObtainedByPlayer().size()==0 && context.game.getLandmarkVictoryTokens(Landmarks.baths) > 0) {
 			Landmarks.baths.applyEffect(context.game,context,this,null);
 		}
+
+		game.necromancerTrashPile.clear();
 
         while (!playedCards.isEmpty()) {
     		discard(playedCards.remove(0), null, context, false);
@@ -1798,7 +1804,36 @@ public abstract class Player {
     public abstract Card[] nightWatchman_cardsFromTopOfDeckToDiscard(MoveContext context, Card[] cards);
     public abstract Card[] nightWatchman_cardOrder(MoveContext context, Card[] cards);
 	public abstract Card[] secretCave_cardsToDiscard(MoveContext context);
-
+    public abstract Card changeling_cardToObtain(MoveContext context, Card[] cardList);
+    public abstract boolean changeling_shouldGain(MoveContext context, Card card);
+    public abstract Card[] cemetery_cardsToTrash(MoveContext context);
+    public abstract ActionCard conclave_cardToPlay(MoveContext context, ActionCard[] cardList);
+    public abstract ActionCard imp_cardToPlay(MoveContext context, ActionCard[] cardList);
+    public abstract Card exorcist_cardToTrash(MoveContext context);
+    public abstract Card exorcist_cardToObtain(MoveContext context, Card[] cardList);
+    public abstract Card[] shephard_cardsToDiscard(MoveContext context);
+	public abstract Card cobbler_cardToObtain(MoveContext context);
+    public abstract ActionCard necromancer_cardToPlay(MoveContext context, ActionCard[] cardList);
+    public abstract boolean zombieSpy_shouldDiscard(MoveContext context, Card card);
+	public abstract Card zombieApprentice_actionToTrash(MoveContext context);
+    public abstract Card zombieMason_cardToObtain(MoveContext context, int maxCost, boolean potion,int debt);
+	public abstract Card pooka_cardToTrash(MoveContext context,Card[] cards);
+	public abstract Card tragicHero_cardToObtain(MoveContext context);
+    public abstract TreasureCard earthsgift_treasureToDiscard(MoveContext context);
+	public abstract Card earthsgift_cardToObtain(MoveContext context);
+    public abstract Card flamesgift_cardToTrash(MoveContext context);
+	public abstract Card moonsgift_cardToTopdeck(MoveContext context, HashSet<Card> options);
+	public abstract Card[] skysgift_cardsToDiscard(MoveContext context);
+    public abstract Card[] sunsgift_cardsFromTopOfDeckToDiscard(MoveContext context, Card[] cards);
+    public abstract Card[] sunsgift_cardOrder(MoveContext context, Card[] cards);
+	public abstract Card[] windsgift_cardsToDiscard(MoveContext context);
+    public abstract boolean pixie_shouldTrash(MoveContext context, Boons boon);
+    public abstract boolean sacredGrove_receiveBoons(MoveContext context, Boons boon);
+    public abstract Card fear_cardToDiscard(MoveContext context, Card[] cards);
+    public abstract Card haunting_cardToPutBackOnDeck(MoveContext context);
+    public abstract Card[] poverty_cardsToKeep(MoveContext context);
+    public abstract Card locusts_cardToObtain(MoveContext context, Card[] cardList);
+    public abstract boolean blessedVillage_receiveBoons(MoveContext context, Boons boon);
 
 	// ////////////////////////////////////////////
     // Card interactions - Promotional Cards

@@ -193,6 +193,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 		card.isFate = c.isFate();
 		card.isDoom = c.isDoom();
 		card.isSpirit = c.isSpirit();
+		card.isZombie = c.isZombie();
     	if (c.equals(Cards.virtualRuins))
     		card.isRuins = true;
     	else
@@ -238,7 +239,7 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
             card.pile = MyCard.SHELTER_PILES;
         }
 
-		if (c.isHeirloom()) card.pile = MyCard.HEIRLOOM_PILES;
+		if (c.isHeirloom() || c.isZombie()) card.pile = MyCard.VIRTUAL_PILES;
 
     	if ((c.equals(Cards.copper)) ||
     	   (c.equals(Cards.silver)) ||
@@ -374,6 +375,11 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 			mc.pile = MyCard.LANDMARKS;
 			myCardsInPlayList.add(mc);	
 		}
+		if (context.game.boonsPile.size() > 0)
+			myCardsInPlayList.add(MyCard.BOONS);
+		if (context.game.hexesPile.size() > 0)
+			myCardsInPlayList.add(MyCard.HEXES);
+
     	myCardsInPlay = myCardsInPlayList.toArray(new MyCard[0]);
     }
 
@@ -596,6 +602,13 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 			landmarkVictoryTokens[i] = game.getLandmarkVictoryTokens(l);
 		}
 
+		String boons[] = new String[game.boonsPile.size()];
+		for (int i=0;i<game.boonsPile.size();i++)
+			boons[i] = game.boonsPile.get(i).name;
+		String hexes[] = new String[game.hexesPile.size()];
+		for (int i=0;i<game.hexesPile.size();i++)
+			hexes[i] = game.hexesPile.get(i).name;
+
     	gs.setTurnStatus(new int[] {context.getActionsLeft(),
     					  context.getBuysLeft(),
                           coinsAvailable,
@@ -610,6 +623,8 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 		  .setTax(tax)
 		  .setSupplyVictoryTokens(supplyVictoryTokens)
 		  .setLandmarkVictoryTokens(landmarkVictoryTokens)
+		  .setBoons(boons)
+		  .setHexes(hexes)
     	  .setCosts(costs)
     	  .setHand(cardArrToIntArr(Game.sortCards ? shownHand.sort(new Util.CardHandComparator()) : shownHand.toArray()))
     	  .setPlayedCards(playedArray)
@@ -915,6 +930,10 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
     		strEvent += " " + Strings.getCardName(event.getCard()) + " ";
         if (event.getType() == Type.TurnBegin && event.getPlayer().isPossessed())
             strEvent += " possessed by " + event.getPlayer().controlPlayer.getPlayerName() + "!";
+		if (event.getType() == Type.ReceivedBoon)
+			strEvent += " " + event.getComment();
+		if (event.getType() == Type.ReceivedHex)
+			strEvent += " " + event.getComment();
     	if (event.getAttackedPlayer() != null)
     		strEvent += " (" + event.getAttackedPlayer().getPlayerName() + ") ";
     	if (context != null && context.getMessage() != null) {

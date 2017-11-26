@@ -92,10 +92,15 @@ public class Game {
     public HashMap<String, Integer> tax = new HashMap<String, Integer>();
     public HashMap<String, Integer> supplyVictoryTokens = new HashMap<String, Integer>();
     public ArrayList<Card> trashPile = new ArrayList<Card>();
+    public ArrayList<Card> necromancerTrashPile = new ArrayList<Card>();
     public ArrayList<Card> possessedTrashPile = new ArrayList<Card>();
     public ArrayList<Card> possessedBoughtPile = new ArrayList<Card>();
 	public ArrayList<Event> eventsList = new ArrayList<Event>();
 	public ArrayList<Landmarks> landmarksList = new ArrayList<Landmarks>();
+	public ArrayList<Boons> boonsPile = new ArrayList<Boons>();
+	public ArrayList<Boons> boonsDiscard = new ArrayList<Boons>();
+	public ArrayList<Hexes> hexesPile = new ArrayList<Hexes>();
+	public ArrayList<Hexes> hexesDiscard = new ArrayList<Hexes>();
 
     public int tradeRouteValue = 0;
     public Card baneCard = null;
@@ -618,6 +623,12 @@ public class Game {
 			}
 		}
 
+		for (Player p : getPlayersInTurnOrder()) {
+			if (p.riversgift)
+				drawToHand(p,null,false);
+			p.riversgift = false;
+		}
+
         // /////////////////////////////////
         // Reset context for status update
         // /////////////////////////////////
@@ -815,6 +826,10 @@ public class Game {
 						((ActionCardImpl)thisCard).amulet(this,context,player);
 					} else if (thisCard.getType() == Cards.Type.Dungeon) {
 						((ActionCardImpl)thisCard).dungeon(this,context,player);
+					} else if (thisCard.getType() == Cards.Type.Cobbler) {
+						Card cobbled = player.controlPlayer.cobbler_cardToObtain(context);
+						if (cobbled != null)
+							player.gainNewCard(cobbled, thisCard, context);
 					}
 
                     for (int i = 0; i < AddCardsNextTurn; i++) {
@@ -862,6 +877,35 @@ public class Game {
 		while (!player.gear.isEmpty()) {
 			player.hand.add(player.gear.remove(0));
 		}
+
+		while (!player.ghost.isEmpty()) {
+			ActionCardImpl toGhost = (ActionCardImpl) player.ghost.remove(0);
+			context.freeActionInEffect++;
+			toGhost.cloneCount = 2;
+			for (int i = 0; i < toGhost.cloneCount;) {
+				toGhost.numberTimesAlreadyPlayed = i++;
+				toGhost.play(this, context, false);
+			}
+			toGhost.numberTimesAlreadyPlayed = 0;
+			context.freeActionInEffect--;
+			if (toGhost instanceof DurationCard && !toGhost.equals(Cards.tactician)) {
+				if (!toGhost.controlCard.movedToNextTurnPile) {
+					toGhost.controlCard.movedToNextTurnPile = true;
+					int idx = player.playedCards.lastIndexOf(toGhost.controlCard);
+					int ntidx = player.nextTurnCards.size() - 1;
+					if (idx >= 0 && ntidx >= 0) {
+						player.playedCards.remove(idx);
+						player.nextTurnCards.add(ntidx, toGhost.controlCard);
+					}
+				}
+			}
+			toGhost.controlCard = toGhost;
+		}
+
+		if (player.savedBoon != null) {
+			player.savedBoon.applyEffect(this,context,player,Cards.boonCard);
+		}
+		player.savedBoon = null;
 
 		int i=0;
 		while (i < player.archive.size()) {
@@ -1560,6 +1604,34 @@ public class Game {
         broadcastEvent(event);
     }
 
+	Boons receiveBoons(MoveContext context) {
+		if (boonsPile.isEmpty()) {
+			while (boonsDiscard.size() > 0) {
+				boonsPile.add(boonsDiscard.remove(Game.rand.nextInt(boonsDiscard.size())));
+			}
+		}
+		Boons b = boonsPile.remove(0);
+		boonsDiscard.add(b);
+		GameEvent ev = new GameEvent(GameEvent.Type.ReceivedBoon, (MoveContext) context);
+		ev.setComment(b.description);
+		broadcastEvent(ev);
+		return b;
+	}
+
+	Hexes receiveHexes(MoveContext context) {
+		if (hexesPile.isEmpty()) {
+			while (hexesDiscard.size() > 0) {
+				hexesPile.add(hexesDiscard.remove(Game.rand.nextInt(hexesDiscard.size())));
+			}
+		}
+		Hexes b = hexesPile.remove(0);
+		hexesDiscard.add(b);
+		GameEvent ev = new GameEvent(GameEvent.Type.ReceivedHex, (MoveContext) context);
+		ev.setComment(b.description);
+		broadcastEvent(ev);
+		return b;
+	}
+
     private void handleShowEvent(GameEvent event) {
         if (showEvents.contains(event.getType())) {
             Player player = event.getPlayer();
@@ -1838,6 +1910,10 @@ public class Game {
 		trashPile.clear();
 		eventsList.clear();
 		landmarksList.clear();
+		boonsPile.clear();
+		boonsDiscard.clear();
+		hexesPile.clear();
+		hexesDiscard.clear();
 
     	boolean platColonyNotPassedIn = false;
     	boolean platColonyPassedIn = false;
@@ -2100,13 +2176,20 @@ public class Game {
         		addPile(Cards.overgrownEstate, numPlayers, false);
         		addPile(Cards.hovel, numPlayers, false);
         }
-		addPile(Cards.hauntedMirror, numPlayers, false);
-		addPile(Cards.magicLamp, numPlayers, false);
-		addPile(Cards.goat, numPlayers, false);
-		addPile(Cards.pasture, numPlayers, false);
-		addPile(Cards.pouch, numPlayers, false);
-		addPile(Cards.cursedGold, numPlayers, false);
-		addPile(Cards.luckyCoin, numPlayers, false);
+		if (piles.containsKey(Cards.cemetery.getName()))
+			addPile(Cards.hauntedMirror, numPlayers, false);
+		if (piles.containsKey(Cards.secretCave.getName()))
+			addPile(Cards.magicLamp, numPlayers, false);
+		if (piles.containsKey(Cards.pixie.getName()))
+			addPile(Cards.goat, numPlayers, false);
+		if (piles.containsKey(Cards.shephard.getName()))
+			addPile(Cards.pasture, numPlayers, false);
+		if (piles.containsKey(Cards.tracker.getName()))
+			addPile(Cards.pouch, numPlayers, false);
+		if (piles.containsKey(Cards.pooka.getName()))
+			addPile(Cards.cursedGold, numPlayers, false);
+		if (piles.containsKey(Cards.fool.getName()))
+			addPile(Cards.luckyCoin, numPlayers, false);
 
         // Check for PlatColony
         boolean addPlatColony = false;
@@ -2203,13 +2286,17 @@ public class Game {
 		    bakerInPlay = true;
 		}
 
-        for (AbstractCardPile pile : piles.values()) {
-        	if (pile.card() instanceof ActionCard && ((ActionCard)pile.card()).isFate()) {
-				addPile(Cards.willOWisp, 12, false);
-				break;
-            }
-        }
-		if (piles.containsKey(Cards.devilsWorkshop.getName()) || piles.containsKey(Cards.exorcist.getName())) {
+		if (piles.containsKey(Cards.exorcist.getName())) {
+			addPile(Cards.willOWisp, 12, false);
+		} else {
+			for (AbstractCardPile pile : piles.values()) {
+				if (pile.card() instanceof ActionCard && ((ActionCard)pile.card()).isFate()) {
+					addPile(Cards.willOWisp, 12, false);
+					break;
+				}
+			}
+		}
+		if (piles.containsKey(Cards.devilsWorkshop.getName()) || piles.containsKey(Cards.tormentor.getName()) || piles.containsKey(Cards.exorcist.getName())) {
 			addPile(Cards.imp, 13, false);
 		}
 
@@ -2223,6 +2310,30 @@ public class Game {
 
 		if (piles.containsKey(Cards.vampire.getName())) {
 			addPile(Cards.bat, 10, false);
+		}
+
+		if (piles.containsKey(Cards.necromancer.getName())) {
+			trashPile.add(Cards.zombieApprentice.instantiate());
+			trashPile.add(Cards.zombieMason.instantiate());
+			trashPile.add(Cards.zombieSpy.instantiate());
+			addPile(Cards.zombieApprentice, 0, false);
+			addPile(Cards.zombieMason, 0, false);
+			addPile(Cards.zombieSpy, 0, false);
+		}
+
+		for (AbstractCardPile pile : piles.values()) {
+			if (pile.card().isFate()) {
+				boonsPile.addAll(Boons.allBoons);
+				Collections.shuffle(boonsPile);
+				break;
+			}
+		}
+		for (AbstractCardPile pile : piles.values()) {
+			if (pile.card().isDoom()) {
+				hexesPile.addAll(Hexes.allHexes);
+				Collections.shuffle(hexesPile);
+				break;
+			}
 		}
 
 		if (eventsList.contains(Event.tax)) {
@@ -2425,7 +2536,7 @@ public class Game {
                             	} else if (event.card.equals(Cards.silver)) {
                             		player.discard.add(event.card);
                             	}
-                            } else if (r.equals(Cards.tradingPost) || r.equals(Cards.mine) || r.equals(Cards.explorer) || r.equals(Cards.torturer) || r.equals(Cards.transmogrify) || r.equals(Cards.artisan)) {
+                            } else if (r.equals(Cards.tradingPost) || r.equals(Cards.mine) || r.equals(Cards.explorer) || r.equals(Cards.torturer) || r.equals(Cards.transmogrify) || r.equals(Cards.artisan) || r.equals(Cards.cobbler)) {
                                 player.hand.add(event.card);
                             } else if (r.equals(Cards.illGottenGains) && event.card.equals(Cards.copper)) {
                                 player.hand.add(event.card);
@@ -2433,6 +2544,11 @@ public class Game {
 								if (context.buyPhase)
 									player.putOnTopOfDeck(event.card);
 								else
+									player.hand.add(event.card);
+							} else if (r.equals(Cards.hexCard)) {
+								if (event.card.equals(Cards.copper))
+									player.putOnTopOfDeck(event.card);
+								else if (event.card.equals(Cards.curse))
 									player.hand.add(event.card);
                             } else {
                                 player.discard(event.card, null, null, commandedDiscard);
@@ -2615,6 +2731,32 @@ public class Game {
 					} else if (event.card.equals(Cards.temple)) {
 						player.addVictoryTokens(context,getSupplyVictoryTokens(event.card));
 						supplyVictoryTokens.put(event.card.getName(),0);
+					} else if (event.card.equals(Cards.cemetery)) {
+						if (player.hand.size() > 0) {
+							Card[] cards = player.controlPlayer.cemetery_cardsToTrash(context);
+							for (Card card : cards) {
+								for (int i = 0; i < player.hand.size(); i++) {
+									Card playersCard = player.hand.get(i);
+									if (playersCard.equals(card)) {
+										Card thisCard = player.hand.remove(i, false);
+										player.trash(thisCard, event.card, context);
+										break;
+									}
+								}
+							}
+						}
+					} else if (event.card.equals(Cards.skulk)) {
+						player.controlPlayer.gainNewCard(Cards.gold,event.card,context);
+					} else if (event.card.equals(Cards.cursedVillage)) {
+						Hexes hex = receiveHexes(context);
+						hex.applyEffect(Game.this,context,player,event.card);
+					} else if (event.card.equals(Cards.blessedVillage)) {
+						Boons boon = receiveBoons(context);
+						if (player.blessedVillage_receiveBoons(context, boon)) {
+							boon.applyEffect(Game.this,context,player,event.card);
+						} else {
+							player.savedBoon = boon;
+						}
 					}
 					if (event.card instanceof VictoryCard) {
 						for (Card played:context.player.playedCards)
@@ -2755,6 +2897,15 @@ public class Game {
         return false;
     }
 
+    boolean hasGuardian(Player player) {
+        for (Card card : player.nextTurnCards) {
+            if (card.behaveAsCard().equals(Cards.guardian) && !((CardImpl) card).trashAfterPlay)
+                return true;
+        }
+
+        return false;
+    }
+
 
 
 	/*
@@ -2873,6 +3024,11 @@ public class Game {
                 context.player.reveal(Cards.trader, null, context);
             }
         }
+		if (cardToGain.getCost(context) >= 3 && !isPileEmpty(cardToGain) && !isPileEmpty(Cards.changeling) && !cardToGain.equals(Cards.changeling)) {
+			if (context.player.controlPlayer.changeling_shouldGain((MoveContext) context, cardToGain)) {
+				cardToGain = Cards.changeling;
+			}
+		}
 
         return takeFromPile(cardToGain);
     }

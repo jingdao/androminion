@@ -56,6 +56,8 @@ public interface Card {
 
 	public boolean isSpirit();
 
+	public boolean isZombie();
+
 	public boolean isAttack();
     
     public Integer getId();

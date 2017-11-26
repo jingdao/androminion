@@ -66,6 +66,9 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 	View myCardView;
 	EventView selectedEvent;
 	ArrayList<LandmarksView> landmarksView = new ArrayList<LandmarksView>();
+	ArrayList<BoonHexView> boonHexView = new ArrayList<BoonHexView>();
+	boolean useBoons = false;
+	boolean useHexes = false;
 	private static int[] costs = {};
 
 	TextView actionText;
@@ -320,7 +323,11 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 		final ArrayList<com.vdom.core.Event> events = new ArrayList<com.vdom.core.Event>();
 		final ArrayList<Landmarks> landmarks = new ArrayList<Landmarks>();
 		for (MyCard c : cards) {
-			if (c.pile == MyCard.EVENTS) {
+			if (c.name.equals("Boons")) {
+				useBoons = true;
+			} else if (c.name.equals("Hexes")) {
+				useHexes = true;
+			} else if (c.pile == MyCard.EVENTS) {
 				events.add(com.vdom.core.Event.eventsMap.get(c.name));
 			} else if (c.pile == MyCard.LANDMARKS) {
 				landmarks.add(Landmarks.landmarksMap.get(c.name));
@@ -388,10 +395,14 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
         }
 
 		landmarksView.clear();
+		boonHexView.clear();
 		eventsGV.setAdapter(new BaseAdapter(){
 
 			public int getCount() {
-				return events.size() + landmarks.size();
+				int c = events.size() + landmarks.size();
+				if (useBoons) c++;
+				if (useHexes) c++;
+				return c;
 			}
 
 			public Object getItem(int pos) {
@@ -415,16 +426,36 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 						ev = (EventView) origView;
 					}
 					return ev;
-				} else {
+				} else if (pos < events.size() + landmarks.size()){
 					LandmarksView lv;
 					if (origView == null) {
-						lv = new LandmarksView(top,landmarks.get(pos - events.size()));
+						lv = new LandmarksView(top, landmarks.get(pos - events.size()));
 						if (landmarksView.size() < landmarks.size())
 							landmarksView.add(lv);
 					} else {
 						lv = (LandmarksView) origView;
 					}
 					return lv;
+				} else if (useBoons && pos == events.size() + landmarks.size()) {
+					BoonHexView bv;
+					if (origView == null) {
+						bv = new BoonHexView(top, true);
+						if (boonHexView.size() < getCount() - events.size() - landmarks.size())
+							boonHexView.add(bv);
+					} else {
+						bv = (BoonHexView) origView;
+					}
+					return bv;
+				} else {
+					BoonHexView bv;
+					if (origView == null) {
+						bv = new BoonHexView(top, false);
+						if (boonHexView.size() < getCount() - events.size() - landmarks.size())
+							boonHexView.add(bv);
+					} else {
+						bv = (BoonHexView) origView;
+					}
+					return bv;
 				}
 			}
 		});
@@ -996,6 +1027,9 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 		for (int i=0;i<landmarksView.size();i++) {
 			landmarksView.get(i).setVictoryTokens(gs.landmarkVictoryTokens[i]);
 		}
+		for (BoonHexView bv : boonHexView) {
+			bv.setRemaining(gs.boons, gs.hexes);
+		}
 	}
 
 	static int getCardCost(MyCard c) {
@@ -1089,6 +1123,9 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 
 	 	if (view instanceof LandmarksView)
 			return;
+
+	 	if (view instanceof BoonHexView)
+			return;
 				
 		if (view instanceof EventView) {
 			EventView clickedCard = (EventView) view;
@@ -1175,6 +1212,9 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 			return clickedCard.onLongClick(clickedCard);
 		} else if (view instanceof LandmarksView) {
 			LandmarksView clickedCard = (LandmarksView) view;
+			return clickedCard.onLongClick(clickedCard);
+		} else if (view instanceof BoonHexView) {
+			BoonHexView clickedCard = (BoonHexView) view;
 			return clickedCard.onLongClick(clickedCard);
 		}
 		return false;

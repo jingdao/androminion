@@ -73,7 +73,7 @@ public class Cards {
 		//Nocturne
 		DevilsWorkshop, Raider, GhostTown, Crypt, Shephard, Pooka, Cemetery, FaithfulHound, BlessedVillage, Idol, Druid, Fool, Werewolf, Skulk, CursedVillage, Leprechaun, Exorcist, Pixie, Vampire, Necromancer,
 		Imp, Pasture, CursedGold, HauntedMirror, Ghost, LuckyCoin, Wish, Goat, Bat, ZombieApprentice, ZombieMason, ZombieSpy, WillOWisp, MagicLamp, Pouch, SecretCave, Tracker,
-		Guardian, Monastery, Changeling, NightWatchman, Bard, Conclave, Cobbler, DenOfSin, SacredGrove, Tormentor, TragicHero,
+		Guardian, Monastery, Changeling, NightWatchman, Bard, Conclave, Cobbler, DenOfSin, SacredGrove, Tormentor, TragicHero, Boon, Hex,
         // Promo Cards
         Envoy, Governor, WalledVillage, BlackMarket, Stash, Prince,
         // Promo Cards (not yet implemented)
@@ -496,6 +496,8 @@ public class Cards {
 	public static final Card willOWisp;
 	public static final Card magicLamp;
 	public static final Card pouch;
+	public static final Card boonCard;
+	public static final Card hexCard;
 
     // Promo Cards (Incomplete)
     // TODO:Implement Rest of promo cards
@@ -901,14 +903,14 @@ public class Cards {
 		actionCardsNocturne.add(tormentor = new ActionCardImpl.Builder(Cards.Type.Tormentor,5).addGold(2).isDoom().expansion("Nocturne").build());
 		actionCardsNocturne.add(tragicHero = new ActionCardImpl.Builder(Cards.Type.TragicHero,5).addBuys(1).addCards(3).expansion("Nocturne").build());
 
+		nonSupplyCards.add(willOWisp = new ActionCardImpl.Builder(Cards.Type.WillOWisp,0).addActions(1).addCards(1).isSpirit().expansion("Nocturne").build());
 		nonSupplyCards.add(imp = new ActionCardImpl.Builder(Cards.Type.Imp,2).addCards(2).isSpirit().expansion("Nocturne").build());
 		nonSupplyCards.add(ghost = new NightDurationCardImpl.Builder(Cards.Type.Ghost,4).isSpirit().expansion("Nocturne").build());
 		nonSupplyCards.add(wish = new ActionCardImpl.Builder(Cards.Type.Wish,0).addActions(1).expansion("Nocturne").build());
 		nonSupplyCards.add(bat = new NightCardImpl.Builder(Cards.Type.Bat,2).expansion("Nocturne").build());
-		nonSupplyCards.add(zombieApprentice = new ActionCardImpl.Builder(Cards.Type.ZombieApprentice,3).expansion("Nocturne").build());
-		nonSupplyCards.add(zombieMason = new ActionCardImpl.Builder(Cards.Type.ZombieMason,3).expansion("Nocturne").build());
-		nonSupplyCards.add(zombieSpy = new ActionCardImpl.Builder(Cards.Type.ZombieSpy,3).addActions(1).addCards(1).expansion("Nocturne").build());
-		nonSupplyCards.add(willOWisp = new ActionCardImpl.Builder(Cards.Type.WillOWisp,0).addActions(1).addCards(1).isSpirit().expansion("Nocturne").build());
+		nonSupplyCards.add(zombieApprentice = new ActionCardImpl.Builder(Cards.Type.ZombieApprentice,3).isZombie().expansion("Nocturne").build());
+		nonSupplyCards.add(zombieMason = new ActionCardImpl.Builder(Cards.Type.ZombieMason,3).isZombie().expansion("Nocturne").build());
+		nonSupplyCards.add(zombieSpy = new ActionCardImpl.Builder(Cards.Type.ZombieSpy,3).addActions(1).addCards(1).isZombie().expansion("Nocturne").build());
 
 		nonKingdomCards.add(hauntedMirror = new TreasureCardImpl.Builder(Cards.Type.HauntedMirror,0,1).isHeirloom().expansion("Nocturne").build());
 		nonKingdomCards.add(magicLamp = new TreasureCardImpl.Builder(Cards.Type.MagicLamp,0,1).isHeirloom().expansion("Nocturne").build());
@@ -917,6 +919,8 @@ public class Cards {
 		nonKingdomCards.add(pasture = new TreasureVictoryCardImpl.Builder(Cards.Type.Pasture,2,1,0).isHeirloom().expansion("Nocturne").build());
 		nonKingdomCards.add(cursedGold = new TreasureCardImpl.Builder(Cards.Type.CursedGold,4,3).isHeirloom().expansion("Nocturne").build());
 		nonKingdomCards.add(luckyCoin = new TreasureCardImpl.Builder(Cards.Type.LuckyCoin,4,1).isHeirloom().expansion("Nocturne").build());
+		boonCard = new ActionCardImpl.Builder(Cards.Type.Boon,0).build();
+		hexCard = new ActionCardImpl.Builder(Cards.Type.Hex,0).build();
 
         // Non-Supply Cards
         nonSupplyCards.add(madman    = new ActionCardImpl.Builder(Cards.Type.Madman, 0).addActions(2).description("Return this to the Madman pile. If you do, +1 Card per card in your hand. (This is not in the supply)").expansion("DarkAges").build());
@@ -969,6 +973,7 @@ public class Cards {
         for (Card card : actionCardsGuilds)      { actionCards.add(card); }
 		for (Card card : actionCardsAdventures) { actionCards.add(card); }
 		for (Card card : actionCardsEmpires)    { actionCards.add(card); }
+		for (Card card : actionCardsNocturne)    { actionCards.add(card); }
         for (Card card : actionCardsPromo)       { actionCards.add(card); }
     }
     

@@ -51,6 +51,8 @@ public class GameStatus implements Serializable {
 	public int virtualCastleID = -1;
 	public int[] splitPileID;
 	public int[] splitPileTopCard;
+	public String[] boons;
+	public String[] hexes;
 
 	public GameStatus setFinal(boolean b) {isFinal = b; return this;}
     public GameStatus setPossessed(boolean b) {isPossessed = b; return this;}
@@ -81,6 +83,8 @@ public class GameStatus implements Serializable {
 	public GameStatus setTax(int[] is) {tax = is; return this;};
 	public GameStatus setSupplyVictoryTokens(int[] is) {supplyVictoryTokens = is; return this;};
 	public GameStatus setLandmarkVictoryTokens(int[] is) {landmarkVictoryTokens = is; return this;};
+	public GameStatus setBoons(String[] is) {boons = is; return this;}
+	public GameStatus setHexes(String[] is) {hexes = is; return this;}
 	public GameStatus setCardCostModifier(int i) {cardCostModifier = i; return this;}
     public GameStatus setPotions(int i) {potions = i; return this;}
     public GameStatus setTrash(int[] is) {trashPile = is; return this;}

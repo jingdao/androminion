@@ -163,6 +163,8 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 			luckyCoin(game,context,player);
 		} else if (equals(Cards.magicLamp)) {
 			magicLamp(game,context,player);
+		} else if (equals(Cards.idol)) {
+			idol(game,context,player);
 		}
 
         return reevaluateTreasures;
@@ -451,5 +453,23 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 		}
 	}
 
+	public void idol(Game game, MoveContext context, Player currentPlayer) {
+		int numIdols = 0;
+		for (Card card : currentPlayer.playedCards) {
+			if (card.equals(Cards.idol))
+				numIdols++;
+		}
+		if (numIdols % 2 == 1) {
+			Boons boon = game.receiveBoons(context);
+			boon.applyEffect(game,context,currentPlayer,this.controlCard);
+		} else {
+			for (Player player : game.getPlayersInTurnOrder()) {
+				if (player != currentPlayer && !Util.isDefendedFromAttack(game, player, this.controlCard)) {
+					player.attacked(this.controlCard, context);
+					player.gainNewCard(Cards.curse, this.controlCard, new MoveContext(game, player));
+				}
+			}
+		}
+	}
 
 }

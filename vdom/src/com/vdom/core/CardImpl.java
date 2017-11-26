@@ -30,6 +30,7 @@ public class CardImpl implements Card {
 	boolean isFate = false;
 	boolean isDoom = false;
 	boolean isSpirit = false;
+	boolean isZombie = false;
     protected boolean attack = false;
 
     static int maxNameLen;	// across all cards
@@ -74,6 +75,7 @@ public class CardImpl implements Card {
 		isFate = builder.isFate;
 		isDoom = builder.isDoom;
 		isSpirit = builder.isSpirit;
+		isZombie = builder.isZombie;
 		attack = builder.isAttack;
     }
 
@@ -104,6 +106,7 @@ public class CardImpl implements Card {
 		protected boolean isFate = false;
 		protected boolean isDoom = false;
 		protected boolean isSpirit = false;
+		protected boolean isZombie = false;
 
 
         public Builder(Cards.Type type, int cost) {
@@ -217,6 +220,12 @@ public class CardImpl implements Card {
 			return this;
 		}
 
+		public Builder isZombie()
+		{
+			isZombie = true;
+			return this;
+		}
+
         public Builder attack() {
             isAttack = true;
             return this;
@@ -282,6 +291,7 @@ public class CardImpl implements Card {
 		c.isFate = isFate;
 		c.isDoom = isDoom;
 		c.isSpirit = isSpirit;
+		c.isZombie = isZombie;
         c.vp = vp;
     }
 
@@ -429,6 +439,10 @@ public class CardImpl implements Card {
     
 	public boolean isSpirit() {
 		return isSpirit;
+	}
+    
+	public boolean isZombie() {
+		return isZombie;
 	}
     
     public boolean isAttack() {

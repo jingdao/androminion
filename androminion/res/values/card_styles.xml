@@ -44,6 +44,14 @@
 		<item name="cardBackgroundColor">@color/cardVictory</item>
 	</style>
 
+	<style name="CardView.Boons" parent="@style/CardView.InverseText">
+		<item name="cardBackgroundColor">@color/cardGold</item>
+	</style>
+
+	<style name="CardView.Hexes">
+		<item name="cardBackgroundColor">@color/cardCurse</item>
+	</style>
+
 	<style name="CardView.Night">
 		<item name="cardBackgroundColor">@color/cardNight</item>
 	</style>

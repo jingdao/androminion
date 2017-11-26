@@ -264,6 +264,11 @@ public class Util {
             GameEvent event = new GameEvent(GameEvent.Type.PlayerDefended, context);
             event.card = Cards.champion;
             game.broadcastEvent(event);
+        } else if (game.hasGuardian(player)) {
+            defended = true;         
+            GameEvent event = new GameEvent(GameEvent.Type.PlayerDefended, context);
+            event.card = Cards.guardian;
+            game.broadcastEvent(event);
 		}
         
         Card reactionCard = null;

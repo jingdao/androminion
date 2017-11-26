@@ -2126,8 +2126,7 @@ public abstract class BasePlayer extends Player implements GameEventListener {
     	return card;
 	}
 	@Override
-	public Card deathCart_actionToTrash(MoveContext context)
-	{
+	public Card deathCart_actionToTrash(MoveContext context) {
 		Card ac = null;
 		for (Card c : context.player.hand)
 		{
@@ -3462,5 +3461,205 @@ public abstract class BasePlayer extends Player implements GameEventListener {
         }
         return cardsToDiscard.toArray(new Card[0]);
 	}
+
+    public Card changeling_cardToObtain(MoveContext context, Card[] cardList) {
+		return cardList[rand.nextInt(cardList.length)]; 
+	}
+
+    public boolean changeling_shouldGain(MoveContext context, Card card) {
+        return false;
+    }
+
+    public Card[] cemetery_cardsToTrash(MoveContext context) {
+        return pickOutCards(context.getPlayer().getHand(), 4, getTrashCards());
+    }
+
+    public ActionCard conclave_cardToPlay(MoveContext context, ActionCard[] actions) {
+        return actions[0];
+    }
+    
+    public ActionCard imp_cardToPlay(MoveContext context, ActionCard[] actions) {
+        return actions[0];
+    }
+    
+    public Card exorcist_cardToTrash(MoveContext context) {
+        return pickOutCard(context.getPlayer().getHand(), getTrashCards());
+    }
+
+    public Card exorcist_cardToObtain(MoveContext context, Card[] cardList) {
+		return cardList[rand.nextInt(cardList.length)]; 
+	}
+
+    public Card[] shephard_cardsToDiscard(MoveContext context) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+        for (Card card : context.getPlayer().getHand()) {
+            if (card instanceof VictoryCard)
+                cardsToDiscard.add(card);
+        }
+        return cardsToDiscard.toArray(new Card[0]);
+	}
+
+	public Card cobbler_cardToObtain(MoveContext context) {
+        return bestCardInPlay(context, 4);
+	}
+
+    public ActionCard necromancer_cardToPlay(MoveContext context, ActionCard[] actions) {
+        return actions[0];
+    }
+    
+    public boolean zombieSpy_shouldDiscard(MoveContext context, Card card) {
+        if(isTrashCard(card) || isOnlyVictory(card)) {
+            return true;
+        }
+        return false;
+    }
+
+	public Card zombieApprentice_actionToTrash(MoveContext context) {
+		Card ac = null;
+		for (Card c : context.player.hand) {
+			if (c instanceof ActionCard) {
+				ac = c;
+				break;
+			}
+		}
+		return ac;
+	}
+
+    public Card zombieMason_cardToObtain(MoveContext context, int maxCost, boolean potion,int debt) {
+        return bestCardInPlay(context, maxCost, false, potion);
+    }
+
+	public Card pooka_cardToTrash(MoveContext context,Card[] cards) {
+        for(Card card : cards) {
+            if(isTrashCard(card)) {
+				return card;
+            }
+        }
+		return cards[0];
+	}
+
+	public Card tragicHero_cardToObtain(MoveContext context) {
+		ArrayList<Card> options = new ArrayList<Card>();
+		for (AbstractCardPile pile : game.piles.values()) {
+			if (pile.isSupply() && (pile.card() instanceof TreasureCard) && (pile.getCount() > 0)) {
+				options.add(pile.card());
+			}
+		}
+		if (options.size() > 0) {
+			return Util.randomCard(options);
+		} else {
+			return null;
+		}
+	}
+
+    public TreasureCard earthsgift_treasureToDiscard(MoveContext context) {
+        for (Card card : context.getPlayer().getHand()) {
+            for(Card trash : getTrashCards()) {
+                if(trash.equals(card) && (card instanceof TreasureCard)) {
+                    return (TreasureCard) card;
+                }
+            }
+        }
+        if (Game.rand.nextBoolean() && context.getPlayer().getHand().contains(Cards.silver)) {
+            return (TreasureCard) context.getPlayer().fromHand(Cards.silver);
+        }
+        return null;
+    }
+    
+	public Card earthsgift_cardToObtain(MoveContext context) {
+        return bestCardInPlay(context, 4);
+	}
+
+    public Card flamesgift_cardToTrash(MoveContext context) {
+        return pickOutCard(context.getPlayer().getHand(), getTrashCards());
+    }
+
+	public Card moonsgift_cardToTopdeck(MoveContext context, HashSet<Card> options) {
+		for (Card target : options)
+			return target;
+		return null;
+	}
+
+	public Card[] skysgift_cardsToDiscard(MoveContext context) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+        for (Card card : context.getPlayer().getHand()) {
+            if (shouldDiscard(card))
+                cardsToDiscard.add(card);
+            if (cardsToDiscard.size() == 3)
+                break;
+        }
+        if (cardsToDiscard.size() < 3) {
+            ArrayList<Card> handCopy = new ArrayList<Card>();
+            for (Card card : context.getPlayer().getHand())
+                handCopy.add(card);
+            for (Card card : cardsToDiscard)
+                handCopy.remove(card);
+            while (cardsToDiscard.size() < 3)
+                cardsToDiscard.add(handCopy.remove(0));
+        }
+        return cardsToDiscard.toArray(new Card[0]);
+	}
+
+    public Card[] sunsgift_cardsFromTopOfDeckToDiscard(MoveContext context, Card[] cards) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+        for(Card card : cards) {
+            if(isTrashCard(card) || isOnlyVictory(card)) {
+                cardsToDiscard.add(card);
+            }
+        }
+        return cardsToDiscard.toArray(new Card[0]);
+    }
+
+    public Card[] sunsgift_cardOrder(MoveContext context, Card[] cards) {
+        return cards;
+    }
+    
+	public Card[] windsgift_cardsToDiscard(MoveContext context) {
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+        for (Card card : context.getPlayer().getHand()) {
+            if (shouldDiscard(card))
+                cardsToDiscard.add(card);
+            if (cardsToDiscard.size() == 2)
+                break;
+        }
+        if (cardsToDiscard.size() < 2) {
+            ArrayList<Card> handCopy = new ArrayList<Card>();
+            for (Card card : context.getPlayer().getHand())
+                handCopy.add(card);
+            for (Card card : cardsToDiscard)
+                handCopy.remove(card);
+            while (cardsToDiscard.size() < 2)
+                cardsToDiscard.add(handCopy.remove(0));
+        }
+        return cardsToDiscard.toArray(new Card[0]);
+	}
+
+    public boolean pixie_shouldTrash(MoveContext context, Boons boon) {
+        return true;
+    }
+
+    public boolean sacredGrove_receiveBoons(MoveContext context, Boons boon) {
+        return true;
+    }
+
+    public Card fear_cardToDiscard(MoveContext context, Card[] cards) {
+		return cards[0];
+    }
+
+    public Card haunting_cardToPutBackOnDeck(MoveContext context) {
+        return context.getPlayer().getHand().get(0);
+    }
+
+    public Card[] poverty_cardsToKeep(MoveContext context) {
+        return controlPlayer.poverty_cardsToKeep(context);
+    }    
+    
+    public Card locusts_cardToObtain(MoveContext context, Card[] cardList) {
+		return cardList[rand.nextInt(cardList.length)]; 
+	}
+
+    public boolean blessedVillage_receiveBoons(MoveContext context, Boons boon) {
+        return true;
+    }
 
 }

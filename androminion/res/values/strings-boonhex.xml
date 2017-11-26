@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<string name="earthsgift_name">Earth\'s Gift</string>
+	<string name="earthsgift_desc">Discard Treasure, gain 4-cost</string>
+	<string name="fieldsgift_name">Field\'s Gift</string>
+	<string name="fieldsgift_desc">+1 Action, +1 Coin</string>
+	<string name="flamesgift_name">Flame\'s Gift</string>
+	<string name="flamesgift_desc">Trash from hand</string>
+	<string name="forestsgift_name">Forest\'s Gift</string>
+	<string name="forestsgift_desc">+1 Buy, +1 Coin</string>
+	<string name="moonsgift_name">Moon\'s Gift</string>
+	<string name="moonsgift_desc">Topdeck from discard</string>
+	<string name="mountainsgift_name">Mountain\'s Gift</string>
+	<string name="mountainsgift_desc">Gain silver</string>
+	<string name="riversgift_name">River\'s Gift</string>
+	<string name="riversgift_desc">+1 Card (delayed)</string>
+	<string name="seasgift_name">Sea\'s Gift</string>
+	<string name="seasgift_desc">+1 Card</string>
+	<string name="skysgift_name">Sky\'s Gift</string>
+	<string name="skysgift_desc">Discard 3, gain Gold</string>
+	<string name="sunsgift_name">Sun\'s Gift</string>
+	<string name="sunsgift_desc">Spy 4 cards</string>
+	<string name="swampsgift_name">Swamp\'s Gift</string>
+	<string name="swampsgift_desc">Gain Will-o\'-Wisp</string>
+	<string name="windsgift_name">Wind\'s Gift</string>
+	<string name="windsgift_desc">+2 Cards, discard 2 cards</string>
+
+	<string name="badomens_name">Bad Omens</string>
+	<string name="badomens_desc">Topdeck Copper</string>
+	<string name="delusion_name">Delusion</string>
+	<string name="delusion_desc">Cannot buy Actions</string>
+	<string name="envy_name">Envy</string>
+	<string name="envy_desc">Reduce Silver and Gold</string>
+	<string name="famine_name">Famine</string>
+	<string name="famine_desc">Discard Actions from deck</string>
+	<string name="fear_name">Fear</string>
+	<string name="fear_desc">Discard Action/Treasure from hand</string>
+	<string name="greed_name">Greed</string>
+	<string name="greed_desc">Gain a Copper</string>
+	<string name="haunting_name">Haunting</string>
+	<string name="haunting_desc">Topdeck from hand</string>
+	<string name="locusts_name">Locusts</string>
+	<string name="locusts_desc">Trash top of deck</string>
+	<string name="misery_name">Misery</string>
+	<string name="misery_desc">-2 VP</string>
+	<string name="plague_name">Plague</string>
+	<string name="plague_desc">Gain a Curse</string>
+	<string name="poverty_name">Poverty</string>
+	<string name="poverty_desc">Discard down to 3</string>
+	<string name="war_name">War</string>
+	<string name="war_desc">Trash 3/4-cost from deck</string>
+</resources>

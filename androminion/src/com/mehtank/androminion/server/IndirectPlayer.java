@@ -27,6 +27,7 @@ import com.vdom.core.Player;
 import com.vdom.core.QuickPlayPlayer;
 import com.vdom.core.Event;
 import com.vdom.core.Landmarks;
+import com.vdom.core.Boons;
 /**
  * Class that you can use to play remotely.
  */
@@ -3740,6 +3741,279 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
     public Card[] secretCave_cardsToDiscard(MoveContext context) {
         SelectCardOptions sco = new SelectCardOptions().setCount(3).exactCount().setPassable(getString(R.string.none)).setPickType(PickType.DISCARD);
         return getFromHand(context, getActionString(ActionType.DISCARD, Cards.secretCave), sco);
+    }
+
+    public Card changeling_cardToObtain(MoveContext context, Card[] cardList) {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cardList)
+            options.add(Strings.getCardName(c));
+        String o = selectString(context,getActionString(ActionType.GAIN, Cards.changeling), options.toArray(new String[0]));
+        return (Card) localNameToCard(o, cardList);
+    }
+
+    public boolean changeling_shouldGain(MoveContext context, Card card) {
+        if(context.isQuickPlay() && shouldAutoPlay_trader_shouldGainSilverInstead(context, card)) {
+            return super.changeling_shouldGain(context, card);
+        }
+        return !selectBoolean(context, Cards.changeling, Strings.format(R.string.trader_gain, getCardName(card)), Strings.format(R.string.trader_gain_instead_of, getCardName(Cards.changeling), getCardName(card)));
+    }
+
+    public Card[] cemetery_cardsToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_chapel_cardsToTrash(context)) {
+            return super.cemetery_cardsToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setCount(4).setPassable(getString(R.string.none)).setPickType(PickType.TRASH);
+        return getFromHand(context, getActionString(ActionType.TRASH, Cards.cemetery), sco);
+    }
+
+    public ActionCard conclave_cardToPlay(MoveContext context, ActionCard[] actions) {
+        if(context.isQuickPlay() && shouldAutoPlay_scheme_actionToPutOnTopOfDeck(context, actions)) {
+            return super.conclave_cardToPlay(context, actions);
+        }
+        ArrayList<String> options = new ArrayList<String>();
+        for (ActionCard c : actions)
+            options.add(Strings.getCardName(c));
+        String none = getString(R.string.none);
+        options.add(none);
+        String o = selectString(context, R.string.golem_first_action, Cards.conclave, options.toArray(new String[0]));
+        if(o.equals(none)) {
+            return null;
+        }
+        return (ActionCard) localNameToCard(o, actions);
+    }
+
+    public ActionCard imp_cardToPlay(MoveContext context, ActionCard[] actions) {
+        if(context.isQuickPlay() && shouldAutoPlay_scheme_actionToPutOnTopOfDeck(context, actions)) {
+            return super.imp_cardToPlay(context, actions);
+        }
+        ArrayList<String> options = new ArrayList<String>();
+        for (ActionCard c : actions)
+            options.add(Strings.getCardName(c));
+        String none = getString(R.string.none);
+        options.add(none);
+        String o = selectString(context, R.string.golem_first_action, Cards.imp, options.toArray(new String[0]));
+        if(o.equals(none)) {
+            return null;
+        }
+        return (ActionCard) localNameToCard(o, actions);
+    }
+
+    public Card exorcist_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_masquerade_cardToTrash(context)) {
+            return super.exorcist_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.exorcist), sco);
+    }
+
+    public Card exorcist_cardToObtain(MoveContext context, Card[] cardList) {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cardList)
+            options.add(Strings.getCardName(c));
+        String o = selectString(context,getActionString(ActionType.GAIN, Cards.exorcist), options.toArray(new String[0]));
+        return (Card) localNameToCard(o, cardList);
+    }
+
+    public Card[] shephard_cardsToDiscard(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_warehouse_cardsToDiscard(context)) {
+            return super.shephard_cardsToDiscard(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().isVictory().setPassable(getString(R.string.none)).setPickType(PickType.DISCARD);
+        return getFromHand(context, getActionString(ActionType.DISCARD, Cards.shephard), sco);
+    }
+
+    public Card cobbler_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_workshop_cardToObtain(context)) {
+            return super.cobbler_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().maxCost(4).potionCost(0);
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.cobbler), sco);
+    }
+
+    public ActionCard necromancer_cardToPlay(MoveContext context, ActionCard[] actions) {
+        if(context.isQuickPlay() && shouldAutoPlay_scheme_actionToPutOnTopOfDeck(context, actions)) {
+            return super.necromancer_cardToPlay(context, actions);
+        }
+        ArrayList<String> options = new ArrayList<String>();
+        for (ActionCard c : actions)
+            options.add(Strings.getCardName(c));
+        String none = getString(R.string.none);
+        options.add(none);
+        String o = selectString(context, R.string.golem_first_action, Cards.necromancer, options.toArray(new String[0]));
+        if(o.equals(none)) {
+            return null;
+        }
+        return (ActionCard) localNameToCard(o, actions);
+    }
+
+    public boolean zombieSpy_shouldDiscard(MoveContext context, Card card) {
+        if(context.isQuickPlay() && shouldAutoPlay_jackOfAllTrades_shouldDiscardCardFromTopOfDeck(context, card)) {
+            super.zombieSpy_shouldDiscard(context, card);
+        }
+        return !selectBooleanCardRevealed(context, Cards.zombieSpy, card, getString(R.string.jack_of_all_trades_option_one), getString(R.string.discard));
+    }
+
+    public Card zombieApprentice_actionToTrash(MoveContext context) {
+		if (context.isQuickPlay())
+			return super.zombieApprentice_actionToTrash(context);
+        SelectCardOptions sco = new SelectCardOptions().isAction().setPassable(getString(R.string.none)).setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.zombieApprentice), sco);
+    }
+    
+    public Card zombieMason_cardToObtain(MoveContext context, int maxCost, boolean potion,int debt) {
+        if(context.isQuickPlay() && shouldAutoPlay_remodel_cardToObtain(context, maxCost, potion)) {
+            return super.zombieMason_cardToObtain(context, maxCost, potion,debt);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPassable(getString(R.string.none)).maxCost(maxCost).potionCost(potion ? 1 : 0).debtCost(debt);
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.zombieMason), sco);
+    }
+
+	public Card pooka_cardToTrash(MoveContext context, Card[] cardList) {
+		if (context.isQuickPlay())
+			return super.pooka_cardToTrash(context, cardList);
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cardList)
+            options.add(Strings.getCardName(c));
+        String o = selectString(context, getActionString(ActionType.TRASH,Cards.pooka), options.toArray(new String[0]));
+        return (Card) localNameToCard(o, cardList);
+    }
+    
+    public Card tragicHero_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay()) {
+            return super.tragicHero_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().isTreasure();
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.tragicHero), sco);
+    }
+    
+    public TreasureCard earthsgift_treasureToDiscard(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_stables_treasureToDiscard(context)) {
+            return super.earthsgift_treasureToDiscard(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().isTreasure().setPassable(getString(R.string.none)).setPickType(PickType.DISCARD);
+        return (TreasureCard) getCardFromHand(context, getActionString(ActionType.DISCARD, Cards.boonCard), sco);
+    }
+
+    public Card earthsgift_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_workshop_cardToObtain(context)) {
+            return super.earthsgift_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().maxCost(4).potionCost(0);
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.boonCard), sco);
+    }
+
+    public Card flamesgift_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_masquerade_cardToTrash(context)) {
+            return super.flamesgift_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPassable(getString(R.string.none)).setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.boonCard), sco);
+    }
+
+	public Card moonsgift_cardToTopdeck(MoveContext context, HashSet<Card> options) {
+        LinkedHashMap<String, Card> h = new LinkedHashMap<String, Card>();
+		for (Card card : options)
+			h.put(card.getName(),card);
+		h.put("None",null);
+        String choice = selectString(context,Cards.boonCard, h.keySet().toArray(new String[0])); 
+		return h.get(choice);
+	}
+
+    public Card[] skysgift_cardsToDiscard(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().setCount(3).exactCount().setPassable(getString(R.string.none)).setPickType(PickType.DISCARD);
+        return getFromHand(context, getActionString(ActionType.DISCARD, Cards.boonCard), sco);
+    }
+
+    public Card[] sunsgift_cardsFromTopOfDeckToDiscard(MoveContext context, Card[] cards) {
+        if(context.isQuickPlay() && shouldAutoPlay_cartographer_cardsFromTopOfDeckToDiscard(context, cards)) {
+            return super.sunsgift_cardsFromTopOfDeckToDiscard(context, cards);
+        }
+
+        if(cards == null || cards.length == 0) {
+            return cards;
+        }
+
+        ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
+
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cards)
+            options.add(Strings.getCardName(c));
+        String none = getString(R.string.none);
+        options.add(none);
+
+        do {
+            String o = selectString(context, R.string.Cartographer_query, Cards.boonCard, options.toArray(new String[0]));
+            if (o.equals(none)) {
+                break;
+            }
+            cardsToDiscard.add(localNameToCard(o, cards));
+            options.remove(o);
+        } while (options.size() > 1);
+
+        return cardsToDiscard.toArray(new Card[0]);
+    }
+
+    public Card[] sunsgift_cardOrder(MoveContext context, Card[] cards) {
+        if(context.isQuickPlay() && shouldAutoPlay_cartographer_cardOrder(context, cards)) {
+            return super.sunsgift_cardOrder(context, cards);
+        }
+        ArrayList<Card> orderedCards = new ArrayList<Card>();
+        int[] order = orderCards(context, cardArrToIntArr(cards));
+        for (int i : order)
+            orderedCards.add(cards[i]);
+        return orderedCards.toArray(new Card[0]);
+    }
+
+    public Card[] windsgift_cardsToDiscard(MoveContext context) {
+        SelectCardOptions sco = new SelectCardOptions().setCount(2).exactCount().setPickType(PickType.DISCARD);
+        return getFromHand(context, getActionString(ActionType.DISCARD, Cards.boonCard), sco);
+    }
+
+    public boolean pixie_shouldTrash(MoveContext context, Boons boon) {
+        if(context.isQuickPlay() && shouldAutoPlay_miningVillage_shouldTrashMiningVillage(context)) {
+            return super.pixie_shouldTrash(context, boon);
+        }
+        return selectBoolean(context, getCardName(Cards.pixie), boon.description, getString(R.string.keep));
+    }
+
+    public boolean sacredGrove_receiveBoons(MoveContext context, Boons boon) {
+        return selectBoolean(context, getCardName(Cards.sacredGrove), boon.description, getString(R.string.discard));
+    }
+
+    public Card fear_cardToDiscard(MoveContext context, Card[] cards) {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cards)
+            options.add(Strings.getCardName(c));
+        String o = selectString(context, R.string.lookout_query_discard, Cards.hexCard, options.toArray(new String[0]));
+        return localNameToCard(o, cards);
+    }
+
+    public Card haunting_cardToPutBackOnDeck(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_courtyard_cardToPutBackOnDeck(context)) {
+            return super.haunting_cardToPutBackOnDeck(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions();
+        return getCardFromHand(context, Strings.format(R.string.courtyard_part_top_of_deck, getCardName(Cards.hexCard)), sco);
+    }
+
+    public Card[] poverty_cardsToKeep(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_militia_attack_cardsToKeep(context)) {
+            return super.poverty_cardsToKeep(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setCount(3).exactCount().setPickType(PickType.KEEP);
+        return getFromHand(context, getString(R.string.keep), sco);
+    }
+
+    public Card locusts_cardToObtain(MoveContext context, Card[] cardList) {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cardList)
+            options.add(Strings.getCardName(c));
+        String o = selectString(context,getActionString(ActionType.GAIN, Cards.hexCard), options.toArray(new String[0]));
+        return (Card) localNameToCard(o, cardList);
+    }
+
+    public boolean blessedVillage_receiveBoons(MoveContext context, Boons boon) {
+        return selectBoolean(context, getCardName(Cards.blessedVillage), boon.description, getString(R.string.keep));
     }
 
 }

@@ -202,7 +202,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 
         Player currentPlayer = context.getPlayer();
         boolean newCard = false;
-        ActionCardImpl actualCard = (this.getControlCard() != null ? (ActionCardImpl) this.getControlCard() : this);
+        ActionCardImpl actualCard = (this.getControlCard() != null  && this.getControlCard() instanceof ActionCard ? (ActionCardImpl) this.getControlCard() : this);
 
         if (this.numberTimesAlreadyPlayed == 0 && this == actualCard) {
         	newCard = true;
@@ -950,6 +950,61 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			break;
 		case SecretCave:
 			secretCave(game,context,currentPlayer);
+			break;
+		case Leprechaun:
+			leprechaun(game,context,currentPlayer);
+			break;
+		case Conclave:
+			conclave(game,context,currentPlayer);
+			break;
+		case Imp:
+			imp(game,context,currentPlayer);
+			break;
+		case Shephard:
+			shephard(game,context,currentPlayer);
+			break;
+		case Necromancer:
+			necromancer(game,context,currentPlayer);
+			break;
+		case CursedVillage:
+			cursedVillage(game,context,currentPlayer);
+			break;
+		case WillOWisp:
+			willOWisp(game,context,currentPlayer);
+			break;
+		case ZombieApprentice:
+			zombieApprentice(game,context,currentPlayer);
+			break;
+		case ZombieMason:
+			zombieMason(game,context,currentPlayer);
+			break;
+		case ZombieSpy:
+			zombieSpy(game,context,currentPlayer);
+			break;
+		case Pooka:
+			pooka(game,context,currentPlayer);
+			break;
+		case Tormentor:
+			tormentor(game,context,currentPlayer);
+			break;
+		case TragicHero:
+			tragicHero(game,context,currentPlayer);
+			break;
+		case Tracker:
+		case Bard:
+			tracker(game,context,currentPlayer);
+			break;
+		case Pixie:
+			pixie(game,context,currentPlayer);
+			break;
+		case SacredGrove:
+			sacredGrove(game,context,currentPlayer);
+			break;
+		case Fool:
+			fool(game,context,currentPlayer);
+			break;
+		case Skulk:
+			skulk(game,context,currentPlayer);
 			break;
         default:
             break;
@@ -4311,7 +4366,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 	    Card card = currentPlayer.controlPlayer.armory_cardToObtain(context);
 	    if (card != null) {
 	        // check cost
-	        if (card.getCost(context) <= 5) {
+	        if (card.getCost(context) <= 4) {
 	            currentPlayer.gainNewCard(card, this.controlCard, context);
 	            //currentPlayer.discard.remove(Cards.armory);
 	            //currentPlayer.putOnTopOfDeck(Cards.armory);
@@ -4465,8 +4520,8 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 	    	}
 	    }
 	}
-	private void deathCart(Player currentPlayer, MoveContext context)
-	{
+
+	private void deathCart(Player currentPlayer, MoveContext context) {
 		Card actionCardToTrash = currentPlayer.controlPlayer.deathCart_actionToTrash(context);
 		if (actionCardToTrash != null)
 		{
@@ -6938,6 +6993,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         currentPlayer.reveal(card, this.controlCard, context);
 		int numTypes=0;
 		if (card instanceof ActionCard) numTypes++;
+		if (card.isAttack()) numTypes++;
 		if (card.isLooter()) numTypes++;
 		if (card.isRuins()) numTypes++;
 		if (card.isPrize()) numTypes++;
@@ -6955,6 +7011,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		if (card.isFate()) numTypes++;
 		if (card.isDoom()) numTypes++;
 		if (card.isSpirit()) numTypes++;
+		if (card.isZombie()) numTypes++;
 		if (card.isShelter()) numTypes++;
         Player.CourtierOption[] options = currentPlayer.controlPlayer.courtier_chooseOptions(context,numTypes);
 		for (Player.CourtierOption option : options) {
@@ -7014,6 +7071,14 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 
     private void werewolf(Game game, MoveContext context, Player currentPlayer) {
 		if (context.nightPhase) {
+			for (Player player : game.getPlayersInTurnOrder()) {
+				if (player != currentPlayer && !isDefendedFromAttack(game, player, this.controlCard)) {
+					player.attacked(this.controlCard, context);
+					MoveContext playerContext = new MoveContext(game, player);
+					Hexes hex = game.receiveHexes(playerContext);
+					hex.applyEffect(game,playerContext,player,this.controlCard);
+				}
+			}
 		} else {
 			game.drawToHand(currentPlayer, this.controlCard);
 			game.drawToHand(currentPlayer, this.controlCard);
@@ -7036,6 +7101,256 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		} else {
 			currentPlayer.nextTurnCards.remove(this);
 			currentPlayer.playedCards.add(this);
+		}
+	}
+
+    private void leprechaun(Game game, MoveContext context, Player currentPlayer) {
+		currentPlayer.gainNewCard(Cards.gold, this, context);
+		if (currentPlayer.playedCards.size() + currentPlayer.nextTurnCards.size() == 7) {
+			currentPlayer.gainNewCard(Cards.wish, this, context);
+		} else {
+			Hexes hex = game.receiveHexes(context);
+			hex.applyEffect(game,context,currentPlayer,this.controlCard);
+		}
+	}
+
+    private void conclave(Game game, MoveContext context, Player currentPlayer) {
+		ArrayList<ActionCard> validCards = new ArrayList<ActionCard>();
+		for (Card card : currentPlayer.hand) {
+			if (card instanceof ActionCard && !currentPlayer.playedCards.contains(card) && !currentPlayer.nextTurnCards.contains(card))
+				validCards.add((ActionCard)card);
+		}
+		if (validCards.size() > 0) {
+			ActionCard cardToPlay = currentPlayer.controlPlayer.conclave_cardToPlay(context, validCards.toArray(new ActionCard[0]));
+            if (cardToPlay != null) {
+				context.actions++;
+				context.freeActionInEffect++;
+				cardToPlay.play(game, context);
+				context.freeActionInEffect--;
+            }
+		}
+	}
+
+    private void imp(Game game, MoveContext context, Player currentPlayer) {
+		ArrayList<ActionCard> validCards = new ArrayList<ActionCard>();
+		for (Card card : currentPlayer.hand) {
+			if (card instanceof ActionCard && !currentPlayer.playedCards.contains(card) && !currentPlayer.nextTurnCards.contains(card))
+				validCards.add((ActionCard)card);
+		}
+		if (validCards.size() > 0) {
+			ActionCard cardToPlay = currentPlayer.controlPlayer.imp_cardToPlay(context, validCards.toArray(new ActionCard[0]));
+            if (cardToPlay != null) {
+				context.freeActionInEffect++;
+				cardToPlay.play(game, context);
+				context.freeActionInEffect--;
+            }
+		}
+	}
+
+	public void shephard(Game game, MoveContext context, Player currentPlayer) {
+		Card[] cardsToDiscard = currentPlayer.controlPlayer.shephard_cardsToDiscard(context);
+		for (Card card : cardsToDiscard) {
+			currentPlayer.hand.remove(card);
+			currentPlayer.discard(card, this.controlCard, context);
+			game.drawToHand(currentPlayer, this.controlCard);
+			game.drawToHand(currentPlayer, this.controlCard);
+		}
+	}
+
+	public void necromancer(Game game, MoveContext context, Player currentPlayer) {
+        HashSet<String> cardNames = new HashSet<String>();
+		ArrayList<ActionCard> validCards = new ArrayList<ActionCard>();
+		for (Card card : game.trashPile) {
+			if (!cardNames.contains(card.getName()) && card instanceof ActionCard && !(card instanceof DurationCard) && !game.necromancerTrashPile.contains(card)) {
+				cardNames.add(card.getName());
+				validCards.add((ActionCard)card);
+			}
+		}
+		ActionCard cardToPlay;
+		if (validCards.size() == 0)
+			return;
+		if (validCards.size() == 1)
+			cardToPlay = validCards.get(0);
+		else
+			cardToPlay = currentPlayer.controlPlayer.necromancer_cardToPlay(context, validCards.toArray(new ActionCard[0]));
+		game.necromancerTrashPile.add(cardToPlay);
+
+    	if (!this.isImpersonatingAnotherCard()) {
+			this.startImpersonatingCard(cardToPlay.getTemplateCard().instantiate());
+    	}
+        ActionCardImpl zombieCard = (ActionCardImpl) this.impersonatingCard;
+        context.freeActionInEffect++;
+        zombieCard.play(game, context, false);
+        context.freeActionInEffect--;
+	}
+
+    private void cursedVillage(Game game, MoveContext context, Player currentPlayer) {
+        while (currentPlayer.hand.size() < 6) {
+            Card draw = game.draw(currentPlayer);
+            if (draw == null) {
+                break;
+            }
+            currentPlayer.hand.add(draw);
+        }
+    }
+
+	public void willOWisp(Game game, MoveContext context, Player currentPlayer) {
+		Card c = game.draw(currentPlayer);
+		if (c != null) {
+			currentPlayer.reveal(c, this.controlCard, context);
+			if (c.getCost(context) <= 2) {
+				currentPlayer.hand.add(c);
+			} else {
+				currentPlayer.putOnTopOfDeck(c);
+			}
+		}
+	}
+	
+	public void zombieSpy(Game game, MoveContext context, Player currentPlayer) {
+		Card card = game.draw(currentPlayer);
+		if (card != null) {
+			currentPlayer.reveal(card, this.controlCard, context);
+			boolean discard = currentPlayer.controlPlayer.zombieSpy_shouldDiscard(context, card);
+			if (discard) {
+				currentPlayer.discard(card, this.controlCard, context);
+			} else {
+				currentPlayer.putOnTopOfDeck(card);
+			}
+		}
+	}
+
+	private void zombieApprentice(Game game, MoveContext context, Player currentPlayer) {
+		Card actionCardToTrash = currentPlayer.controlPlayer.zombieApprentice_actionToTrash(context);
+		if (actionCardToTrash != null)
+		{
+			currentPlayer.hand.remove(actionCardToTrash);
+            currentPlayer.trash(actionCardToTrash, this.controlCard, context);
+			context.actions++;
+			game.drawToHand(currentPlayer, this.controlCard);
+			game.drawToHand(currentPlayer, this.controlCard);
+			game.drawToHand(currentPlayer, this.controlCard);
+		}
+	}
+
+    private void zombieMason(Game game, MoveContext context, Player player) {
+		Card draw = game.draw(player);
+		if (draw == null)
+			return;
+		int value = draw.getCost(context);
+		value++;
+		boolean potion = draw.costPotion();
+		int debt = draw.costDebt();
+		player.trash(draw, this.controlCard, context);
+		Card card = player.controlPlayer.zombieMason_cardToObtain(context, value, potion, debt);
+		if (card != null)
+			player.gainNewCard(card, this.controlCard, context);
+    }
+
+	public void pooka(Game game, MoveContext context, Player currentPlayer) {
+	    HashSet<String> cardNames = new HashSet<String>();
+		ArrayList<Card> options = new ArrayList<Card>();
+		for (Card card : currentPlayer.hand) {
+			if (card instanceof TreasureCard && !card.equals(Cards.cursedGold) && !cardNames.contains(card.getName())) {
+				options.add(card);
+				cardNames.add(card.getName());
+			}
+		}
+		if (options.size() > 0) {
+			Card cardToTrash = currentPlayer.controlPlayer.pooka_cardToTrash(context,options.toArray(new Card[0]));
+			if (cardToTrash!=null) {
+				currentPlayer.hand.remove(cardToTrash);
+				currentPlayer.trash(cardToTrash, this.controlCard, context);
+				game.drawToHand(currentPlayer, this.controlCard);
+				game.drawToHand(currentPlayer, this.controlCard);
+				game.drawToHand(currentPlayer, this.controlCard);
+				game.drawToHand(currentPlayer, this.controlCard);
+			}
+		}
+	}
+
+    private void tormentor(Game game, MoveContext context, Player currentPlayer) {
+		if (currentPlayer.nextTurnCards.size()==0 && currentPlayer.playedCards.size()==1 && currentPlayer.playedCards.get(0)==this.controlCard) {
+			currentPlayer.gainNewCard(Cards.imp, this, context);
+		} else {
+			for (Player player : game.getPlayersInTurnOrder()) {
+				if (player != currentPlayer && !isDefendedFromAttack(game, player, this.controlCard)) {
+					player.attacked(this.controlCard, context);
+					MoveContext playerContext = new MoveContext(game, player);
+					Hexes hex = game.receiveHexes(playerContext);
+					hex.applyEffect(game,playerContext,player,this.controlCard);
+				}
+			}
+		}
+	}
+
+    private void tragicHero(Game game, MoveContext context, Player currentPlayer) {
+		if (currentPlayer.hand.size() >= 8) {
+			if (!this.controlCard.movedToNextTurnPile) {
+				this.controlCard.movedToNextTurnPile = true;
+				currentPlayer.trash(this.controlCard, null, context);
+				currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(this.controlCard));
+			}
+			boolean available = false;
+			for (Card c : context.game.getCardsInGame()) {
+				if (c instanceof TreasureCard && context.game.getPile(c).getCount() > 0) {
+					available = true;
+				}
+			}
+			if (available) {
+				Card s = context.player.controlPlayer.tragicHero_cardToObtain(context);
+				context.player.controlPlayer.gainNewCard(s, this.controlCard, context);
+			}
+		}
+	}
+
+    private void tracker(Game game, MoveContext context, Player currentPlayer) {
+		Boons boon = game.receiveBoons(context);
+		boon.applyEffect(game,context,currentPlayer,this.controlCard);
+	}
+
+    private void fool(Game game, MoveContext context, Player currentPlayer) {
+		for (int i=0;i<3;i++) {
+			Boons boon = game.receiveBoons(context);
+			boon.applyEffect(game,context,currentPlayer,this.controlCard);
+		}
+	}
+
+    private void pixie(Game game, MoveContext context, Player currentPlayer) {
+		Boons boon = game.receiveBoons(context);
+        if (!this.controlCard.movedToNextTurnPile) {
+            if (currentPlayer.controlPlayer.pixie_shouldTrash(context, boon)) {
+				boon.applyEffect(game,context,currentPlayer,this.controlCard);
+				boon.applyEffect(game,context,currentPlayer,this.controlCard);
+                this.controlCard.movedToNextTurnPile = true;
+                currentPlayer.trash(this.controlCard, null, context);
+                currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(this.controlCard));
+            }
+        }
+	}
+
+    private void sacredGrove(Game game, MoveContext context, Player currentPlayer) {
+		Boons boon = game.receiveBoons(context);
+		boon.applyEffect(game,context,currentPlayer,this.controlCard);
+		if (boon.type!=Boons.Type.Fieldsgift && boon.type!=Boons.Type.Forestsgift) {
+			for (Player player : game.getPlayersInTurnOrder()) {
+				if (player != currentPlayer) {
+					MoveContext playerContext = new MoveContext(game, player);
+					if (player.sacredGrove_receiveBoons(playerContext, boon)) {
+						boon.applyEffect(game,playerContext,player,this.controlCard);
+					}
+				}
+			}
+		}
+	}
+
+    private void skulk(Game game, MoveContext context, Player currentPlayer) {
+		for (Player player : game.getPlayersInTurnOrder()) {
+			if (player != currentPlayer && !isDefendedFromAttack(game, player, this.controlCard)) {
+				player.attacked(this.controlCard, context);
+				MoveContext playerContext = new MoveContext(game, player);
+				Hexes hex = game.receiveHexes(playerContext);
+				hex.applyEffect(game,playerContext,player,this.controlCard);
+			}
 		}
 	}
 

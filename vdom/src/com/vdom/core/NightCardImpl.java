@@ -100,6 +100,14 @@ public class NightCardImpl extends CardImpl {
 				currentPlayer.gainNewCard(Cards.gold, this.controlCard, context);
 			}
 		} else if (this.equals(Cards.vampire)) {
+			for (Player player : game.getPlayersInTurnOrder()) {
+				if (player != currentPlayer && !Util.isDefendedFromAttack(game, player, this.controlCard)) {
+					player.attacked(this.controlCard, context);
+					MoveContext playerContext = new MoveContext(game, player);
+					Hexes hex = game.receiveHexes(playerContext);
+					hex.applyEffect(game,playerContext,player,this.controlCard);
+				}
+			}
 			ArrayList<Card> validCards = new ArrayList<Card>();
 			for (Card card : game.getCardsInGame()) {
 				if (Cards.isSupplyCard(card) && game.getCardsLeftInPile(card) > 0
@@ -170,11 +178,21 @@ public class NightCardImpl extends CardImpl {
 					options.add(card);
 				}
 			}
+			if (options.size() == 0) {
+				currentPlayer.nextTurnCards.remove(this.controlCard);
+				currentPlayer.playedCards.add(this.controlCard);
+				return;
+			}
 			Card[] cardsToSetAside = currentPlayer.controlPlayer.crypt_cardsToSetAside(context, options.toArray(new Card[0]));
 			for (Card card : cardsToSetAside) {
 				currentPlayer.playedCards.remove(card);
 			}
 			ArrayList<Card> cardsList = new ArrayList<Card>(Arrays.asList(cardsToSetAside));
+			if (options.size() == 0) {
+				currentPlayer.nextTurnCards.remove(this.controlCard);
+				currentPlayer.playedCards.add(this.controlCard);
+				return;
+			}
 			currentPlayer.crypt.add(cardsList);
 		} else if (this.equals(Cards.monastery)) {
 			int numObtained = game.cardsObtainedLastTurn[game.playersTurn].size();
@@ -224,6 +242,77 @@ public class NightCardImpl extends CardImpl {
 						currentPlayer.putOnTopOfDeck(order[i]);
 					}
 				}
+			}
+		} else if (this.equals(Cards.changeling)) {
+			if (!this.controlCard.movedToNextTurnPile) {
+				this.controlCard.movedToNextTurnPile = true;
+				currentPlayer.trash(this.controlCard, null, context);
+				currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(this.controlCard));
+			}
+			ArrayList<Card> validCards = new ArrayList<Card>();
+			HashSet<String> cardNames = new HashSet<String>();
+			for (Card card : currentPlayer.playedCards) {
+				if (!cardNames.contains(card.getName()) && Cards.isSupplyCard(card) && game.getCardsLeftInPile(card) > 0) {
+					cardNames.add(card.getName());
+					validCards.add(card);
+				}
+			}
+			for (Card card : currentPlayer.nextTurnCards) {
+				if (!cardNames.contains(card.getName())) {
+					cardNames.add(card.getName());
+					validCards.add(card);
+				}
+			}
+			if (validCards.size() == 0)
+				return;
+			Card card = currentPlayer.controlPlayer.changeling_cardToObtain(context, validCards.toArray(new Card[0]));
+			if (card!=null)
+				currentPlayer.gainNewCard(card, this.controlCard, context);
+		} else if (this.equals(Cards.exorcist)) {
+			Card toTrash = currentPlayer.controlPlayer.exorcist_cardToTrash(context);
+			if (toTrash == null)
+				return;
+			currentPlayer.hand.remove(toTrash);
+			currentPlayer.trash(toTrash, this.controlCard, context);
+			ArrayList<Card> validCards = new ArrayList<Card>();
+			if (Cards.willOWisp.getCost(context) < toTrash.getCost(context))
+				validCards.add(Cards.willOWisp);
+			if (Cards.imp.getCost(context) < toTrash.getCost(context))
+				validCards.add(Cards.imp);
+			if (Cards.ghost.getCost(context) < toTrash.getCost(context))
+				validCards.add(Cards.ghost);
+			if (validCards.size() == 0)
+				return;
+			else if (validCards.size() == 1)
+				currentPlayer.gainNewCard(validCards.get(0), this.controlCard, context);
+			else {
+				Card card = currentPlayer.controlPlayer.exorcist_cardToObtain(context, validCards.toArray(new Card[0]));
+				currentPlayer.gainNewCard(card, this.controlCard, context);
+			}
+		} else if (this.equals(Cards.ghost)) {
+			ArrayList<Card> toDiscard = new ArrayList<Card>();
+			Card toGhost = null;
+			while (toGhost==null) {
+				Card draw = game.draw(currentPlayer);
+				if (draw == null) {
+					break;
+				}
+				currentPlayer.reveal(draw, this.controlCard, context);
+				if (draw instanceof ActionCard) {
+					toGhost = draw;
+				} else {
+					toDiscard.add(draw);
+				}
+			}
+			while (!toDiscard.isEmpty()) {
+				currentPlayer.discard(toDiscard.remove(0), this.controlCard, null);
+			}
+			if (toGhost != null) {
+				((ActionCardImpl)toGhost).controlCard = this;
+				currentPlayer.ghost.add((ActionCard)toGhost);
+			} else {
+				currentPlayer.nextTurnCards.remove(this.controlCard);
+				currentPlayer.playedCards.add(this.controlCard);
 			}
 		}
     }

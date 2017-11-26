@@ -39,6 +39,9 @@ public class GameEvent {
         CardDiscarded, // A card was discarded
         CardAddedToHand, // A new card has been added to a player's hand
         CardRemovedFromHand, // A card has been removed from a player's hand
+
+		ReceivedBoon,
+		ReceivedHex,
     }
 
     public Type type;
