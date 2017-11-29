@@ -345,6 +345,15 @@ public class Event {
 		} else if (gameType == GameType.NoMoneyNoProblems) {
 			set.add(mission);
 			return set;
+		} else if (gameType == GameType.MonsterMash) {
+			set.add(quest);
+			return set;
+		} else if (gameType == GameType.LostInTheWoods) {
+			set.add(pilgrimage);
+			return set;
+		} else if (gameType == GameType.PookaPranks) {
+			set.add(banquet);
+			return set;
 		} else if (gameType == GameType.Random)
 			candidates = allEvents;
 		else if (gameType == GameType.RandomAdventures)

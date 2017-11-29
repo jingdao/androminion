@@ -155,7 +155,37 @@ public enum GameType {
 	AreaControl("Area Control (Emp, Adv)"), NoMoneyNoProblems("No Money No Problems (Emp, Adv)"),
 
 	//Nocturne
-	RandomNocturne("Random Nocturne"),
+	RandomNocturne("Random Nocturne"), Dusk("Dusk (Noc)"), Midnight("Midnight (Noc)"),
+
+	//Nocturne + Base
+	NightShift("Night Shift (Noc, Base)"), IdleHands("Idle Hands (Noc, Base)"),
+
+	//Nocturne + Intrigue
+	ShadowyFigures("Shadowy Figures (Noc, Intr)"), ImpendingDoom("Impending Doom (Noc, Intr)"),
+
+	//Nocturne + Seaside
+	TheNewBlack("The New Black (Noc, Sea)"), ForbiddenIsle("Forbidden Isle (Noc, Sea)"),
+
+	//Nocturne + Alchemy
+	NightmareFuel("Nightmare Fuel (Noc, Alch)"),
+
+	//Nocturne + Prosperity
+	TreasuresOfTheNight("Treasures of the Night (Noc, Prsp)"), DayAtTheRaces("Day at the Races (Noc, Prsp)"),
+
+	//Nocturne + Cornucopia + Guilds
+	TheEndlessFair("The Endless Fair (Noc, Corn, Guilds)"), HappyChaos("Happy Chaos (Noc, Corn, Guilds)"),
+
+	//Nocturne + Hinterlands
+	SearchParty("Search Party (Noc, Hntr)"), CountingSheep("Counting Sheep (Noc, Hntr)"),
+
+	//Nocturne + Dark Ages
+	GraveMatters("Grave Matters (Noc, DA)"), RatsAndBats("Rats and Bats (Noc, DA)"),
+
+	//Nocturne + Adventures
+	MonsterMash("Monster Mash (Noc, Adv)"), LostInTheWoods("Lost in the Woods (Noc, Adv)"),
+
+	//Nocturne + Empires
+	Luftschloss("Luftschloss (Noc, Emp)"), PookaPranks("Pooka Pranks (Noc, Emp)"),
 
     // All Cards
     Random("Random"), 

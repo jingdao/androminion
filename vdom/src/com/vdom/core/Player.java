@@ -52,8 +52,16 @@ public abstract class Player {
 	public Card minusCostToken = null;
 	public Card trashingToken = null;
 	public Card estateToken = null;
+
+	//nocturne states
 	public boolean riversgift = false;
 	public Boons savedBoon = null;
+	public boolean lostInTheWoods = false;
+	public boolean deluded = false;
+	public boolean envious = false;
+	public boolean returnDeludedEnvious = false;
+	public boolean miserable = false;
+	public boolean twiceMiserable = false;
     
     private Card checkLeadCard;
     private int victoryTokens;
@@ -406,8 +414,6 @@ public abstract class Player {
 			Landmarks.baths.applyEffect(context.game,context,this,null);
 		}
 
-		game.necromancerTrashPile.clear();
-
         while (!playedCards.isEmpty()) {
     		discard(playedCards.remove(0), null, context, false);
     	}
@@ -521,7 +527,12 @@ public abstract class Player {
     }
 
     public int getVictoryTokens() {
-        return victoryTokens;
+		if (twiceMiserable)
+			return victoryTokens - 4;
+		else if (miserable)
+			return victoryTokens - 2;
+		else
+			return victoryTokens;
     }
 
 	public int getDebtTokens() {
@@ -1811,7 +1822,7 @@ public abstract class Player {
     public abstract ActionCard imp_cardToPlay(MoveContext context, ActionCard[] cardList);
     public abstract Card exorcist_cardToTrash(MoveContext context);
     public abstract Card exorcist_cardToObtain(MoveContext context, Card[] cardList);
-    public abstract Card[] shephard_cardsToDiscard(MoveContext context);
+    public abstract Card[] shepherd_cardsToDiscard(MoveContext context);
 	public abstract Card cobbler_cardToObtain(MoveContext context);
     public abstract ActionCard necromancer_cardToPlay(MoveContext context, ActionCard[] cardList);
     public abstract boolean zombieSpy_shouldDiscard(MoveContext context, Card card);
@@ -1834,6 +1845,9 @@ public abstract class Player {
     public abstract Card[] poverty_cardsToKeep(MoveContext context);
     public abstract Card locusts_cardToObtain(MoveContext context, Card[] cardList);
     public abstract boolean blessedVillage_receiveBoons(MoveContext context, Boons boon);
+    public abstract Card lostInTheWoods_cardToDiscard(MoveContext context);
+    public abstract Boons druid_boonToPlay(MoveContext context, Boons[] boons);
+    public abstract boolean tracker_shouldPutCardOnDeck(MoveContext context, Card card);
 
 	// ////////////////////////////////////////////
     // Card interactions - Promotional Cards

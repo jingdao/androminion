@@ -668,8 +668,8 @@
 	<string name="GhostTown_desc">This is gained to your hand (instead of to your discard pile).</string>
 	<string name="Crypt_name">Crypt</string>
 	<string name="Crypt_desc">Set aside any number of Treasures you have in play. While any remain, at the start of each of your turns, put one of them into your hand.</string>
-	<string name="Shephard_name">Shepard</string>
-	<string name="Shephard_desc">Discard any number of Victory cards, revealing them. +2 Cards per card discarded.</string>
+	<string name="Shepherd_name">Shepherd</string>
+	<string name="Shepherd_desc">Discard any number of Victory cards, revealing them. +2 Cards per card discarded.</string>
 	<string name="Pooka_name">Pooka</string>
 	<string name="Pooka_desc">You may trash a Treasure other than Cursed Gold from your hand, for +4 Cards.</string>
 	<string name="Cemetery_name">Cemetery</string>

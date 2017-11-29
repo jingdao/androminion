@@ -60,8 +60,22 @@ public class Hexes {
 				}
 				break;
 			case Delusion:
+				if (!currentPlayer.deluded && !currentPlayer.envious) {
+					for (Player player : game.getPlayersInTurnOrder()) {
+						player.deluded = false;
+						player.returnDeludedEnvious = false;
+					}
+					currentPlayer.deluded = true;
+				}
 				break;
 			case Envy:
+				if (!currentPlayer.deluded && !currentPlayer.envious) {
+					for (Player player : game.getPlayersInTurnOrder()) {
+						player.envious = false;
+						player.returnDeludedEnvious = false;
+					}
+					currentPlayer.envious = true;
+				}
 				break;
 			case Famine:
                 ArrayList<Card> topOfTheDeck = new ArrayList<Card>();
@@ -151,6 +165,10 @@ public class Hexes {
 				}
 				break;
 			case Misery:
+				if (!currentPlayer.miserable)
+					currentPlayer.miserable = true;
+				else
+					currentPlayer.twiceMiserable = true;
 				break;
 			case Plague:
 				currentPlayer.gainNewCard(Cards.curse, Cards.hexCard, context);
@@ -168,7 +186,6 @@ public class Hexes {
 						currentPlayer.trash(draw, cardResponsible, context);
 						break;
 					} else {
-						currentPlayer.reveal(draw, cardResponsible, context);
 						currentPlayer.discard(draw, cardResponsible, null);
 					}
 				}

@@ -383,6 +383,9 @@ public class Landmarks {
 		} else if (gameType == GameType.NoMoneyNoProblems) {
 			set.add(banditFort);
 			return set;
+		} else if (gameType == GameType.Luftschloss) {
+			set.add(tomb);
+			return set;
 		} else if (gameType == GameType.Random)
 			candidates = allLandmarks;
 		else if (gameType == GameType.RandomEmpires)

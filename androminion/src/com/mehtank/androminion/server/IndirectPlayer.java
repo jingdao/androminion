@@ -487,6 +487,8 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
     @Override
     public Object doBuy(MoveContext context) {
         SelectCardOptions sco = new SelectCardOptions().isBuy().maxCost(context.getCoinAvailableForBuy()).copperCountInPlay(context.countCardsInPlay(Cards.copper)).potionCost(context.getPotions()).buyCardsAllowed(!context.player.missionTurn).setPassable(getString(R.string.end_turn)).setPickType(PickType.BUY);
+		if (context.player.deluded && context.player.returnDeludedEnvious)
+			sco.isNonAction();
         return getCardOrEventFromTable(context, getString(R.string.part_buy), sco);
     }
 
@@ -3814,12 +3816,12 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return (Card) localNameToCard(o, cardList);
     }
 
-    public Card[] shephard_cardsToDiscard(MoveContext context) {
+    public Card[] shepherd_cardsToDiscard(MoveContext context) {
         if(context.isQuickPlay() && shouldAutoPlay_warehouse_cardsToDiscard(context)) {
-            return super.shephard_cardsToDiscard(context);
+            return super.shepherd_cardsToDiscard(context);
         }
         SelectCardOptions sco = new SelectCardOptions().isVictory().setPassable(getString(R.string.none)).setPickType(PickType.DISCARD);
-        return getFromHand(context, getActionString(ActionType.DISCARD, Cards.shephard), sco);
+        return getFromHand(context, getActionString(ActionType.DISCARD, Cards.shepherd), sco);
     }
 
     public Card cobbler_cardToObtain(MoveContext context) {
@@ -3973,7 +3975,7 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         if(context.isQuickPlay() && shouldAutoPlay_miningVillage_shouldTrashMiningVillage(context)) {
             return super.pixie_shouldTrash(context, boon);
         }
-        return selectBoolean(context, getCardName(Cards.pixie), boon.description, getString(R.string.keep));
+        return selectBoolean(context, getCardName(Cards.pixie), boon.description+" twice", getString(R.string.keep));
     }
 
     public boolean sacredGrove_receiveBoons(MoveContext context, Boons boon) {
@@ -4014,6 +4016,33 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
 
     public boolean blessedVillage_receiveBoons(MoveContext context, Boons boon) {
         return selectBoolean(context, getCardName(Cards.blessedVillage), boon.description, getString(R.string.keep));
+    }
+
+    public Card lostInTheWoods_cardToDiscard(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_hamlet_cardToDiscardForAction(context)) {
+            return super.lostInTheWoods_cardToDiscard(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPassable(getString(R.string.none)).setPickType(PickType.DISCARD);
+        return getCardFromHand(context, getActionString(ActionType.DISCARD, Cards.fool), sco);
+    }
+
+	public Boons druid_boonToPlay(MoveContext context, Boons[] boons) {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Boons b : boons)
+            options.add(b.description);
+        String o = selectString(context,getActionString(ActionType.PLAY, Cards.druid), options.toArray(new String[0]));
+		if (o.equals(options.get(0)))
+			return boons[0];
+		if (o.equals(options.get(1)))
+			return boons[1];
+		return boons[2];
+	}
+
+    public boolean tracker_shouldPutCardOnDeck(MoveContext context, Card card) {
+        if(context.isQuickPlay() && shouldAutoPlay_royalSeal_shouldPutCardOnDeck(context, card)) {
+            return super.tracker_shouldPutCardOnDeck(context, card);
+        }
+        return selectBooleanCardRevealed(context, Cards.tracker, card, getString(R.string.top_of_deck), getString(R.string.take_normal));
     }
 
 }

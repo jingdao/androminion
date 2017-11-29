@@ -22,6 +22,11 @@ public class PlayerSummary {
 	public boolean md;
 	public boolean mc;
 	public boolean jt;
+	public boolean lw;
+	public boolean dl;
+	public boolean ev;
+	public boolean ms;
+	public boolean tm;
 	public boolean highlight = false;
 	public int turns;
 	
@@ -29,7 +34,7 @@ public class PlayerSummary {
 		this.name = name;
 	}
 	
-	public void set(String name, int turns, int deckSize, int handSize, int numCards, int pt, int vt, int gct, int dt, boolean md, boolean mc, boolean jt, boolean highlight){
+	public void set(String name, int turns, int deckSize, int handSize, int numCards, int pt, int vt, int gct, int dt, boolean md, boolean mc, boolean jt, boolean lw, boolean dl, boolean ev, boolean ms, boolean tm, boolean highlight){
 		this.name = name;
 		this.turns = turns;
 		this.deckSize = deckSize;
@@ -42,6 +47,11 @@ public class PlayerSummary {
 		this.md = md;
 		this.mc = mc;
 		this.jt = jt;
+		this.lw = lw;
+		this.dl = dl;
+		this.ev = ev;
+		this.ms = ms;
+		this.tm = tm;
 		this.highlight = highlight;
 	}
 	

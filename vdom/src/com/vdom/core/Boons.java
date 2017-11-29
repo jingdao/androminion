@@ -14,6 +14,7 @@ public class Boons {
 	public static ArrayList<Boons> boonsNocturne = new ArrayList<Boons>();
 	public static ArrayList<Boons> allBoons = new ArrayList<Boons>();
     public static HashMap<String,Boons> boonsMap = new HashMap<String,Boons>();
+	public static ArrayList<Boons> setAsideBoons = new ArrayList<Boons>();
 
 	public enum Type {
 		Earthsgift, Fieldsgift, Flamesgift, Forestsgift, Moonsgift, Mountainsgift,
@@ -50,7 +51,6 @@ public class Boons {
 				Card toDiscard = currentPlayer.controlPlayer.earthsgift_treasureToDiscard(context);
 				if (toDiscard!=null) {
 					currentPlayer.hand.remove(toDiscard);
-					currentPlayer.reveal(toDiscard, cardResponsible, context);
 					currentPlayer.discard(toDiscard, cardResponsible, context);
 					Card card = currentPlayer.controlPlayer.earthsgift_cardToObtain(context);
 					if (card!=null)
@@ -94,11 +94,12 @@ public class Boons {
 				game.drawToHand(currentPlayer, cardResponsible);
 				break;
 			case Skysgift:
+				if (currentPlayer.controlPlayer.hand.size() < 3)
+					break;
 				Card[] cardsToDiscard = currentPlayer.controlPlayer.skysgift_cardsToDiscard(context);
 				if (cardsToDiscard != null) {
 					for (Card card : cardsToDiscard) {
 						currentPlayer.hand.remove(card);
-						currentPlayer.reveal(card, cardResponsible, context);
 						currentPlayer.discard(card, cardResponsible, context);
 					}
 					if (cardsToDiscard.length == 3) {
@@ -143,7 +144,6 @@ public class Boons {
 				if (discards != null) {
 					for (Card card : discards) {
 						currentPlayer.hand.remove(card);
-						currentPlayer.reveal(card, cardResponsible, context);
 						currentPlayer.discard(card, cardResponsible, context);
 					}
 				}

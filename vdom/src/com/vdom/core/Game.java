@@ -403,6 +403,8 @@ public class Game {
         context.addGold = 0;
         context.potions = 0;
         context.buyPhase = true;
+		if (player.deluded || player.envious)
+			player.returnDeludedEnvious = true;
 
         boolean selectingCoins = playerShouldSelectCoinsToPlay(context, player.getHand());
         ArrayList<TreasureCard> treasures = null;
@@ -606,6 +608,10 @@ public class Game {
 			player.hand.add(player.save.remove(0));
 		}
 
+		while (!necromancerTrashPile.isEmpty()) {
+			trashPile.add(necromancerTrashPile.remove(0));
+		}
+
 		for (Player p : getPlayersInTurnOrder()) {
 			while (!p.faithfulHound.isEmpty()) {
 				p.hand.add(p.faithfulHound.remove(0));
@@ -627,6 +633,11 @@ public class Game {
 			if (p.riversgift)
 				drawToHand(p,null,false);
 			p.riversgift = false;
+		}
+		if (player.returnDeludedEnvious) {
+			player.deluded = false;
+			player.envious = false;
+			player.returnDeludedEnvious = false;
 		}
 
         // /////////////////////////////////
@@ -942,6 +953,16 @@ public class Game {
 					player.playedCards.add(player.nextTurnCards.remove(index));
 			} else
 				i++;
+		}
+
+		if (player.lostInTheWoods) {
+			Card cardToDiscard = player.controlPlayer.lostInTheWoods_cardToDiscard(context);
+			if (cardToDiscard!=null) {
+				player.hand.remove(cardToDiscard);
+				player.discard(cardToDiscard, Cards.fool, null);
+				Boons boon = receiveBoons(context);
+				boon.applyEffect(this,context,player,Cards.fool);
+			}
 		}
 
 		ArrayList<Card> calledReserves = new ArrayList<Card>();
@@ -1336,6 +1357,9 @@ public class Game {
         if ((context.countCardsInPlay(Cards.copper) > 0) && card.equals(Cards.grandMarket)) {
             return false;
         }
+		
+		if (context.player.deluded && context.player.returnDeludedEnvious && card instanceof ActionCard)
+			return false;
 
         int cost = card.getCost(context, true);
 
@@ -1833,7 +1857,7 @@ public class Game {
             	player.discard(takeFromPile(Cards.goat), null, null);
 				numCoppers--;
 			}
-			if (piles.containsKey(Cards.shephard.getName())) {
+			if (piles.containsKey(Cards.shepherd.getName())) {
             	player.discard(takeFromPile(Cards.pasture), null, null);
 				numCoppers--;
 			}
@@ -1908,10 +1932,12 @@ public class Game {
 		tax.clear();
 		supplyVictoryTokens.clear();
 		trashPile.clear();
+		necromancerTrashPile.clear();
 		eventsList.clear();
 		landmarksList.clear();
 		boonsPile.clear();
 		boonsDiscard.clear();
+		Boons.setAsideBoons.clear();
 		hexesPile.clear();
 		hexesDiscard.clear();
 
@@ -2182,7 +2208,7 @@ public class Game {
 			addPile(Cards.magicLamp, numPlayers, false);
 		if (piles.containsKey(Cards.pixie.getName()))
 			addPile(Cards.goat, numPlayers, false);
-		if (piles.containsKey(Cards.shephard.getName()))
+		if (piles.containsKey(Cards.shepherd.getName()))
 			addPile(Cards.pasture, numPlayers, false);
 		if (piles.containsKey(Cards.tracker.getName()))
 			addPile(Cards.pouch, numPlayers, false);
@@ -2328,6 +2354,41 @@ public class Game {
 				break;
 			}
 		}
+
+		if (piles.containsKey(Cards.druid.getName())) {
+			if (gameType == GameType.Midnight) {
+				Boons.setAsideBoons.add(Boons.swampsgift);
+				Boons.setAsideBoons.add(Boons.flamesgift);
+				Boons.setAsideBoons.add(Boons.windsgift);
+				boonsPile.removeAll(Boons.setAsideBoons);
+			} else if (gameType == GameType.NightShift) {
+				Boons.setAsideBoons.add(Boons.earthsgift);
+				Boons.setAsideBoons.add(Boons.flamesgift);
+				Boons.setAsideBoons.add(Boons.forestsgift);
+				boonsPile.removeAll(Boons.setAsideBoons);
+			} else if (gameType == GameType.DayAtTheRaces) {
+				Boons.setAsideBoons.add(Boons.swampsgift);
+				Boons.setAsideBoons.add(Boons.riversgift);
+				Boons.setAsideBoons.add(Boons.forestsgift);
+				boonsPile.removeAll(Boons.setAsideBoons);
+			} else if (gameType == GameType.SearchParty) {
+				Boons.setAsideBoons.add(Boons.mountainsgift);
+				Boons.setAsideBoons.add(Boons.skysgift);
+				Boons.setAsideBoons.add(Boons.sunsgift);
+				boonsPile.removeAll(Boons.setAsideBoons);
+			} else if (gameType == GameType.LostInTheWoods) {
+				Boons.setAsideBoons.add(Boons.skysgift);
+				Boons.setAsideBoons.add(Boons.fieldsgift);
+				Boons.setAsideBoons.add(Boons.seasgift);
+				boonsPile.removeAll(Boons.setAsideBoons);
+			} else {
+				Boons.setAsideBoons.add(boonsPile.remove(0));
+				Boons.setAsideBoons.add(boonsPile.remove(0));
+				Boons.setAsideBoons.add(boonsPile.remove(0));
+			}
+		}
+
+
 		for (AbstractCardPile pile : piles.values()) {
 			if (pile.card().isDoom()) {
 				hexesPile.addAll(Hexes.allHexes);
@@ -2516,6 +2577,8 @@ public class Game {
 
                     if(!handled) {
                         if (context.isRoyalSealInPlay() && context.player.controlPlayer.royalSeal_shouldPutCardOnDeck((MoveContext) context, event.card)) {
+                            player.putOnTopOfDeck(event.card);
+						} else if (context.player.playedCards.contains(Cards.tracker) && context.player.controlPlayer.tracker_shouldPutCardOnDeck(context, event.card)) {
                             player.putOnTopOfDeck(event.card);
                         } else if (event.card.equals(Cards.nomadCamp)) {
                             player.putOnTopOfDeck(event.card);

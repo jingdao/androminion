@@ -22,6 +22,9 @@ public class DeckView extends RelativeLayout {
 	private TextView minusCoinToken;
 	private TextView minusCardToken;
 	private TextView journeyToken;
+	private TextView lostInTheWoods;
+	private TextView deluded;
+	private TextView miserable;
 	private TextView counts;
 
 	private boolean showCardCounts = true;
@@ -42,6 +45,9 @@ public class DeckView extends RelativeLayout {
 		minusCoinToken = (TextView) findViewById(R.id.minusCoinToken);
 		minusCardToken = (TextView) findViewById(R.id.minusCardToken);
 		journeyToken = (TextView) findViewById(R.id.journeyToken);
+		lostInTheWoods = (TextView) findViewById(R.id.lostInTheWoodsState);
+		deluded = (TextView) findViewById(R.id.deludedState);
+		miserable = (TextView) findViewById(R.id.miserableState);
 		counts = (TextView) findViewById(R.id.counts);
 
         if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hide_card_counts", false)) {
@@ -50,7 +56,7 @@ public class DeckView extends RelativeLayout {
         }
 	}
 
-	public void set(String nameStr, int turns, int deckSize, int handSize, int numCards, int pt, int vt, int gct, int dt, boolean md, boolean mc, boolean jt, boolean highlight) {
+	public void set(String nameStr, int turns, int deckSize, int handSize, int numCards, int pt, int vt, int gct, int dt, boolean md, boolean mc, boolean jt, boolean lw, boolean dl, boolean ev, boolean ms, boolean tm, boolean highlight) {
 		String txt = nameStr + getContext().getString(R.string.turn_header) + turns;
 		name.setText(txt);
 		if (highlight) {
@@ -67,38 +73,61 @@ public class DeckView extends RelativeLayout {
 		if (pt != 0)
 			pirates.setVisibility(VISIBLE);
 		else
-			pirates.setVisibility(INVISIBLE);
+			pirates.setVisibility(GONE);
 
         victoryTokens.setText(" " + vt + " ");
         if (vt != 0)
             victoryTokens.setVisibility(VISIBLE);
         else
-            victoryTokens.setVisibility(INVISIBLE);
+            victoryTokens.setVisibility(GONE);
         
         guildsCoinTokens.setText(" " + gct + " ");
         if (gct != 0)
             guildsCoinTokens.setVisibility(VISIBLE);
         else
-            guildsCoinTokens.setVisibility(INVISIBLE);
+            guildsCoinTokens.setVisibility(GONE);
 
         debtTokens.setText(" " + dt + " ");
         if (dt != 0)
             debtTokens.setVisibility(VISIBLE);
         else
-            debtTokens.setVisibility(INVISIBLE);
+            debtTokens.setVisibility(GONE);
 
 		if (mc)
 			minusCoinToken.setVisibility(VISIBLE);
 		else
-			minusCoinToken.setVisibility(INVISIBLE);
+			minusCoinToken.setVisibility(GONE);
 		if (md)
 			minusCardToken.setVisibility(VISIBLE);
 		else
-			minusCardToken.setVisibility(INVISIBLE);
+			minusCardToken.setVisibility(GONE);
 		if (jt)
 			journeyToken.setVisibility(VISIBLE);
 		else
-			journeyToken.setVisibility(INVISIBLE);
+			journeyToken.setVisibility(GONE);
+		
+		if (lw)
+			lostInTheWoods.setVisibility(VISIBLE);
+		else
+			lostInTheWoods.setVisibility(GONE);
+		if (dl) {
+			deluded.setText(" D ");
+			deluded.setVisibility(VISIBLE);
+		} else if (ev) {
+			deluded.setText(" E ");
+			deluded.setVisibility(VISIBLE);
+		} else {
+			deluded.setVisibility(GONE);
+		}
+		if (tm) {
+			miserable.setText(" MM ");
+			miserable.setVisibility(VISIBLE);
+		} else if (ms) {
+			miserable.setText(" M ");
+			miserable.setVisibility(VISIBLE);
+		} else {
+			miserable.setVisibility(GONE);
+		}
 
         if(showCardCounts) {
     		String str = "{ \u2261 " + deckSize +

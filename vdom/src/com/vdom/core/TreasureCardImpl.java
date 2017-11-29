@@ -152,7 +152,12 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 		} else if (equals(Cards.charm)) {
 			charm(game,context,player);
 		} else if (equals(Cards.silver)) {
+			if (player.envious && player.returnDeludedEnvious)
+				context.gold--;
 			merchant(game,context,player);
+		} else if (equals(Cards.gold)) {
+			if (player.envious && player.returnDeludedEnvious)
+				context.gold -= 2;
 		} else if (equals(Cards.goat)) {
 			goat(game,context,player);
 		} else if (equals(Cards.pouch)) {

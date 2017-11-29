@@ -3490,7 +3490,7 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 		return cardList[rand.nextInt(cardList.length)]; 
 	}
 
-    public Card[] shephard_cardsToDiscard(MoveContext context) {
+    public Card[] shepherd_cardsToDiscard(MoveContext context) {
         ArrayList<Card> cardsToDiscard = new ArrayList<Card>();
         for (Card card : context.getPlayer().getHand()) {
             if (card instanceof VictoryCard)
@@ -3651,7 +3651,8 @@ public abstract class BasePlayer extends Player implements GameEventListener {
     }
 
     public Card[] poverty_cardsToKeep(MoveContext context) {
-        return controlPlayer.poverty_cardsToKeep(context);
+		context.attackedPlayer = context.player;
+		return getCardsToKeep(context,3);
     }    
     
     public Card locusts_cardToObtain(MoveContext context, Card[] cardList) {
@@ -3659,6 +3660,24 @@ public abstract class BasePlayer extends Player implements GameEventListener {
 	}
 
     public boolean blessedVillage_receiveBoons(MoveContext context, Boons boon) {
+        return true;
+    }
+
+    public Card lostInTheWoods_cardToDiscard(MoveContext context) {
+        CardList cl = new CardList(context.getPlayer(), context.getPlayer().getPlayerName());
+        for(Card c : context.getPlayer().getHand())
+            cl.add(c);
+        return lowestCard(context, cl, false);
+    }
+
+	public Boons druid_boonToPlay(MoveContext context, Boons[] boons) {
+		return boons[rand.nextInt(boons.length)];
+	}
+
+    public boolean tracker_shouldPutCardOnDeck(MoveContext context, Card card) {
+        if(isOnlyVictory(card)) {
+            return false;
+        }
         return true;
     }
 

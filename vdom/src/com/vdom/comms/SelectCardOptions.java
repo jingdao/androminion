@@ -69,6 +69,7 @@ public class SelectCardOptions implements Serializable {
 	public boolean canBuyCards = true;
 
 	public boolean isAction = false;
+	public boolean isNonAction = false;
 	public boolean isReaction = false;
 	public boolean isTreasure = false;
     public boolean isNonTreasure = false;
@@ -107,6 +108,7 @@ public class SelectCardOptions implements Serializable {
 	public SelectCardOptions buyCardsAllowed(boolean b) {canBuyCards = b; return this;}
 
     public SelectCardOptions isAction() {isAction = true; return this;}
+    public SelectCardOptions isNonAction() {isNonAction = true; return this;}
 	public SelectCardOptions isReaction() {isReaction = true; return this;}
 	public SelectCardOptions isTreasure() {isTreasure = true; return this;}
     public SelectCardOptions isNonTreasure() {isNonTreasure = true; return this;}
@@ -150,6 +152,7 @@ public class SelectCardOptions implements Serializable {
 		if ((minCost >= 0) && (cost < minCost)) return false;
 
 //		if (isAction && !c.isAction) return false;
+		if (isNonAction && c.isAction) return false;
 		if (isReaction && !c.isReaction) return false;
 		if (isTreasure && !c.isTreasure) return false;
 		if (isNonTreasure && c.isTreasure) return false;
@@ -181,6 +184,7 @@ public class SelectCardOptions implements Serializable {
 		if ((minCost >= 0) && (cost < minCost)) return false;
 		
 		if (isReaction && !(Cards.isReaction(c))) return false;
+		if (isNonAction && c instanceof ActionCard) return false;
 		if (isTreasure && !(c instanceof TreasureCard)) return false;
 		if (isNonTreasure && (c instanceof TreasureCard)) return false;
 		if (isVictory && !(c instanceof VictoryCard)) return false;

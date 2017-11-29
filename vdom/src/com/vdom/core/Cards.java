@@ -71,7 +71,7 @@ public class Cards {
 		// Base + Intrigue Update
 		Vassal, Harbinger, Merchant, Poacher, Bandit, Sentry, Artisan, Lurker, Diplomat, Mill, SecretPassage, Courtier, Patrol, Replace,
 		//Nocturne
-		DevilsWorkshop, Raider, GhostTown, Crypt, Shephard, Pooka, Cemetery, FaithfulHound, BlessedVillage, Idol, Druid, Fool, Werewolf, Skulk, CursedVillage, Leprechaun, Exorcist, Pixie, Vampire, Necromancer,
+		DevilsWorkshop, Raider, GhostTown, Crypt, Shepherd, Pooka, Cemetery, FaithfulHound, BlessedVillage, Idol, Druid, Fool, Werewolf, Skulk, CursedVillage, Leprechaun, Exorcist, Pixie, Vampire, Necromancer,
 		Imp, Pasture, CursedGold, HauntedMirror, Ghost, LuckyCoin, Wish, Goat, Bat, ZombieApprentice, ZombieMason, ZombieSpy, WillOWisp, MagicLamp, Pouch, SecretCave, Tracker,
 		Guardian, Monastery, Changeling, NightWatchman, Bard, Conclave, Cobbler, DenOfSin, SacredGrove, Tormentor, TragicHero, Boon, Hex,
         // Promo Cards
@@ -451,7 +451,7 @@ public class Cards {
 	public static final Card raider;
 	public static final Card ghostTown;
 	public static final Card crypt;
-	public static final Card shephard;
+	public static final Card shepherd;
 	public static final Card pooka;
 	public static final Card cemetery;
 	public static final Card faithfulHound;
@@ -873,7 +873,7 @@ public class Cards {
 		actionCardsNocturne.add(raider = new NightDurationCardImpl.Builder(Cards.Type.Raider,6).addGoldNextTurn(3).attack().expansion("Nocturne").build());
 		actionCardsNocturne.add(ghostTown = new NightDurationCardImpl.Builder(Cards.Type.GhostTown,3).addActionsNextTurn(1).addCardsNextTurn(1).expansion("Nocturne").build());
 		actionCardsNocturne.add(crypt = new NightDurationCardImpl.Builder(Cards.Type.Crypt,5).expansion("Nocturne").build());
-		actionCardsNocturne.add(shephard = new ActionCardImpl.Builder(Cards.Type.Shephard,4).addActions(1).expansion("Nocturne").build());
+		actionCardsNocturne.add(shepherd = new ActionCardImpl.Builder(Cards.Type.Shepherd,4).addActions(1).expansion("Nocturne").build());
 		actionCardsNocturne.add(pooka = new ActionCardImpl.Builder(Cards.Type.Pooka,5).expansion("Nocturne").build());
 		actionCardsNocturne.add(cemetery = new VictoryCardImpl.Builder(Cards.Type.Cemetery,4,2).expansion("Nocturne").build());
 		actionCardsNocturne.add(faithfulHound = new ActionCardImpl.Builder(Cards.Type.FaithfulHound,2).addCards(2).expansion("Nocturne").build());

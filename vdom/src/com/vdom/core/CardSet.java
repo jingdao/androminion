@@ -259,6 +259,29 @@ public class CardSet {
 		CardSetMap.put(GameType.CashFlow, new CardSet(new Card[]{Cards.virtualCastle,Cards.cityQuarter,Cards.engineer,Cards.gladiator,Cards.royalBlacksmith,Cards.baker,Cards.butcher,Cards.doctor,Cards.herald,Cards.soothsayer},null));
 		CardSetMap.put(GameType.AreaControl, new CardSet(new Card[]{Cards.capital,Cards.catapult,Cards.charm,Cards.crown,Cards.farmersMarket,Cards.coinOfTheRealm,Cards.page,Cards.relic,Cards.treasureTrove,Cards.wineMerchant},null));
 		CardSetMap.put(GameType.NoMoneyNoProblems, new CardSet(new Card[]{Cards.archive,Cards.encampment,Cards.royalBlacksmith,Cards.temple,Cards.villa,Cards.dungeon,Cards.duplicate,Cards.hireling,Cards.peasant,Cards.transmogrify},null));
+
+		CardSetMap.put(GameType.Dusk, new CardSet(new Card[]{ Cards.blessedVillage, Cards.cobbler, Cards.denOfSin, Cards.faithfulHound, Cards.fool, Cards.monastery, Cards.nightWatchman, Cards.shepherd, Cards.tormentor, Cards.tragicHero, }, null));
+		CardSetMap.put(GameType.Midnight, new CardSet(new Card[]{ Cards.conclave, Cards.crypt, Cards.cursedVillage, Cards.devilsWorkshop, Cards.druid, Cards.exorcist, Cards.leprechaun, Cards.pooka, Cards.raider, Cards.secretCave, }, null));
+		CardSetMap.put(GameType.NightShift, new CardSet(new Card[]{ Cards.druid, Cards.exorcist, Cards.ghostTown, Cards.idol, Cards.nightWatchman, Cards.bandit, Cards.gardens, Cards.mine, Cards.poacher, Cards.smithy, }, null));
+		CardSetMap.put(GameType.IdleHands, new CardSet(new Card[]{ Cards.bard, Cards.conclave, Cards.cursedVillage, Cards.devilsWorkshop, Cards.tragicHero, Cards.cellar, Cards.harbinger, Cards.market, Cards.merchant, Cards.moneyLender, }, null));
+		CardSetMap.put(GameType.ShadowyFigures, new CardSet(new Card[]{ Cards.cobbler, Cards.conclave, Cards.faithfulHound, Cards.shepherd, Cards.tragicHero, Cards.bridge, Cards.conspirator, Cards.mill, Cards.nobles, Cards.secretPassage, }, null));
+		CardSetMap.put(GameType.ImpendingDoom, new CardSet(new Card[]{ Cards.leprechaun, Cards.monastery, Cards.necromancer, Cards.tormentor, Cards.werewolf, Cards.courtier, Cards.lurker, Cards.miningVillage, Cards.swindler, Cards.upgrade, }, null));
+		CardSetMap.put(GameType.TheNewBlack, new CardSet(new Card[]{ Cards.cobbler, Cards.denOfSin, Cards.ghostTown, Cards.raider, Cards.secretCave, Cards.caravan, Cards.haven, Cards.merchantShip, Cards.outpost, Cards.tactician, }, null));
+		CardSetMap.put(GameType.ForbiddenIsle, new CardSet(new Card[]{ Cards.blessedVillage, Cards.cemetery, Cards.idol, Cards.tracker, Cards.tragicHero, Cards.fishingVillage, Cards.ghostShip, Cards.lookout, Cards.salvager, Cards.treasureMap, }, null));
+		CardSetMap.put(GameType.NightmareFuel, new CardSet(new Card[]{ Cards.bard, Cards.blessedVillage, Cards.cemetery, Cards.sacredGrove, Cards.skulk, Cards.tracker, Cards.alchemist, Cards.apprentice, Cards.transmute, Cards.vineyard, }, null));
+		CardSetMap.put(GameType.TreasuresOfTheNight, new CardSet(new Card[]{ Cards.crypt, Cards.guardian, Cards.nightWatchman, Cards.raider, Cards.vampire, Cards.bank, Cards.contraband, Cards.loan, Cards.royalSeal, Cards.venture, }, null));
+		CardSetMap.put(GameType.DayAtTheRaces, new CardSet(new Card[]{ Cards.blessedVillage, Cards.cemetery, Cards.druid, Cards.tormentor, Cards.tragicHero, Cards.bishop, Cards.peddler, Cards.talisman, Cards.tradeRoute, Cards.watchTower, }, null));
+		CardSetMap.put(GameType.TheEndlessFair, new CardSet(new Card[]{ Cards.devilsWorkshop, Cards.exorcist, Cards.monastery, Cards.pixie, Cards.shepherd, Cards.baker, Cards.fairgrounds, Cards.farmingVillage, Cards.fortuneTeller, Cards.merchantGuild, }, null));
+		CardSetMap.put(GameType.HappyChaos, new CardSet(new Card[]{ Cards.blessedVillage, Cards.changeling, Cards.fool, Cards.faithfulHound, Cards.sacredGrove, Cards.doctor, Cards.harvest, Cards.herald, Cards.jester, Cards.masterpiece, }, null));
+		CardSetMap.put(GameType.SearchParty, new CardSet(new Card[]{ Cards.cobbler, Cards.conclave, Cards.druid, Cards.faithfulHound, Cards.werewolf, Cards.cartographer, Cards.highway, Cards.inn, Cards.oasis, Cards.scheme, }, null));
+		CardSetMap.put(GameType.CountingSheep, new CardSet(new Card[]{ Cards.bard, Cards.crypt, Cards.leprechaun, Cards.pooka, Cards.shepherd, Cards.crossroads, Cards.farmland, Cards.haggler, Cards.nobleBrigand, Cards.tunnel, }, null));
+		CardSetMap.put(GameType.GraveMatters, new CardSet(new Card[]{ Cards.cemetery, Cards.cursedVillage, Cards.necromancer, Cards.skulk, Cards.tormentor, Cards.armory, Cards.forager, Cards.graverobber, Cards.marketSquare, Cards.squire, }, null));
+		CardSetMap.put(GameType.RatsAndBats, new CardSet(new Card[]{ Cards.changeling, Cards.devilsWorkshop, Cards.sacredGrove, Cards.tracker, Cards.vampire, Cards.catacombs, Cards.count, Cards.fortress, Cards.hermit, Cards.rats, }, null));
+		CardSetMap.put(GameType.MonsterMash, new CardSet(new Card[]{ Cards.conclave, Cards.guardian, Cards.pixie, Cards.vampire, Cards.werewolf, Cards.bridgeTroll, Cards.giant, Cards.messenger, Cards.ratcatcher, Cards.storyteller, }, null));
+		CardSetMap.put(GameType.LostInTheWoods, new CardSet(new Card[]{ Cards.blessedVillage, Cards.druid, Cards.fool, Cards.sacredGrove, Cards.tracker, Cards.caravanGuard, Cards.guide, Cards.hauntedWoods, Cards.hireling, Cards.ranger, }, null));
+		CardSetMap.put(GameType.Luftschloss, new CardSet(new Card[]{ Cards.cemetery, Cards.changeling, Cards.exorcist, Cards.fool, Cards.shepherd, Cards.archive, Cards.virtualCastle, Cards.catapult, Cards.engineer, Cards.temple, }, null));
+		CardSetMap.put(GameType.PookaPranks, new CardSet(new Card[]{ Cards.faithfulHound, Cards.ghostTown, Cards.pixie, Cards.pooka, Cards.skulk, Cards.chariotRace, Cards.forum, Cards.groundskeeper, Cards.sacrifice, Cards.settlers, }, null));
+
 	}
 
 }

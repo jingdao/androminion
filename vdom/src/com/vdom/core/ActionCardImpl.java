@@ -960,8 +960,8 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		case Imp:
 			imp(game,context,currentPlayer);
 			break;
-		case Shephard:
-			shephard(game,context,currentPlayer);
+		case Shepherd:
+			shepherd(game,context,currentPlayer);
 			break;
 		case Necromancer:
 			necromancer(game,context,currentPlayer);
@@ -1005,6 +1005,9 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			break;
 		case Skulk:
 			skulk(game,context,currentPlayer);
+			break;
+		case Druid:
+			druid(game,context,currentPlayer);
 			break;
         default:
             break;
@@ -7091,7 +7094,6 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		if (toDiscard != null) {
 			for (Card card : toDiscard) {
 				currentPlayer.hand.remove(card);
-				currentPlayer.reveal(card, this.controlCard, context);
 				currentPlayer.discard(card, this.controlCard, context);
 			}
 			if (toDiscard.length != 3) {
@@ -7147,8 +7149,8 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		}
 	}
 
-	public void shephard(Game game, MoveContext context, Player currentPlayer) {
-		Card[] cardsToDiscard = currentPlayer.controlPlayer.shephard_cardsToDiscard(context);
+	public void shepherd(Game game, MoveContext context, Player currentPlayer) {
+		Card[] cardsToDiscard = currentPlayer.controlPlayer.shepherd_cardsToDiscard(context);
 		for (Card card : cardsToDiscard) {
 			currentPlayer.hand.remove(card);
 			currentPlayer.discard(card, this.controlCard, context);
@@ -7161,7 +7163,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
         HashSet<String> cardNames = new HashSet<String>();
 		ArrayList<ActionCard> validCards = new ArrayList<ActionCard>();
 		for (Card card : game.trashPile) {
-			if (!cardNames.contains(card.getName()) && card instanceof ActionCard && !(card instanceof DurationCard) && !game.necromancerTrashPile.contains(card)) {
+			if (!cardNames.contains(card.getName()) && card instanceof ActionCard && !(card instanceof DurationCard)) {
 				cardNames.add(card.getName());
 				validCards.add((ActionCard)card);
 			}
@@ -7173,6 +7175,7 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			cardToPlay = validCards.get(0);
 		else
 			cardToPlay = currentPlayer.controlPlayer.necromancer_cardToPlay(context, validCards.toArray(new ActionCard[0]));
+		game.trashPile.remove(cardToPlay);
 		game.necromancerTrashPile.add(cardToPlay);
 
     	if (!this.isImpersonatingAnotherCard()) {
@@ -7309,9 +7312,14 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 	}
 
     private void fool(Game game, MoveContext context, Player currentPlayer) {
-		for (int i=0;i<3;i++) {
-			Boons boon = game.receiveBoons(context);
-			boon.applyEffect(game,context,currentPlayer,this.controlCard);
+		if (!currentPlayer.lostInTheWoods) {
+			for (Player player : game.getPlayersInTurnOrder())
+				player.lostInTheWoods = false;
+			currentPlayer.lostInTheWoods = true;
+			for (int i=0;i<3;i++) {
+				Boons boon = game.receiveBoons(context);
+				boon.applyEffect(game,context,currentPlayer,this.controlCard);
+			}
 		}
 	}
 
@@ -7352,6 +7360,14 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 				hex.applyEffect(game,playerContext,player,this.controlCard);
 			}
 		}
+	}
+
+    private void druid(Game game, MoveContext context, Player currentPlayer) {
+		Boons boon = currentPlayer.controlPlayer.druid_boonToPlay(context, Boons.setAsideBoons.toArray(new Boons[0]));
+		GameEvent ev = new GameEvent(GameEvent.Type.ReceivedBoon, (MoveContext) context);
+		ev.setComment(boon.description);
+		game.broadcastEvent(ev);
+		boon.applyEffect(game,context,currentPlayer,this.controlCard);
 	}
 
 }
