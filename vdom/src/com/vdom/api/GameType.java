@@ -211,6 +211,7 @@ public enum GameType {
         name = name.replace(" to ", " To ");
         name = name.replace(" and ", " And ");
         name = name.replace(" in "," In ");
+        name = name.replace(" at "," At ");
 	name = name.replace("," , "");
         name = name.replace("'" , "");
         name = name.replace(" ", "");

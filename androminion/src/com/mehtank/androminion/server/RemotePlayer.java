@@ -34,7 +34,6 @@ import com.vdom.core.AbstractCardPile;
 import com.vdom.core.Util;
 import com.vdom.core.Landmarks;
 import com.vdom.core.NightCardImpl;
-import com.vdom.core.Boons;
 
 /**
  * Class that you can use to play remotely.
@@ -166,12 +165,6 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
         		else if (dc.getAddActionsNextTurn() > 0) ret =  Strings.format(R.string.action_next_turn_single, "" + dc.getAddActionsNextTurn()) + "\n" + ret;
         		if (dc.getAddCardsNextTurn() > 1) ret = Strings.format(R.string.cards_next_turn_multiple, "" + dc.getAddCardsNextTurn()) + "\n" + ret;
         		else if (dc.getAddCardsNextTurn() > 0) ret = Strings.format(R.string.card_next_turn_single, "" + dc.getAddCardsNextTurn()) + "\n" + ret;
-			}
-		}
-		if (c.equals(Cards.druid)) {
-			ret += "\n";
-			for (Boons boon : Boons.setAsideBoons) {
-				ret += String.format("%s\n", boon.description);
 			}
 		}
 		return ret;

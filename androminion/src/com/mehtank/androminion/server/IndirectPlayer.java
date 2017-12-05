@@ -4045,4 +4045,12 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return selectBooleanCardRevealed(context, Cards.tracker, card, getString(R.string.top_of_deck), getString(R.string.take_normal));
     }
 
+    public Card wish_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_workshop_cardToObtain(context)) {
+            return super.wish_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().maxCost(6).potionCost(0);
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.wish), sco);
+    }
+
 }

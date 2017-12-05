@@ -761,7 +761,7 @@ public abstract class Player {
 		if(counts.containsKey(Cards.gardens))
 			totals.put(Cards.gardens, counts.get(Cards.gardens) * (this.getAllCards().size() / 10));
 		if(counts.containsKey(Cards.duke))
-			totals.put(Cards.duke, counts.get(Cards.duke) * counts.get(Cards.duchy));
+			totals.put(Cards.duke, counts.containsKey(Cards.duchy) ? counts.get(Cards.duke) * counts.get(Cards.duchy) : 0);
 		if(counts.containsKey(Cards.fairgrounds))
 			totals.put(Cards.fairgrounds, counts.get(Cards.fairgrounds) * ((counts.get(DISTINCT_CARDS) / 5) * 2));
 		if(counts.containsKey(Cards.vineyard))
@@ -776,8 +776,9 @@ public abstract class Player {
 			totals.put(Cards.humbleCastle, counts.get(Cards.humbleCastle) * counts.get(CASTLES));
 		if (counts.containsKey(Cards.kingsCastle))
 			totals.put(Cards.kingsCastle, counts.get(Cards.kingsCastle) * counts.get(CASTLES) * 2);
+
 		if(counts.containsKey(Cards.pasture))
-			totals.put(Cards.pasture, counts.get(Cards.pasture) * counts.get(Cards.estate));
+			totals.put(Cards.pasture, counts.containsKey(Cards.estate) ? counts.get(Cards.pasture) * counts.get(Cards.estate) : 0);
 
 		for (Landmarks landmark : game.getLandmarksInGame()) {
 			totals.put(landmark, landmark.getVPs(game,this,getAllCards()));
@@ -1848,6 +1849,7 @@ public abstract class Player {
     public abstract Card lostInTheWoods_cardToDiscard(MoveContext context);
     public abstract Boons druid_boonToPlay(MoveContext context, Boons[] boons);
     public abstract boolean tracker_shouldPutCardOnDeck(MoveContext context, Card card);
+	public abstract Card wish_cardToObtain(MoveContext context);
 
 	// ////////////////////////////////////////////
     // Card interactions - Promotional Cards

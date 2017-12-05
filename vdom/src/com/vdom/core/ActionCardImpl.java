@@ -1009,6 +1009,8 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		case Druid:
 			druid(game,context,currentPlayer);
 			break;
+		case Wish:
+			wish(game, context, currentPlayer);
         default:
             break;
         }
@@ -6153,6 +6155,11 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 
     public void gear(Game game,MoveContext context, Player currentPlayer) {
         Card[] cards = currentPlayer.controlPlayer.gear_cardsToSetAside(context);
+		if (cards.length == 0) {
+			currentPlayer.nextTurnCards.remove(this.controlCard);
+			currentPlayer.playedCards.add(this.controlCard);
+			return;
+		}
 		for (Card card: cards) {
             currentPlayer.hand.remove(card);
             currentPlayer.gear.add(card);
@@ -6982,7 +6989,6 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		if (toDiscard != null) {
 			for (Card card : toDiscard) {
 				currentPlayer.hand.remove(card);
-				currentPlayer.reveal(card, this.controlCard, context);
 				currentPlayer.discard(card, this.controlCard, context);
 			}
 			context.addGold += 2;
@@ -7117,10 +7123,13 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 	}
 
     private void conclave(Game game, MoveContext context, Player currentPlayer) {
+        HashSet<String> cardNames = new HashSet<String>();
 		ArrayList<ActionCard> validCards = new ArrayList<ActionCard>();
 		for (Card card : currentPlayer.hand) {
-			if (card instanceof ActionCard && !currentPlayer.playedCards.contains(card) && !currentPlayer.nextTurnCards.contains(card))
+			if (!cardNames.contains(card.getName()) && card instanceof ActionCard && !currentPlayer.playedCards.contains(card) && !currentPlayer.nextTurnCards.contains(card)) {
+				cardNames.add(card.getName());
 				validCards.add((ActionCard)card);
+			}
 		}
 		if (validCards.size() > 0) {
 			ActionCard cardToPlay = currentPlayer.controlPlayer.conclave_cardToPlay(context, validCards.toArray(new ActionCard[0]));
@@ -7134,10 +7143,13 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 	}
 
     private void imp(Game game, MoveContext context, Player currentPlayer) {
+        HashSet<String> cardNames = new HashSet<String>();
 		ArrayList<ActionCard> validCards = new ArrayList<ActionCard>();
 		for (Card card : currentPlayer.hand) {
-			if (card instanceof ActionCard && !currentPlayer.playedCards.contains(card) && !currentPlayer.nextTurnCards.contains(card))
+			if (!cardNames.contains(card.getName()) && card instanceof ActionCard && !currentPlayer.playedCards.contains(card) && !currentPlayer.nextTurnCards.contains(card)) {
+				cardNames.add(card.getName());
 				validCards.add((ActionCard)card);
+			}
 		}
 		if (validCards.size() > 0) {
 			ActionCard cardToPlay = currentPlayer.controlPlayer.imp_cardToPlay(context, validCards.toArray(new ActionCard[0]));
@@ -7178,10 +7190,9 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		game.trashPile.remove(cardToPlay);
 		game.necromancerTrashPile.add(cardToPlay);
 
-    	if (!this.isImpersonatingAnotherCard()) {
-			this.startImpersonatingCard(cardToPlay.getTemplateCard().instantiate());
-    	}
-        ActionCardImpl zombieCard = (ActionCardImpl) this.impersonatingCard;
+        ActionCardImpl zombieCard = (ActionCardImpl) cardToPlay;
+		zombieCard.movedToNextTurnPile = true;
+		zombieCard.numberTimesAlreadyPlayed = 1;
         context.freeActionInEffect++;
         zombieCard.play(game, context, false);
         context.freeActionInEffect--;
@@ -7369,5 +7380,15 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 		game.broadcastEvent(ev);
 		boon.applyEffect(game,context,currentPlayer,this.controlCard);
 	}
+
+    private void wish(Game game, MoveContext context, Player currentPlayer) {
+        if (!this.movedToNextTurnPile) {
+			Card s = currentPlayer.controlPlayer.wish_cardToObtain(context);
+			currentPlayer.controlPlayer.gainNewCard(s, this.controlCard, context);
+			this.movedToNextTurnPile = true;
+			currentPlayer.trash(this, null, context);
+			currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(this));
+        }
+    }
 
 }

@@ -181,13 +181,17 @@ public class Hexes {
 				break;
 			case War:
 				Card draw;
+				ArrayList<Card> toDiscard = new ArrayList<Card>();
 				while ((draw = game.draw(currentPlayer)) != null) {
 					if (draw.getCost(context) == 3 || draw.getCost(context) == 4) {
 						currentPlayer.trash(draw, cardResponsible, context);
 						break;
 					} else {
-						currentPlayer.discard(draw, cardResponsible, null);
+						toDiscard.add(draw);
 					}
+				}
+				for (Card c : toDiscard) {
+					currentPlayer.discard(c, cardResponsible, context);
 				}
 				break;
 		}

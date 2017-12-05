@@ -81,6 +81,18 @@ public class BoonHexView extends FrameLayout implements OnLongClickListener{
 					e.printStackTrace();
 				}
 			}
+			for (Boons b : Boons.setAsideBoons) {
+				try {
+					Resources r = context.getResources();
+					int id = r.getIdentifier(b.name + "_name", "string", context.getPackageName());
+					nameMap.put(b.name, r.getString(id));
+					id = r.getIdentifier(b.name + "_desc", "string", context.getPackageName());
+					descMap.put(b.name, r.getString(id));
+					b.description = descMap.get(b.name);
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
 		} else {
 			for (Hexes b : Hexes.allHexes) {
 				try {

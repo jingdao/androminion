@@ -900,7 +900,7 @@ public class Cards {
 		actionCardsNocturne.add(cobbler = new NightDurationCardImpl.Builder(Cards.Type.Cobbler,5).expansion("Nocturne").build());
 		actionCardsNocturne.add(denOfSin = new NightDurationCardImpl.Builder(Cards.Type.DenOfSin,5).addCardsNextTurn(2).expansion("Nocturne").build());
 		actionCardsNocturne.add(sacredGrove = new ActionCardImpl.Builder(Cards.Type.SacredGrove,5).addBuys(1).addGold(3).isFate().expansion("Nocturne").build());
-		actionCardsNocturne.add(tormentor = new ActionCardImpl.Builder(Cards.Type.Tormentor,5).addGold(2).isDoom().expansion("Nocturne").build());
+		actionCardsNocturne.add(tormentor = new ActionCardImpl.Builder(Cards.Type.Tormentor,5).addGold(2).attack().isDoom().expansion("Nocturne").build());
 		actionCardsNocturne.add(tragicHero = new ActionCardImpl.Builder(Cards.Type.TragicHero,5).addBuys(1).addCards(3).expansion("Nocturne").build());
 
 		nonSupplyCards.add(willOWisp = new ActionCardImpl.Builder(Cards.Type.WillOWisp,0).addActions(1).addCards(1).isSpirit().expansion("Nocturne").build());

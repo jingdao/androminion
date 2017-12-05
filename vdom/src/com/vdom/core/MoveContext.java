@@ -264,7 +264,7 @@ public class MoveContext {
 
     public int getCoinForStatus() {
 		if (gold + addGold > previousGold && player.minusCoinToken) {
-			gold--;
+			addGold--;
 			player.minusCoinToken = false;
 		}
 		previousGold = gold + addGold;

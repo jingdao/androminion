@@ -16,6 +16,7 @@ import com.vdom.api.CurseCard;
 import com.vdom.api.GameEvent;
 import com.vdom.api.TreasureCard;
 import com.vdom.core.Cards.Type;
+import com.vdom.core.NightCardImpl;
 
 public class Util {
     public static String cardArrayToString(Card[] cards) {
@@ -636,6 +637,14 @@ public class Util {
 					return -1;
 				}
 			} else if(card1 instanceof TreasureCard || card1.getType() == Type.Potion) {
+				return 1;
+			} else if(card0 instanceof NightCardImpl) {
+				if(card1 instanceof NightCardImpl) {
+					return 0;
+				} else {
+					return -1;
+				}
+			} else if(card1 instanceof NightCardImpl) {
 				return 1;
 			} else if(card0 instanceof CurseCard) {
 				if(card1 instanceof CurseCard) {

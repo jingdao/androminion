@@ -36,6 +36,7 @@ import com.mehtank.androminion.util.CheckableEx;
 import com.mehtank.androminion.util.HapticFeedback;
 import com.mehtank.androminion.util.HapticFeedback.AlertType;
 import com.vdom.comms.MyCard;
+import com.vdom.core.Boons;
 
 /**
  * Corresponds to a single card that is visible on the 'table'
@@ -657,6 +658,12 @@ public class CardView extends FrameLayout implements OnLongClickListener, Checka
 			text += "\n";
 			
 			text += cardView.getCard().desc;
+			if (cardView.getCard().name.equals("Druid")) {
+				text += "\n";
+				for (Boons boon : Boons.setAsideBoons) {
+					text += String.format("%s\n", boon.description);
+				}
+			}
 			textView.setText( text );
 			v = textView;
 		}
