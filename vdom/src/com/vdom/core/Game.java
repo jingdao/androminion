@@ -913,6 +913,23 @@ public class Game {
 			toGhost.controlCard = toGhost;
 		}
 
+		while (!player.summon.isEmpty()) {
+			ActionCardImpl toSummon = (ActionCardImpl) player.summon.remove(0);
+			context.freeActionInEffect++;
+			toSummon.play(this, context, false);
+			context.freeActionInEffect--;
+		}
+
+		ArrayList<ActionCard> princeCopy = new ArrayList<ActionCard>(player.prince);
+		for (Card card : princeCopy) {
+			ActionCardImpl toPrince = (ActionCardImpl) card;
+			context.freeActionInEffect++;
+			toPrince.play(this, context, false);
+			if (toPrince.movedToNextTurnPile)
+				player.prince.remove(card);
+			context.freeActionInEffect--;
+		}
+
 		if (player.savedBoon != null) {
 			player.savedBoon.applyEffect(this,context,player,Cards.boonCard);
 		}

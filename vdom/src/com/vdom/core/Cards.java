@@ -75,7 +75,7 @@ public class Cards {
 		Imp, Pasture, CursedGold, HauntedMirror, Ghost, LuckyCoin, Wish, Goat, Bat, ZombieApprentice, ZombieMason, ZombieSpy, WillOWisp, MagicLamp, Pouch, SecretCave, Tracker,
 		Guardian, Monastery, Changeling, NightWatchman, Bard, Conclave, Cobbler, DenOfSin, SacredGrove, Tormentor, TragicHero, Boon, Hex,
         // Promo Cards
-        Envoy, Governor, WalledVillage, BlackMarket, Stash, Prince,
+        Envoy, Governor, WalledVillage, BlackMarket, Stash, Prince, Sauna, Avanto, Dismantle,
         // Promo Cards (not yet implemented)
         // BlackMarket, Stash
         // Victory Token card container
@@ -507,6 +507,9 @@ public class Cards {
     public static final Card blackMarket;
     public static final Card stash;
     public static final Card prince;
+    public static final Card sauna;
+    public static final Card avanto;
+    public static final Card dismantle;
 
     static {
         // nonKingdomCards
@@ -960,6 +963,10 @@ public class Cards {
         actionCardsPromo.add(blackMarket = new ActionCardImpl.Builder(Cards.Type.BlackMarket, 3).addGold(2).description("").expansion("Promo").build());
         actionCardsPromo.add(stash = new TreasureCardImpl.Builder(Cards.Type.Stash, 5,2).description("").expansion("Promo").build());
         actionCardsPromo.add(prince = new ActionCardImpl.Builder(Cards.Type.Prince, 8).description("").expansion("Promo").build());
+        actionCardsPromo.add(sauna = new ActionCardImpl.Builder(Cards.Type.Sauna, 4).addCards(1).addActions(1).description("").expansion("Promo").build());
+        actionCardsPromo.add(dismantle = new ActionCardImpl.Builder(Cards.Type.Dismantle, 4).description("").expansion("Promo").build());
+		avanto = new ActionCardImpl.Builder(Cards.Type.Avanto,5).addCards(3).description("").expansion("Promo").build();
+		splitPileTop.add(sauna); splitPileBottom.add(avanto);
         
         // Collect all Expansions
         for (Card card : actionCardsBaseGame)    { actionCards.add(card); }

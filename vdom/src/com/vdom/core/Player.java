@@ -25,6 +25,7 @@ public abstract class Player {
 	public static final String VICTORY_TOKENS = "Victory Tokens";
 	public static final String DISTANT_LANDS_ON_TAVERN = "Distant Lands";
 	public static final String CASTLES = "Castles";
+	public static final String MISERABLE = "Miserable";
 
     // Only used by InteractivePlayer currently
     private String name;
@@ -83,6 +84,8 @@ public abstract class Player {
 	public ArrayList<ArrayList<Card>> archive;
 	public ArrayList<ArrayList<Card>> crypt;
 	public ArrayList<ActionCard> ghost;
+	public ArrayList<ActionCard> summon;
+	public ArrayList<ActionCard> prince;
 	public ArrayList<Event> boughtEvents = new ArrayList<Event>();
     public Game game;
     public Player controlPlayer = this;
@@ -257,6 +260,8 @@ public abstract class Player {
 		archive = new ArrayList<ArrayList<Card>>();
 		crypt = new ArrayList<ArrayList<Card>>();
 		ghost = new ArrayList<ActionCard>();
+		summon = new ArrayList<ActionCard>();
+		prince = new ArrayList<ActionCard>();
     }
 
     private List<PutBackOption> getPutBackOptions(MoveContext context) {
@@ -527,12 +532,7 @@ public abstract class Player {
     }
 
     public int getVictoryTokens() {
-		if (twiceMiserable)
-			return victoryTokens - 4;
-		else if (miserable)
-			return victoryTokens - 2;
-		else
-			return victoryTokens;
+		return victoryTokens;
     }
 
 	public int getDebtTokens() {
@@ -595,6 +595,15 @@ public abstract class Player {
 			for (Card card : list)
 				allCards.add(card);
 		}
+		for (Card card: ghost) {
+			allCards.add(card);
+		}
+		for (Card card: summon) {
+			allCards.add(card);
+		}
+		for (Card card: prince) {
+			allCards.add(card);
+		}
 		if (estateToken != null)
 			allCards.add(estateToken);
         if (checkLeadCard != null) {
@@ -648,6 +657,11 @@ public abstract class Player {
 			if (card.isCastle())
 				numCastles++;
 		cardCounts.put(CASTLES, numCastles);
+
+		if (twiceMiserable)
+			cardCounts.put(MISERABLE, 2);
+		else if (miserable)
+			cardCounts.put(MISERABLE, 1);
 
 		return cardCounts;
 	}
@@ -779,6 +793,8 @@ public abstract class Player {
 
 		if(counts.containsKey(Cards.pasture))
 			totals.put(Cards.pasture, counts.containsKey(Cards.estate) ? counts.get(Cards.pasture) * counts.get(Cards.estate) : 0);
+		if (counts.containsKey(MISERABLE))
+			totals.put(MISERABLE, counts.get(MISERABLE) * -2);
 
 		for (Landmarks landmark : game.getLandmarksInGame()) {
 			totals.put(landmark, landmark.getVPs(game,this,getAllCards()));
@@ -1860,6 +1876,13 @@ public abstract class Player {
     public abstract Card governor_cardToObtain(MoveContext context, int exactCost, boolean potion,int debt);
     public abstract Card envoy_cardToDiscard(MoveContext context, Card[] revealedCards);
 	public abstract int stash_positionInDeck(MoveContext context,int deckSize);
+	public abstract Card dismantle_cardToTrash(MoveContext context);
+    public abstract Card dismantle_cardToObtain(MoveContext context, int maxCost, boolean potion,int debt);
+	public abstract boolean sauna_shouldPlayNext(MoveContext context);
+	public abstract boolean avanto_shouldPlayNext(MoveContext context);
+    public abstract Card sauna_cardToTrash(MoveContext context);
+	public abstract Card summon_cardToObtain(MoveContext context);
+    public abstract Card prince_cardToSetAside(MoveContext context, Card[] cardList);
 
 	// ////////////////////////////////////////////
     // Card interactions - Unique Cards

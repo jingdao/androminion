@@ -1011,6 +1011,19 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			break;
 		case Wish:
 			wish(game, context, currentPlayer);
+			break;
+		case Dismantle:
+			dismantle(game, context, currentPlayer);
+			break;
+		case Sauna:
+			sauna(game, context, currentPlayer);
+			break;
+		case Avanto:
+			avanto(game, context, currentPlayer);
+			break;
+		case Prince:
+			prince(game, context, currentPlayer);
+			break;
         default:
             break;
         }
@@ -7389,6 +7402,73 @@ public class ActionCardImpl extends CardImpl implements ActionCard {
 			currentPlayer.trash(this, null, context);
 			currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(this));
         }
+    }
+
+    private void dismantle(Game game, MoveContext context, Player currentPlayer) {
+        if (currentPlayer.getHand().size() > 0) {
+            Card cardToTrash = currentPlayer.controlPlayer.dismantle_cardToTrash(context);
+            int cost = cardToTrash.getCost(context);
+            boolean potion = cardToTrash.costPotion();
+			currentPlayer.hand.remove(cardToTrash);
+			currentPlayer.trash(cardToTrash, this.controlCard, context);
+			if (cost < 1)
+				return;
+			ArrayList<Card> validCards = new ArrayList<Card>();
+            for (Card card : game.getCardsInGame()) {
+                if (Cards.isSupplyCard(card) && game.getCardsLeftInPile(card) > 0) {
+                    int gainCardCost = card.getCost(context);
+                    boolean gainCardPotion = card.costPotion();
+                    if (gainCardCost < cost || (gainCardCost == cost && !gainCardPotion && potion)) {
+                        validCards.add(card);
+                    }
+        		}
+        	}
+            if (validCards.size() > 0) {
+                Card toGain = context.getPlayer().controlPlayer.dismantle_cardToObtain(context, cost - 1, potion,cardToTrash.costDebt());
+				currentPlayer.gainNewCard(toGain, this.controlCard, context);
+				currentPlayer.gainNewCard(Cards.gold, this.controlCard, context);
+        	}
+        }
+	}
+
+	private void sauna(Game game, MoveContext context , Player currentPlayer) {
+        if (currentPlayer.hand.contains(Cards.avanto) && currentPlayer.controlPlayer.sauna_shouldPlayNext(context)) {
+        	ActionCardImpl next = (ActionCardImpl) currentPlayer.hand.get(Cards.avanto);
+            if (next != null) {
+                context.freeActionInEffect++;
+                next.play(game, context, true);
+                context.freeActionInEffect--;
+            }
+        }
+	}
+
+	private void avanto(Game game, MoveContext context, Player currentPlayer) {
+        if (currentPlayer.hand.contains(Cards.sauna) && currentPlayer.controlPlayer.avanto_shouldPlayNext(context)) {
+        	ActionCardImpl next = (ActionCardImpl) currentPlayer.hand.get(Cards.sauna);
+            if (next != null) {
+                context.freeActionInEffect++;
+                next.play(game, context, true);
+                context.freeActionInEffect--;
+            }
+        }
+	}
+
+    private void prince(Game game, MoveContext context, Player currentPlayer) {
+		ArrayList<Card> options = new ArrayList<Card>();
+		for (Card card : currentPlayer.hand) {
+			if (card instanceof ActionCard && card.getCost(context) <= 4 && !card.costPotion() && card.costDebt()==0) {
+				options.add(card);
+			}
+		}
+		if (options.size()!=0) {
+			Card toSetAside = currentPlayer.controlPlayer.prince_cardToSetAside(context, options.toArray(new Card[0]));
+			currentPlayer.hand.remove(toSetAside);
+			currentPlayer.prince.add((ActionCard)toSetAside);
+			if (!this.controlCard.movedToNextTurnPile) {
+				this.controlCard.movedToNextTurnPile = true;
+				currentPlayer.playedCards.remove(currentPlayer.playedCards.lastIndexOf(this.controlCard));
+			}
+		}
     }
 
 }

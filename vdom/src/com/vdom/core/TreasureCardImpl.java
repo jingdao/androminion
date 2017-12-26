@@ -155,6 +155,7 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 			if (player.envious && player.returnDeludedEnvious)
 				context.gold--;
 			merchant(game,context,player);
+			sauna(game,context,player);
 		} else if (equals(Cards.gold)) {
 			if (player.envious && player.returnDeludedEnvious)
 				context.gold -= 2;
@@ -473,6 +474,17 @@ public class TreasureCardImpl extends CardImpl implements TreasureCard {
 					player.attacked(this.controlCard, context);
 					player.gainNewCard(Cards.curse, this.controlCard, new MoveContext(game, player));
 				}
+			}
+		}
+	}
+
+	public void sauna(Game game, MoveContext context, Player currentPlayer) {
+		int numSauna = context.countCardsInPlay(Cards.sauna);
+		for (int i=0;i<numSauna;i++) {
+			Card toTrash = currentPlayer.controlPlayer.sauna_cardToTrash(context);
+			if (toTrash != null) {
+				currentPlayer.hand.remove(toTrash);
+				currentPlayer.trash(toTrash, Cards.sauna, context);
 			}
 		}
 	}

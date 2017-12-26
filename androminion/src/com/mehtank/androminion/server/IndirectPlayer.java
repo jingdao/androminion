@@ -4053,4 +4053,62 @@ public abstract class IndirectPlayer extends QuickPlayPlayer {
         return getFromTable(context, getActionString(ActionType.GAIN, Cards.wish), sco);
     }
 
+    public Card dismantle_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_trader_cardToTrash(context)) {
+            return super.dismantle_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.dismantle), sco);
+    }
+    
+    public Card dismantle_cardToObtain(MoveContext context, int maxCost, boolean potion,int debt) {
+        if(context.isQuickPlay() && shouldAutoPlay_remodel_cardToObtain(context, maxCost, potion)) {
+            return super.dismantle_cardToObtain(context, maxCost, potion,debt);
+        }
+        SelectCardOptions sco = new SelectCardOptions().maxCost(maxCost).potionCost(potion ? 1 : 0).debtCost(debt);
+        return getFromTable(context, getActionString(ActionType.GAIN, Cards.dismantle), sco);
+    }
+
+    public boolean sauna_shouldPlayNext(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_cultist_shouldPlayNext(context)) {
+            return super.sauna_shouldPlayNext(context);
+        }
+        String option1 = getActionString(ActionType.PLAY, Cards.avanto);
+        String option2 = getString(R.string.pass);
+        return selectBoolean(context, Cards.sauna.getName(), option1, option2);
+    }
+    
+    public boolean avanto_shouldPlayNext(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_cultist_shouldPlayNext(context)) {
+            return super.avanto_shouldPlayNext(context);
+        }
+        String option1 = getActionString(ActionType.PLAY, Cards.sauna);
+        String option2 = getString(R.string.pass);
+        return selectBoolean(context, Cards.avanto.getName(), option1, option2);
+    }
+    
+    public Card sauna_cardToTrash(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_masquerade_cardToTrash(context)) {
+            return super.sauna_cardToTrash(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().setPassable(getString(R.string.none)).setPickType(PickType.TRASH);
+        return getCardFromHand(context, getActionString(ActionType.TRASH, Cards.sauna), sco);
+    }
+
+    public Card summon_cardToObtain(MoveContext context) {
+        if(context.isQuickPlay() && shouldAutoPlay_university_actionCardToObtain(context)) {
+            return super.summon_cardToObtain(context);
+        }
+        SelectCardOptions sco = new SelectCardOptions().potionCost(0).maxCost(4).isAction();
+        return getFromTable(context, getActionString(ActionType.GAIN,Event.summon,""), sco);
+    }
+
+    public Card prince_cardToSetAside(MoveContext context, Card[] cardList) {
+        ArrayList<String> options = new ArrayList<String>();
+        for (Card c : cardList)
+            options.add(Strings.getCardName(c));
+        String o = selectString(context,getActionString(ActionType.REVEAL, Cards.prince), options.toArray(new String[0]));
+        return (Card) localNameToCard(o, cardList);
+    }
+
 }

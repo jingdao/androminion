@@ -769,4 +769,10 @@
 	<string name="Stash_desc">When you shuffle, you may put this anywhere in your deck.</string>
 	<string name="Prince_Name">Prince</string>
 	<string name="Prince_desc">You may set this aside. If you do, set aside an Action card from your hand costing up to 4 Coin. At the start of each of your turns, play that Action, setting it aside again when you discard it from play.</string>
+	<string name="Sauna_Name">Sauna</string>
+	<string name="Sauna_desc">You may play an Avanto from your hand. While this is in play, when you play a Silver, you may trash a card from your hand.</string>
+	<string name="Avanto_Name">Avanto</string>
+	<string name="Avanto_desc">You may play a Sauna from your hand.</string>
+	<string name="Dismantle_Name">Dismantle</string>
+	<string name="Dismantle_desc">Trash a card from your hand. If it costs 1 Coin or more, gain a cheaper card and a Gold.</string>
 </resources>

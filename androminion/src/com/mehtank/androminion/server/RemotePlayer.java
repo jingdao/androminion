@@ -461,10 +461,12 @@ public class RemotePlayer extends IndirectPlayer implements GameEventListener, E
 		if (card instanceof Card) {
 			name=((Card)card).getName();
 			count=counts.get(card);
-		}
-		if (card instanceof Landmarks) {
+		} else if (card instanceof Landmarks) {
 			name=((Landmarks)card).name;
 			count=1;
+		} else if (card instanceof String) {
+			name=(String)card;
+			count=counts.get(card);
 		}
 		final StringBuilder sb = new StringBuilder()
 			.append('\t')

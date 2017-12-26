@@ -421,7 +421,7 @@ public class GameTable extends LinearLayout implements OnItemClickListener, OnIt
 					EventView ev;
 					if(origView == null) {
 						ev = new EventView(top, events.get(pos));
-						ev.mycard = cards[cards.length - landmarks.size() - events.size() + pos];
+						ev.mycard = cards[cards.length - getCount() + pos];
 					} else {
 						ev = (EventView) origView;
 					}

@@ -3685,4 +3685,36 @@ public abstract class BasePlayer extends Player implements GameEventListener {
         return bestCardInPlay(context, 6);
 	}
 
+	public Card dismantle_cardToTrash(MoveContext context) {
+        Card card = pickOutCard(context.getPlayer().getHand(), getTrashCards());
+    	if (card != null) 
+    		return card;
+        else 
+	        return context.getPlayer().getHand().get(0);
+	}
+
+    public Card dismantle_cardToObtain(MoveContext context, int maxCost, boolean potion,int debt) {
+        return bestCardInPlay(context, maxCost, false, potion);
+    }
+
+	public boolean sauna_shouldPlayNext(MoveContext context) {
+		return true;
+	}
+	
+	public boolean avanto_shouldPlayNext(MoveContext context) {
+		return true;
+	}
+	
+    public Card sauna_cardToTrash(MoveContext context) {
+        return pickOutCard(context.getPlayer().getHand(), getTrashCards());
+    }
+
+	public Card summon_cardToObtain(MoveContext context) {
+        return bestCardInPlay(context, 4, false, false, true, false);
+	}
+
+    public Card prince_cardToSetAside(MoveContext context, Card[] cardList) {
+		return cardList[rand.nextInt(cardList.length)]; 
+	}
+
 }

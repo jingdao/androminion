@@ -169,6 +169,9 @@ public class Event {
 			case Dominate:
 				dominate(context,currentPlayer);
 				break;
+			case Summon:
+				summon(context,currentPlayer);
+				break;
 			default:
 				break;
 		}
@@ -738,4 +741,12 @@ public class Event {
 			currentPlayer.addVictoryTokens(context, 9);
 		}
 	}
+
+	public void summon(MoveContext context, Player currentPlayer) {
+		Card card = currentPlayer.summon_cardToObtain((MoveContext) context);
+		currentPlayer.gainNewCard(card,Cards.eventCard, (MoveContext) context);
+		card = currentPlayer.discard.remove(currentPlayer.discard.lastIndexOf(card));
+		currentPlayer.summon.add((ActionCard)card);
+	}
+
 }
